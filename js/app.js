@@ -1,18 +1,123 @@
 /**
- * AGNIVANI Thermal Intelligence Grid - Application Controller
+ * AGNIVANI Thermal Intelligence Grid - Application Controller v5.0
  * High-Stakes Industrial & Aerospace Thermal Anomaly Telemetry
+ * Enhanced with Web Audio API, Leaflet Interactive Dark Tiles, & FIRMS CSV Ingestion
  */
+
+// --- Global Audio Synthesizer (Web Audio API) ---
+const SoundFX = {
+  ctx: null,
+  enabled: true,
+
+  init() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        this.ctx = new AudioCtx();
+      }
+    } catch (e) {
+      console.warn('Web Audio API not supported', e);
+    }
+  },
+
+  resume() {
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  },
+
+  playBlip() {
+    if (!this.enabled || !this.ctx) return;
+    this.resume();
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1800, this.ctx.currentTime + 0.05);
+
+      gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.05);
+    } catch (e) {}
+  },
+
+  playCritical() {
+    if (!this.enabled || !this.ctx) return;
+    this.resume();
+    try {
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.setValueAtTime(880, now + 0.1);
+      osc.frequency.setValueAtTime(440, now + 0.2);
+      osc.frequency.setValueAtTime(880, now + 0.3);
+
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(now + 0.4);
+    } catch (e) {}
+  },
+
+  playDispatch() {
+    if (!this.enabled || !this.ctx) return;
+    this.resume();
+    try {
+      const now = this.ctx.currentTime;
+      [440, 554.37, 659.25, 880].forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+
+        gain.gain.setValueAtTime(0.1, now + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.18);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now + idx * 0.06);
+        osc.stop(now + idx * 0.06 + 0.2);
+      });
+    } catch (e) {}
+  },
+
+  toggle() {
+    this.enabled = !this.enabled;
+    const btn = document.getElementById('audio-toggle-btn');
+    if (btn) {
+      btn.innerHTML = `<span class="material-symbols-outlined text-[18px] ${this.enabled ? 'text-primary' : 'text-on-surface-variant'}">${this.enabled ? 'volume_up' : 'volume_off'}</span>`;
+      btn.title = `Sound FX: ${this.enabled ? 'ON' : 'OFF'}`;
+    }
+    if (this.enabled) this.playBlip();
+  }
+};
 
 // --- Global Application State ---
 const AppState = {
-  activeView: 'mission-control', // 'mission-control' | 'alerts' | 'analytics' | 'dossier' | 'facility'
+  activeView: 'mission-control',
   selectedAnomalyId: 'AGN-04832',
   selectedFacilityId: 'RIL-JAM-01',
   systemTimeOffset: 0,
   terminalPaused: false,
-  alertFilter: 'ALL',
-  
-  // Real Anomaly Dataset (VIIRS 375m & FIRMS Persistent Sources)
+  mapMode: 'vector', // 'vector' | 'satellite'
+  leafletMap: null,
+  leafletMarkers: [],
+
+  // Live Anomaly Dataset (VIIRS 375m & FIRMS Persistent Sources)
   anomalies: [
     {
       id: 'AGN-04832',
@@ -168,6 +273,7 @@ const AppState = {
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
+  SoundFX.init();
   initClock();
   initRouting();
   initAlertFeed();
@@ -178,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPlanckCurve();
   initAuditTable();
   initEventListeners();
+  initCSVUploader();
 });
 
 // --- Mission Clock ---
@@ -198,7 +305,6 @@ function initClock() {
 
 // --- Navigation / Routing Engine ---
 function initRouting() {
-  // Sync with URL Hash
   const hash = window.location.hash.replace('#', '');
   if (['mission-control', 'alerts', 'analytics', 'dossier', 'facility'].includes(hash)) {
     switchView(hash);
@@ -213,11 +319,11 @@ function initRouting() {
     }
   });
 
-  // Attach nav link click handlers
   document.querySelectorAll('[data-nav-target]').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const target = link.getAttribute('data-nav-target');
+      SoundFX.playBlip();
       switchView(target);
       window.location.hash = target;
     });
@@ -227,18 +333,15 @@ function initRouting() {
 function switchView(viewName) {
   AppState.activeView = viewName;
   
-  // Hide all view panels
   document.querySelectorAll('.view-panel').forEach(panel => {
     panel.classList.remove('active');
   });
 
-  // Show active view panel
   const targetPanel = document.getElementById(`view-${viewName}`);
   if (targetPanel) {
     targetPanel.classList.add('active');
   }
 
-  // Update Nav links state
   document.querySelectorAll('[data-nav-target]').forEach(link => {
     const target = link.getAttribute('data-nav-target');
     if (target === viewName) {
@@ -250,9 +353,11 @@ function switchView(viewName) {
     }
   });
 
-  // If entering dossier, refresh swipe slider
   if (viewName === 'dossier') {
-    setTimeout(initSwipeSlider, 50);
+    setTimeout(initSwipeSlider, 60);
+  }
+  if (viewName === 'mission-control' && AppState.mapMode === 'satellite') {
+    setTimeout(refreshLeafletMap, 60);
   }
 }
 
@@ -276,7 +381,7 @@ function initAlertFeed() {
             <div class="px-1 rounded-sm flex items-center h-4 border" style="background-color: ${anomaly.sevColor}22; border-color: ${anomaly.sevColor}">
               <span class="font-label-caps text-[8px]" style="color: ${anomaly.sevColor}">${anomaly.severity}</span>
             </div>
-            <span class="font-data-mono text-[10px] ${isSelected ? 'text-primary' : 'text-on-surface-variant'}">ID:${anomaly.shortId}</span>
+            <span class="font-data-mono text-[10px] ${isSelected ? 'text-primary font-bold' : 'text-on-surface-variant'}">ID:${anomaly.shortId}</span>
           </div>
           <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.timestamp}</span>
         </div>
@@ -290,6 +395,7 @@ function initAlertFeed() {
       `;
 
       card.addEventListener('click', () => {
+        SoundFX.playBlip();
         selectAnomaly(anomaly.id);
       });
 
@@ -324,6 +430,7 @@ function initAlertFeed() {
       `;
 
       item.addEventListener('click', () => {
+        SoundFX.playBlip();
         selectAnomaly(anomaly.id);
       });
 
@@ -337,10 +444,20 @@ function selectAnomaly(id) {
   const item = AppState.anomalies.find(a => a.id === id);
   if (!item) return;
 
-  // Refresh feed selection visual
+  if (item.severity === 'CRITICAL') {
+    SoundFX.playCritical();
+  }
+
+  // Refresh feeds
   initAlertFeed();
 
+  // If in satellite mode, fly to marker
+  if (AppState.mapMode === 'satellite' && AppState.leafletMap) {
+    AppState.leafletMap.flyTo([item.coords.lat, item.coords.lon], 7, { duration: 1.2 });
+  }
+
   // Update Inspector in Mission Control
+  const inspSelectedId = document.getElementById('insp-selected-id');
   const inspName = document.getElementById('insp-name');
   const inspType = document.getElementById('insp-type');
   const inspConf = document.getElementById('insp-conf');
@@ -349,6 +466,7 @@ function selectAnomaly(id) {
   const inspFrp = document.getElementById('insp-frp');
   const inspCh4 = document.getElementById('insp-ch4');
 
+  if (inspSelectedId) inspSelectedId.innerText = `ID: ${item.shortId}`;
   if (inspName) inspName.innerText = item.name;
   if (inspType) {
     inspType.innerText = item.type;
@@ -389,11 +507,10 @@ function selectAnomaly(id) {
   }
   if (dossierFacility) dossierFacility.innerText = item.name.toUpperCase();
 
-  // Log in terminal
   appendTerminalLog(`[PHYS] Retargeted spectrometer to ${item.id} (${item.name}). T_eff=${item.effTemp}, FRP=${item.frp}`);
 }
 
-// --- Interactive Map HUD Engine ---
+// --- Interactive Map HUD Engine (Vector & Leaflet Satellite Mode) ---
 function initMapCanvas() {
   const mapContainer = document.getElementById('mission-map-svg');
   if (!mapContainer) return;
@@ -427,9 +544,7 @@ function initMapCanvas() {
   }
 
   // Plot Hotspots from AppState.anomalies
-  AppState.anomalies.forEach((anomaly, index) => {
-    // Map coords to SVG canvas coordinate space
-    // Gujarat / West focus around x: 260-350, y: 220-380
+  AppState.anomalies.forEach((anomaly) => {
     const x = 240 + (anomaly.coords.lon - 68) * 28;
     const y = 520 - (anomaly.coords.lat - 18) * 26;
 
@@ -437,7 +552,6 @@ function initMapCanvas() {
     g.setAttribute('class', 'cursor-pointer group');
     g.setAttribute('transform', `translate(${x}, ${y})`);
 
-    // Outer Target Rings
     const circleRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     circleRing.setAttribute('r', '16');
     circleRing.setAttribute('fill', 'none');
@@ -447,14 +561,12 @@ function initMapCanvas() {
     circleRing.setAttribute('opacity', '0.6');
     g.appendChild(circleRing);
 
-    // Inner Glowing Marker
     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     circle.setAttribute('r', '6');
     circle.setAttribute('fill', anomaly.typeColor);
     circle.setAttribute('class', anomaly.severity === 'CRITICAL' ? 'pulse-critical' : '');
     g.appendChild(circle);
 
-    // Anomaly Label Tag
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text.setAttribute('x', '18');
     text.setAttribute('y', '4');
@@ -466,6 +578,7 @@ function initMapCanvas() {
     g.appendChild(text);
 
     g.addEventListener('click', () => {
+      SoundFX.playBlip();
       selectAnomaly(anomaly.id);
     });
 
@@ -473,6 +586,107 @@ function initMapCanvas() {
   });
 
   mapContainer.appendChild(svg);
+}
+
+// --- Real Leaflet Dark Matter Satellite Engine ---
+function setMapMode(mode) {
+  AppState.mapMode = mode;
+  const vectorContainer = document.getElementById('mission-map-svg');
+  const leafletContainer = document.getElementById('leaflet-map-container');
+  const radarSweep = document.getElementById('map-radar-sweep');
+  const btnVector = document.getElementById('btn-map-vector');
+  const btnSat = document.getElementById('btn-map-satellite');
+
+  SoundFX.playBlip();
+
+  if (mode === 'satellite') {
+    if (vectorContainer) vectorContainer.classList.add('hidden');
+    if (radarSweep) radarSweep.classList.add('hidden');
+    if (leafletContainer) leafletContainer.classList.remove('hidden');
+
+    if (btnVector) btnVector.classList.remove('bg-primary-container', 'text-[#060910]', 'font-bold');
+    if (btnVector) btnVector.classList.add('bg-surface-container', 'text-on-surface-variant');
+    if (btnSat) btnSat.classList.add('bg-primary-container', 'text-[#060910]', 'font-bold');
+    if (btnSat) btnSat.classList.remove('bg-surface-container', 'text-on-surface-variant');
+
+    initLeafletMap();
+    appendTerminalLog('[MAP] Switched to CartoDB Dark Matter Satellite telemetry layer');
+  } else {
+    if (vectorContainer) vectorContainer.classList.remove('hidden');
+    if (radarSweep) radarSweep.classList.remove('hidden');
+    if (leafletContainer) leafletContainer.classList.add('hidden');
+
+    if (btnVector) btnVector.classList.add('bg-primary-container', 'text-[#060910]', 'font-bold');
+    if (btnVector) btnVector.classList.remove('bg-surface-container', 'text-on-surface-variant');
+    if (btnSat) btnSat.classList.remove('bg-primary-container', 'text-[#060910]', 'font-bold');
+    if (btnSat) btnSat.classList.add('bg-surface-container', 'text-on-surface-variant');
+
+    appendTerminalLog('[MAP] Switched to Vector HUD Telemetry mode');
+  }
+}
+
+function initLeafletMap() {
+  if (typeof L === 'undefined') return;
+  const container = document.getElementById('leaflet-map-container');
+  if (!container) return;
+
+  if (!AppState.leafletMap) {
+    AppState.leafletMap = L.map('leaflet-map-container', {
+      center: [22.8, 72.5],
+      zoom: 6,
+      zoomControl: false,
+      attributionControl: false
+    });
+
+    L.control.zoom({ position: 'topright' }).addTo(AppState.leafletMap);
+
+    // Dark Matter CartoDB Basemap
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19,
+      subdomains: 'abcd'
+    }).addTo(AppState.leafletMap);
+  }
+
+  refreshLeafletMap();
+}
+
+function refreshLeafletMap() {
+  if (!AppState.leafletMap || typeof L === 'undefined') return;
+
+  AppState.leafletMap.invalidateSize();
+
+  // Clear existing markers
+  AppState.leafletMarkers.forEach(m => AppState.leafletMap.removeLayer(m));
+  AppState.leafletMarkers = [];
+
+  // Plot current anomalies
+  AppState.anomalies.forEach(anomaly => {
+    const customIcon = L.divIcon({
+      className: 'custom-div-icon',
+      html: `<div style="width: 20px; height: 20px; background-color: ${anomaly.typeColor}; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 10px ${anomaly.typeColor};" class="${anomaly.severity === 'CRITICAL' ? 'pulse-critical' : ''}"></div>`,
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
+    });
+
+    const marker = L.marker([anomaly.coords.lat, anomaly.coords.lon], { icon: customIcon }).addTo(AppState.leafletMap);
+
+    marker.bindPopup(`
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px;">
+        <strong style="color: ${anomaly.typeColor}">${anomaly.name}</strong><br/>
+        ID: <span style="color: #22d3ee">${anomaly.id}</span><br/>
+        Type: ${anomaly.type}<br/>
+        Temp: <span style="color: #ff4d4d">${anomaly.effTemp}</span> | FRP: ${anomaly.frp}<br/>
+        <button onclick="selectAnomaly('${anomaly.id}')" style="margin-top: 6px; padding: 2px 8px; background: #22d3ee; color: #060910; border: none; border-radius: 2px; font-weight: bold; cursor: pointer;">INSPECT</button>
+      </div>
+    `);
+
+    marker.on('click', () => {
+      SoundFX.playBlip();
+      selectAnomaly(anomaly.id);
+    });
+
+    AppState.leafletMarkers.push(marker);
+  });
 }
 
 // --- Visual Proof Before/After Swipe Slider Engine ---
@@ -509,8 +723,7 @@ function initSwipeSlider() {
     updateSlider(e.clientX);
   });
 
-  // Touch support for mobile/tablets
-  handle.addEventListener('touchstart', (e) => {
+  handle.addEventListener('touchstart', () => {
     isDragging = true;
   });
 
@@ -574,7 +787,6 @@ function initHeatmap() {
     'bg-error'
   ];
 
-  // 52 weeks x 7 days = 364 days
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - 364);
 
@@ -583,15 +795,14 @@ function initHeatmap() {
     curDate.setDate(curDate.getDate() + i);
     const dateStr = curDate.toISOString().substring(0, 10);
     
-    // Weighted color selection simulating persistent industrial flaring
     let colorIdx = 0;
     const r = Math.random();
-    if (r > 0.85) colorIdx = 6; // Critical
-    else if (r > 0.70) colorIdx = 5; // Flare Gold
-    else if (r > 0.50) colorIdx = 4; // High Cyan
-    else if (r > 0.35) colorIdx = 3; // Med
-    else if (r > 0.20) colorIdx = 2; // Low
-    else colorIdx = 0; // Nominal
+    if (r > 0.85) colorIdx = 6;
+    else if (r > 0.70) colorIdx = 5;
+    else if (r > 0.50) colorIdx = 4;
+    else if (r > 0.35) colorIdx = 3;
+    else if (r > 0.20) colorIdx = 2;
+    else colorIdx = 0;
 
     const count = colorIdx === 0 ? 0 : Math.floor(colorIdx * 2.5 + Math.random() * 3);
 
@@ -607,13 +818,11 @@ function initPlanckCurve() {
   const curveSvg = document.getElementById('planck-svg-curve');
   if (!curveSvg) return;
 
-  // Generate Planck blackbody curve based on Planck's Law
-  // B(λ, T) = (2hc² / λ⁵) * 1 / (exp(hc / λkT) - 1)
-  const T = 1847; // Kelvin
+  const T = 1847;
   let pathD = 'M 0 180';
   for (let x = 0; x <= 500; x += 10) {
-    const lambda = 0.5 + (x / 500) * 4.5; // 0.5 to 5.0 μm
-    const peak = 2898 / T; // Wien's Displacement Law ~ 1.56 μm
+    const lambda = 0.5 + (x / 500) * 4.5;
+    const peak = 2898 / T;
     const diff = Math.abs(lambda - peak);
     const intensity = Math.exp(-Math.pow(diff / 0.8, 2));
     const y = 180 - intensity * 150;
@@ -642,8 +851,221 @@ function initAuditTable() {
   });
 }
 
+// --- CSV Drag-and-Drop & File Ingestion Engine ---
+function initCSVUploader() {
+  const modal = document.getElementById('csv-modal');
+  const openBtn = document.getElementById('open-csv-btn');
+  const closeBtn = document.getElementById('close-csv-btn');
+  const dropzone = document.getElementById('csv-dropzone');
+  const fileInput = document.getElementById('csv-file-input');
+  const sampleBtn = document.getElementById('load-sample-csv-btn');
+
+  if (openBtn && modal) {
+    openBtn.addEventListener('click', () => {
+      SoundFX.playBlip();
+      modal.classList.remove('hidden');
+    });
+  }
+
+  if (closeBtn && modal) {
+    closeBtn.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+  }
+
+  if (dropzone && fileInput) {
+    dropzone.addEventListener('click', () => fileInput.click());
+
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('drag-over');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('drag-over');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length > 0) {
+        handleCSVFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleCSVFile(e.target.files[0]);
+      }
+    });
+  }
+
+  if (sampleBtn) {
+    sampleBtn.addEventListener('click', () => {
+      loadSampleFirmsCSV();
+    });
+  }
+}
+
+function handleCSVFile(file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    parseAndIngestCSV(text, file.name);
+  };
+  reader.readAsText(file);
+}
+
+function parseAndIngestCSV(csvText, filename = 'custom_firms.csv') {
+  const lines = csvText.trim().split(/\r?\n/);
+  if (lines.length < 2) {
+    alert('Invalid CSV file: missing rows.');
+    return;
+  }
+
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+  const latIdx = headers.indexOf('latitude');
+  const lonIdx = headers.indexOf('longitude');
+  const frpIdx = headers.indexOf('frp');
+  const ti4Idx = headers.indexOf('bright_ti4');
+  const facilityIdx = headers.indexOf('nearest_facility');
+
+  if (latIdx === -1 || lonIdx === -1) {
+    alert('CSV missing required "latitude" and "longitude" columns.');
+    return;
+  }
+
+  const parsedAnomalies = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',').map(c => c.trim());
+    if (cols.length <= latIdx || cols.length <= lonIdx) continue;
+
+    const lat = parseFloat(cols[latIdx]);
+    const lon = parseFloat(cols[lonIdx]);
+    if (isNaN(lat) || isNaN(lon)) continue;
+
+    const frp = frpIdx !== -1 ? parseFloat(cols[frpIdx]) || 15.0 : 25.0;
+    const ti4 = ti4Idx !== -1 ? parseFloat(cols[ti4Idx]) || 340.0 : 350.0;
+    const facility = facilityIdx !== -1 && cols[facilityIdx] ? cols[facilityIdx] : `Cell (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
+
+    // Heuristic Classification
+    let type = 'GAS FLARE';
+    let typeColor = '#ffa94d';
+    let severity = 'HIGH';
+    let sevColor = '#ffb13b';
+
+    if (ti4 > 360 || frp > 50) {
+      severity = 'CRITICAL';
+      sevColor = '#ff4d4d';
+    } else if (frp < 10) {
+      severity = 'WARNING';
+      sevColor = '#ffd6a3';
+    }
+
+    if (facility.toLowerCase().includes('refinery') || facility.toLowerCase().includes('lng') || facility.toLowerCase().includes('port')) {
+      type = 'GAS FLARE';
+      typeColor = '#ffa94d';
+    } else if (facility.toLowerCase().includes('coal') || facility.toLowerCase().includes('thermal')) {
+      type = 'COAL SEAM';
+      typeColor = '#f59e0b';
+    } else {
+      type = 'INDUSTRIAL FIRE';
+      typeColor = '#ff4d4d';
+    }
+
+    parsedAnomalies.push({
+      id: `AGN-${10000 + i}`,
+      shortId: `F${i.toString(16).toUpperCase()}`,
+      name: facility,
+      facilityId: `FAC-${100 + i}`,
+      coords: { lat, lon },
+      coordsStr: `${lat.toFixed(3)}° N, ${lon.toFixed(3)}° E`,
+      time: 'LIVE ORBITAL PASS',
+      timestamp: 'LIVE',
+      severity,
+      type,
+      typeColor,
+      sevColor,
+      confidence: 0.85 + Math.random() * 0.12,
+      effTemp: `${Math.round(ti4 * 4.2)} K`,
+      tempValue: Math.round(ti4 * 4.2),
+      area: `${(frp * 0.35).toFixed(1)} m²`,
+      frp: `${frp.toFixed(1)} MW`,
+      frpValue: frp,
+      swirRad: `${(frp * 0.24).toFixed(1)} W/m²/sr/μm`,
+      mwirRad: `${(frp * 0.15).toFixed(1)} W/m²/sr/μm`,
+      ch4Est: `${(frp * 0.008).toFixed(2)} kg/s`,
+      status: 'DISPATCHED',
+      dispatchTime: 'NOW',
+      receivedTime: 'PENDING',
+      respondedTime: 'PENDING',
+      authority: 'District Emergency Command Cell'
+    });
+
+    if (parsedAnomalies.length >= 25) break; // Keep UI dense and clean
+  }
+
+  if (parsedAnomalies.length > 0) {
+    AppState.anomalies = parsedAnomalies;
+    AppState.selectedAnomalyId = parsedAnomalies[0].id;
+    
+    // Update UI components
+    initAlertFeed();
+    initMapCanvas();
+    if (AppState.mapMode === 'satellite') {
+      refreshLeafletMap();
+    }
+    selectAnomaly(parsedAnomalies[0].id);
+
+    // Audio & Terminal feedback
+    SoundFX.playDispatch();
+    appendTerminalLog(`<span class="text-primary font-bold">[INGEST]</span> Ingested ${parsedAnomalies.length} real FIRMS detections from ${filename}`);
+    
+    const modal = document.getElementById('csv-modal');
+    if (modal) modal.classList.add('hidden');
+    alert(`Successfully loaded ${parsedAnomalies.length} FIRMS detections from ${filename}!`);
+  }
+}
+
+function loadSampleFirmsCSV() {
+  fetch('firms_india_persistent.csv')
+    .then(res => res.text())
+    .then(text => {
+      parseAndIngestCSV(text, 'firms_india_persistent.csv');
+    })
+    .catch(() => {
+      // Fallback inline sample
+      const sample = `latitude,longitude,hits,days,night_hits,median_ti4,median_ti5,max_frp,mean_frp,nearest_facility
+21.1,72.64,12,3,7,332.62,292.92,9.54,5.02,Hazira LNG/Steel
+22.35,70.02,18,4,9,368.12,305.4,62.1,45.2,Jamnagar Refinery
+26.88,73.52,4,3,4,306.56,293.0,2.78,1.66,Bathinda Refinery
+23.26,70.26,2,2,2,301.96,285.99,1.26,0.91,Kandla Port
+15.18,76.66,6,2,5,321.95,286.77,7.11,3.63,Mangalore Refinery
+29.46,76.88,5,2,5,307.39,284.39,5.21,2.91,Panipat Refinery`;
+      parseAndIngestCSV(sample, 'firms_india_persistent.csv');
+    });
+}
+
 // --- Interactive Modal & Event Listeners ---
 function initEventListeners() {
+  // Audio toggle listener
+  const audioBtn = document.getElementById('audio-toggle-btn');
+  if (audioBtn) {
+    audioBtn.addEventListener('click', () => {
+      SoundFX.toggle();
+    });
+  }
+
+  // Map Switcher buttons
+  const btnVector = document.getElementById('btn-map-vector');
+  const btnSat = document.getElementById('btn-map-satellite');
+  if (btnVector) {
+    btnVector.addEventListener('click', () => setMapMode('vector'));
+  }
+  if (btnSat) {
+    btnSat.addEventListener('click', () => setMapMode('satellite'));
+  }
+
   // Dispatch Modal Open
   const dispatchButtons = document.querySelectorAll('[data-action="open-dispatch"]');
   const modal = document.getElementById('dispatch-modal');
@@ -652,6 +1074,7 @@ function initEventListeners() {
 
   dispatchButtons.forEach(btn => {
     btn.addEventListener('click', () => {
+      SoundFX.playBlip();
       if (modal) modal.classList.remove('hidden');
     });
   });
@@ -668,7 +1091,6 @@ function initEventListeners() {
       const now = new Date();
       const timeStr = now.toISOString().substring(11, 23);
 
-      // Add to Audit Trail
       AppState.auditTrail.unshift({
         timestamp: timeStr,
         operatorId: 'OP-883A',
@@ -677,18 +1099,17 @@ function initEventListeners() {
       });
       initAuditTable();
 
-      // Update UI feedback
+      SoundFX.playDispatch();
       appendTerminalLog(`[DISPATCH] Priority alert ${activeAnomaly.id} broadcasted to ${activeAnomaly.authority}`);
-      
-      // Close modal
       modal.classList.add('hidden');
       alert(`Priority alert for ${activeAnomaly.name} (${activeAnomaly.id}) successfully dispatched to Nodal Authorities.`);
     });
   }
 
-  // Action Protocol Checkbox toggles in Alert Console
+  // Action Protocol Checkbox toggles
   document.querySelectorAll('.protocol-checkbox').forEach(cb => {
     cb.addEventListener('change', (e) => {
+      SoundFX.playBlip();
       const label = e.target.closest('label')?.querySelector('.protocol-text');
       if (label) {
         if (e.target.checked) {

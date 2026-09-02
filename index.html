@@ -14,6 +14,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   
+  <!-- Leaflet Dark Matter Mapping Library -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <!-- Custom Design Tokens & Styles -->
   <link rel="stylesheet" href="css/styles.css"/>
 
@@ -102,8 +106,14 @@
       </div>
     </div>
 
-    <!-- Live Telemetry Status & System Clock -->
+    <!-- Live Telemetry Status & System Actions -->
     <div class="flex items-center gap-md">
+      <!-- FIRMS CSV Ingestion Button -->
+      <button id="open-csv-btn" class="hud-border bg-surface-container hover:bg-primary/20 hover:border-primary px-2.5 py-1 rounded flex items-center gap-xs cursor-pointer transition-colors group">
+        <span class="material-symbols-outlined text-[15px] text-primary group-hover:scale-110 transition-transform">upload_file</span>
+        <span class="font-label-caps text-[10px] text-primary font-bold">INGEST FIRMS CSV</span>
+      </button>
+
       <div class="hidden sm:flex gap-sm">
         <div class="hud-border bg-surface-container px-2 py-1 rounded flex items-center gap-xs">
           <div class="w-2 h-2 rounded-full bg-error pulse-critical"></div>
@@ -117,15 +127,19 @@
         </div>
       </div>
 
+      <!-- Clock & Audio Synthesizer Controls -->
       <div class="flex items-center gap-md font-data-mono text-[12px] border-l border-outline-variant pl-md">
         <span class="text-on-surface-variant hidden lg:inline">gcc-xgb v4.2</span>
         <span class="text-primary font-bold tracking-widest" id="system-clock">T-00:00:00</span>
         
+        <!-- Audio HUD Sound Effects Toggle -->
+        <button id="audio-toggle-btn" class="p-1 hover:text-primary transition-colors" title="Sound FX: ON">
+          <span class="material-symbols-outlined text-[18px] text-primary">volume_up</span>
+        </button>
+
         <div class="flex gap-xs text-on-surface-variant">
           <button class="p-1 hover:text-primary transition-colors" title="Sensors Telemetry"><span class="material-symbols-outlined text-[18px]">sensors</span></button>
-          <button class="p-1 hover:text-primary transition-colors" title="Video Feeds"><span class="material-symbols-outlined text-[18px]">videocam</span></button>
           <button class="p-1 hover:text-primary transition-colors" title="Industrial Facilities"><span class="material-symbols-outlined text-[18px]">precision_manufacturing</span></button>
-          <button class="p-1 hover:text-primary transition-colors" title="Schedule Passes"><span class="material-symbols-outlined text-[18px]">schedule</span></button>
         </div>
 
         <div class="w-7 h-7 rounded-full bg-surface-bright border border-outline-variant overflow-hidden cursor-pointer hover:border-primary transition-colors" title="Operator Profile">
@@ -146,7 +160,7 @@
         </div>
         <div>
           <div class="font-label-caps text-[10px] text-on-surface-variant font-bold">INTELLIGENCE GRID</div>
-          <div class="font-data-mono text-[9px] text-on-surface-variant opacity-70">V4.2.0-STABLE</div>
+          <div class="font-data-mono text-[9px] text-on-surface-variant opacity-70">V5.0.0-MISSION-GRADE</div>
         </div>
       </div>
 
@@ -187,8 +201,8 @@
         </ul>
       </div>
 
-      <!-- Dispatch Alert Action Button -->
-      <div class="p-base mt-auto shrink-0">
+      <!-- Quick Action Buttons -->
+      <div class="p-base space-y-sm mt-auto shrink-0">
         <button data-action="open-dispatch" class="w-full bg-primary-container text-[#060910] font-label-caps text-[11px] py-2 rounded-[4px] hover:bg-primary transition-all flex items-center justify-center gap-xs font-bold tracking-wider shadow-[0_0_10px_rgba(34,211,238,0.4)]">
           <span class="material-symbols-outlined text-[16px]">send</span>
           DISPATCH ALERT
@@ -269,26 +283,40 @@
           <!-- CENTRE COLUMN: MAP & TERMINAL -->
           <div class="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden">
             
-            <!-- Geospatial Vector Map Canvas -->
+            <!-- Geospatial Map Canvas Container -->
             <div class="flex-1 relative overflow-hidden bg-[#060910] cyber-grid min-h-0">
-              <!-- Radar Sweep -->
-              <div class="absolute inset-0 overflow-hidden pointer-events-none">
+              
+              <!-- Map Switcher Controls: Vector vs Real Leaflet Dark Matter Satellite Tiles -->
+              <div class="absolute top-base left-base bg-surface-dim/90 hud-border p-[2px] rounded-sm backdrop-blur-sm flex items-center gap-[2px] z-20">
+                <button id="btn-map-vector" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-primary-container text-[#060910] font-bold transition-all">
+                  VECTOR HUD
+                </button>
+                <button id="btn-map-satellite" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-surface-container text-on-surface-variant hover:text-primary transition-all">
+                  SATELLITE TILES
+                </button>
+              </div>
+
+              <!-- Radar Sweep (Vector Mode) -->
+              <div id="map-radar-sweep" class="absolute inset-0 overflow-hidden pointer-events-none">
                 <div class="radar-sweep"></div>
               </div>
 
-              <!-- Map Interactive SVG Canvas Container -->
+              <!-- Map Interactive SVG Canvas Container (Vector Mode) -->
               <div class="absolute inset-0 flex items-center justify-center p-md" id="mission-map-svg">
                 <!-- SVG injected by app.js -->
               </div>
 
+              <!-- Leaflet Map Container (Satellite Tiles Mode) -->
+              <div id="leaflet-map-container" class="absolute inset-0 hidden z-10"></div>
+
               <!-- HUD Overlays -->
-              <div class="absolute bottom-base left-base bg-surface-dim/80 hud-border p-xs rounded-sm backdrop-blur-sm flex items-center gap-sm">
+              <div class="absolute bottom-base left-base bg-surface-dim/80 hud-border p-xs rounded-sm backdrop-blur-sm flex items-center gap-sm z-20">
                 <span class="font-data-mono text-[9px] text-primary">PROJ EPSG:4326</span>
                 <span class="text-outline-variant">|</span>
                 <span class="font-data-mono text-[9px] text-on-surface-variant">INDIA WEST COAST SUB-GRID</span>
               </div>
 
-              <div class="absolute top-base right-base bg-surface-dim/80 hud-border px-2 py-1 rounded-sm backdrop-blur-sm">
+              <div class="absolute top-base right-base bg-surface-dim/80 hud-border px-2 py-1 rounded-sm backdrop-blur-sm z-20">
                 <span class="font-data-mono text-[9px] text-tertiary">VIIRS N-BAND SATURATED: 3 SITES</span>
               </div>
             </div>
@@ -1279,6 +1307,40 @@
         </div>
       </div>
     </main>
+  </div>
+
+  <!-- ==================== CSV INGESTION DROPZONE MODAL ==================== -->
+  <div id="csv-modal" class="hud-modal-backdrop hidden">
+    <div class="hud-panel border border-primary/50 max-w-lg w-full p-md rounded shadow-[0_0_28px_rgba(34,211,238,0.35)] flex flex-col gap-md">
+      <div class="flex justify-between items-center border-b border-outline-variant pb-sm">
+        <div class="flex items-center gap-sm">
+          <span class="material-symbols-outlined text-primary">upload_file</span>
+          <span class="font-label-caps text-label-caps text-primary font-bold">INGEST NASA FIRMS CSV TELEMETRY</span>
+        </div>
+        <button id="close-csv-btn" class="text-on-surface-variant hover:text-primary">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-sm text-body-md text-xs text-on-surface-variant">
+        <p>Drop any NASA FIRMS VIIRS / MODIS CSV file into the dropzone to dynamically project and classify live thermal hotspots on the Intelligence Grid.</p>
+
+        <!-- Dropzone Box -->
+        <div id="csv-dropzone" class="dropzone-border rounded p-lg text-center cursor-pointer flex flex-col items-center justify-center gap-sm">
+          <span class="material-symbols-outlined text-[36px] text-primary">cloud_upload</span>
+          <div class="font-label-caps text-[12px] text-on-surface font-bold">DRAG & DROP CSV FILE HERE</div>
+          <div class="font-data-mono text-[10px] text-on-surface-variant">or click to browse from local filesystem</div>
+          <input type="file" id="csv-file-input" accept=".csv" class="hidden" />
+        </div>
+
+        <div class="flex items-center justify-between pt-xs text-data-mono text-[10px] text-on-surface-variant">
+          <span>Supported: latitude, longitude, frp, bright_ti4</span>
+          <button id="load-sample-csv-btn" class="text-primary hover:underline font-bold flex items-center gap-xs">
+            <span class="material-symbols-outlined text-[13px]">dataset</span> Load Sample Indian Industrial Dataset
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ==================== DISPATCH ALERT MODAL ==================== -->
