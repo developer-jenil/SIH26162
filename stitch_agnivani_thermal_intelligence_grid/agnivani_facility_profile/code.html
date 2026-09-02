@@ -12,8 +12,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 :root{--cyan:#22d3ee;--gf:#ffa94d;--if:#ff4d4d;--cs:#f59e0b;--wv:#4ade80;--gl:#b197fc;--border:#1b2735;--t1:#dce7f2;--t2:#7b8da3;--t3:#4e5f74;--panel:rgba(13,20,29,0.72)}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#1b2735;border-radius:2px}
 .mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
-
-/* Topbar */
 #topbar{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--border);background:rgba(6,9,16,0.97);position:sticky;top:0;z-index:50}
 .brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#f59e0b,#ea580c);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
 .brand-mark::after{content:'';position:absolute;inset:0;border-radius:8px;border:1.5px solid rgba(245,158,11,.6);animation:haloExpand 2.4s ease-out infinite}
@@ -23,8 +21,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .pill b{color:var(--t1)}
 .live-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:liveBlink 1.5s ease-in-out infinite}
 @keyframes liveBlink{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* Layout */
 #page{position:relative;z-index:1;padding:14px 18px 40px;max-width:1600px;margin:0 auto}
 .breadcrumb{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--t3);margin-bottom:12px}
 .breadcrumb a{color:var(--t2);text-decoration:none;transition:color 140ms}
@@ -33,46 +29,27 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;transition:border-color 140ms}
 .panel:hover{border-color:#243447}
 .panel-title{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.panel-title small{font-size:8.5px;color:var(--t3);text-transform:none;letter-spacing:0;font-weight:400}
 .reveal{opacity:0;transform:translateY(12px);transition:opacity 500ms cubic-bezier(.4,0,.2,1),transform 500ms cubic-bezier(.4,0,.2,1)}
 .reveal.in{opacity:1;transform:translateY(0)}
-
-/* Risk gauge */
-#gauge-wrap{display:flex;align-items:center;gap:24px}
-#gauge-svg{width:140px;height:80px;flex-shrink:0}
+.tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;border:1px solid}
+#gauge-wrap{display:flex;align-items:center;gap:20px}
 .gauge-score{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;color:var(--gf);font-variant-numeric:tabular-nums;line-height:1}
-.gauge-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
-
-/* Stat tiles */
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
 .stat-tile{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
 .stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
 .stat-val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--t1);font-variant-numeric:tabular-nums}
 .stat-sub{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t2);margin-top:2px}
-
-/* Calendar heatmap */
-#cal-grid{display:grid;grid-template-columns:repeat(52,1fr);gap:2px;margin-top:8px}
-.cal-cell{aspect-ratio:1;border-radius:2px;cursor:pointer;transition:opacity 140ms}
-.cal-cell:hover{opacity:.7}
-
-/* Baseline chart */
-#baseline-svg{width:100%;height:180px}
-
-/* Temp distribution */
-#dist-svg{width:100%;height:160px}
-
-/* Peer table */
+#cal-grid{display:grid;grid-template-columns:repeat(52,1fr);grid-auto-flow:column;grid-template-rows:repeat(7,1fr);gap:2px}
+.cal-cell{aspect-ratio:1;border-radius:2px;transition:opacity 140ms}
+.cal-cell:hover{opacity:.6}
 .peer-table{width:100%;border-collapse:collapse}
 .peer-table th{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);padding:5px 8px;border-bottom:1px solid var(--border);text-align:left}
 .peer-table td{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--t1);padding:6px 8px;border-bottom:1px solid rgba(27,39,53,0.5)}
-.peer-table tr:last-child td{border-bottom:none}
 .peer-table tr:hover td{background:rgba(34,211,238,0.03)}
-.sparkline{display:inline-block;vertical-align:middle}
-
-/* Seasonal small multiples */
 .sm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .sm-panel{background:rgba(6,9,16,0.6);border:1px solid var(--border);border-radius:6px;padding:8px}
 .sm-title{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
-
 @media(prefers-reduced-motion:reduce){.brand-mark::after,.live-dot{animation:none!important}}
 </style>
 </head>
@@ -80,10 +57,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <header id="topbar">
   <div style="display:flex;align-items:center;gap:14px">
     <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M12 2C8 7 6 10 6 14a6 6 0 0012 0c0-4-2-7-6-12z"/></svg></div>
-    <div>
-      <div style="font-size:16px;font-weight:800;letter-spacing:.11em">AGNIVANI</div>
-      <div class="mono" style="font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--t3);text-transform:uppercase">Industrial Thermal Anomaly Intelligence Grid</div>
-    </div>
+    <div><div style="font-size:16px;font-weight:800;letter-spacing:.11em">AGNIVANI</div><div class="mono" style="font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--t3);text-transform:uppercase">Industrial Thermal Anomaly Intelligence Grid</div></div>
   </div>
   <div style="display:flex;align-items:center;gap:7px">
     <div class="pill"><div class="live-dot"></div> LIVE · <b>STREAMING</b></div>
@@ -93,53 +67,38 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </header>
 
 <div id="page">
-  <div class="breadcrumb">
-    <a href="../agnivani_mission_control/code.html">MISSION CONTROL</a><span>/</span>
-    <a href="#">FACILITIES</a><span>/</span>
-    <span class="cur">Jamnagar Refinery</span>
-  </div>
+  <div class="breadcrumb"><a href="../agnivani_mission_control/code.html">MISSION CONTROL</a><span>/</span><a href="#">FACILITIES</a><span>/</span><span class="cur">Jamnagar Refinery</span></div>
 
-  <!-- HEADER -->
   <div class="panel reveal" style="margin-bottom:14px">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px">
       <div>
         <div class="mono" style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Facility Profile</div>
-        <div style="font-size:22px;font-weight:800;color:var(--t1);margin-bottom:4px">Jamnagar Refinery</div>
+        <div style="font-size:22px;font-weight:800;margin-bottom:4px">Jamnagar Refinery</div>
         <div class="mono" style="font-size:10px;color:var(--t2)">Reliance Industries · Refinery · Gujarat · 22.35°N, 70.02°E · GEM-IN-R-0021</div>
         <div style="display:flex;gap:8px;margin-top:10px">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;border:1px solid var(--gf);color:var(--gf);background:rgba(255,169,77,.1)">REFINERY</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;border:1px solid #ef4444;color:#ef4444;background:rgba(239,68,68,.1)">HIGH RISK</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;border:1px solid var(--border);color:var(--t2)">MONITORED 412 d</span>
+          <span class="tag" style="border-color:var(--gf);color:var(--gf);background:rgba(255,169,77,.1)">REFINERY</span>
+          <span class="tag" style="border-color:#ef4444;color:#ef4444;background:rgba(239,68,68,.1)">HIGH RISK</span>
+          <span class="tag" style="border-color:var(--border);color:var(--t2)">MONITORED 412 d</span>
+          <span class="tag" style="border-color:var(--border);color:var(--t2)">1.24 Mbpd</span>
         </div>
       </div>
       <div id="gauge-wrap">
-        <svg id="gauge-svg" viewBox="0 0 140 80">
-          <defs>
-            <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#4ade80"/>
-              <stop offset="50%" stop-color="#f59e0b"/>
-              <stop offset="100%" stop-color="#ef4444"/>
-            </linearGradient>
-          </defs>
-          <!-- Track -->
+        <svg viewBox="0 0 140 80" style="width:140px;height:80px">
+          <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#4ade80"/><stop offset="50%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#ef4444"/></linearGradient></defs>
           <path d="M10,75 A60,60 0 0,1 130,75" fill="none" stroke="#1b2735" stroke-width="10" stroke-linecap="round"/>
-          <!-- Fill (risk 78%) -->
-          <path id="gauge-fill" d="M10,75 A60,60 0 0,1 130,75" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 188" style="transition:stroke-dasharray 1.2s cubic-bezier(.4,0,.2,1)"/>
-          <!-- Needle -->
-          <line id="gauge-needle" x1="70" y1="75" x2="70" y2="22" stroke="#ffa94d" stroke-width="2" stroke-linecap="round" style="transform-origin:70px 75px;transform:rotate(0deg);transition:transform 1.2s cubic-bezier(.4,0,.2,1)"/>
-          <circle cx="70" cy="75" r="4" fill="#ffa94d"/>
-          <text x="70" y="68" fill="#4e5f74" font-size="7" font-family="JetBrains Mono" text-anchor="middle">RISK</text>
+          <path id="gauge-fill" d="M10,75 A60,60 0 0,1 130,75" fill="none" stroke="url(#gg)" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 188" style="transition:stroke-dasharray 1.2s cubic-bezier(.4,0,.2,1)"/>
+          <line id="gauge-needle" x1="70" y1="75" x2="70" y2="24" stroke="#dce7f2" stroke-width="1.6" stroke-linecap="round" style="transform-origin:70px 75px;transform:rotate(-90deg);transition:transform 1.2s cubic-bezier(.4,0,.2,1)"/>
+          <circle cx="70" cy="75" r="3.5" fill="#dce7f2"/>
         </svg>
         <div>
           <div class="gauge-score" id="gauge-num">0</div>
-          <div class="gauge-label">Risk Score</div>
-          <div class="mono" style="font-size:8.5px;color:var(--t2);margin-top:4px">HIGH · 78/100</div>
+          <div class="mono" style="font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-top:4px">Risk Score</div>
+          <div class="mono" style="font-size:8.5px;color:#ef4444;margin-top:3px">HIGH · +6 vs 30d</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- STAT TILES -->
   <div class="stat-grid reveal">
     <div class="stat-tile"><div class="stat-lbl">Total Detections</div><div class="stat-val" data-target="847" style="color:var(--cyan)">0</div><div class="stat-sub">412-day window</div></div>
     <div class="stat-tile"><div class="stat-lbl">Avg FRP</div><div class="stat-val" data-target="58" style="color:var(--gf)">0</div><div class="stat-sub">MW · rolling 30d</div></div>
@@ -147,215 +106,99 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="stat-tile"><div class="stat-lbl">Anomaly Days</div><div class="stat-val" data-target="23" style="color:var(--cs)">0</div><div class="stat-sub">z &gt; 3σ events</div></div>
   </div>
 
-  <!-- BASELINE + CALENDAR -->
   <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px">
-    <div class="panel reveal">
-      <div class="panel-title">12-Month FRP Baseline <span class="mono" style="font-size:8.5px;color:var(--t3);text-transform:none;letter-spacing:0">with seasonal decomposition</span></div>
-      <svg id="baseline-svg"></svg>
-    </div>
+    <div class="panel reveal"><div class="panel-title">12-Month FRP Baseline <small>rolling mean ± 2σ · trend dashed</small></div><svg id="baseline-svg" style="width:100%;height:180px"></svg></div>
     <div class="panel reveal" style="transition-delay:80ms">
-      <div class="panel-title">Daily Detection Calendar <span class="mono" style="font-size:8.5px;color:var(--t3);text-transform:none;letter-spacing:0">52 weeks</span></div>
-      <div style="display:flex;gap:4px;margin-bottom:4px">
-        <span class="mono" style="font-size:8px;color:var(--t3)">Mon</span>
-      </div>
+      <div class="panel-title">Daily Detection Calendar <small>52 weeks</small></div>
       <div id="cal-grid"></div>
       <div style="display:flex;align-items:center;gap:6px;margin-top:8px">
-        <span class="mono" style="font-size:8px;color:var(--t3)">Low</span>
-        <div style="display:flex;gap:2px">
-          <div style="width:10px;height:10px;border-radius:2px;background:#1b2735"></div>
-          <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,169,77,.3)"></div>
-          <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,169,77,.6)"></div>
-          <div style="width:10px;height:10px;border-radius:2px;background:#ffa94d"></div>
-        </div>
-        <span class="mono" style="font-size:8px;color:var(--t3)">High</span>
+        <span class="mono" style="font-size:8px;color:var(--t3)">0</span>
+        <div style="width:10px;height:10px;border-radius:2px;background:#1b2735"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,169,77,.3)"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,169,77,.6)"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:#ffa94d"></div>
+        <span class="mono" style="font-size:8px;color:var(--t3)">8+ det/day</span>
       </div>
     </div>
   </div>
 
-  <!-- SEASONAL SMALL MULTIPLES -->
-  <div class="panel reveal" style="margin-bottom:14px">
-    <div class="panel-title">Seasonal Decomposition — FRP Components</div>
-    <div class="sm-grid" id="sm-grid"></div>
-  </div>
+  <div class="panel reveal" style="margin-bottom:14px"><div class="panel-title">Seasonal Decomposition — STL Components <small>90-day window</small></div><div class="sm-grid" id="sm-grid"></div></div>
 
-  <!-- TEMP DISTRIBUTION + PEER TABLE -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
-    <div class="panel reveal">
-      <div class="panel-title">Temperature Distribution <span class="mono" style="font-size:8.5px;color:var(--t3);text-transform:none;letter-spacing:0">vs global bimodal reference</span></div>
-      <svg id="dist-svg"></svg>
-    </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="panel reveal"><div class="panel-title">Temperature Distribution <small>vs global bimodal reference</small></div><svg id="dist-svg" style="width:100%;height:160px"></svg></div>
     <div class="panel reveal" style="transition-delay:80ms">
-      <div class="panel-title">Peer Facility Comparison</div>
-      <table class="peer-table">
-        <thead><tr><th>Facility</th><th>Avg FRP</th><th>Risk</th><th>Trend</th></tr></thead>
-        <tbody id="peer-tbody"></tbody>
-      </table>
+      <div class="panel-title">Peer Facility Comparison <small>Gujarat refinery / LNG cluster</small></div>
+      <table class="peer-table"><thead><tr><th>Facility</th><th>Avg FRP</th><th>Risk</th><th>90d Trend</th></tr></thead><tbody id="peer-tbody"></tbody></table>
     </div>
   </div>
 </div>
 
 <script>
-// Clock
 function tick(){const n=new Date();document.getElementById('clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');}
 setInterval(tick,1000);tick();
-
-// Scroll reveal
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.1});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-// Gauge animation
-function animGauge(){
-  const risk=78;
-  const total=188;
-  document.getElementById('gauge-fill').style.strokeDasharray=(risk/100*total)+' '+total;
-  document.getElementById('gauge-needle').style.transform=`rotate(${(risk/100)*180-90}deg)`;
-  let n=0;const target=78;
-  const iv=setInterval(()=>{n=Math.min(n+2,target);document.getElementById('gauge-num').textContent=n;if(n>=target)clearInterval(iv);},20);
-}
-setTimeout(animGauge,400);
+// Gauge
+setTimeout(()=>{const risk=78;document.getElementById('gauge-fill').style.strokeDasharray=(risk/100*188)+' 188';document.getElementById('gauge-needle').style.transform=`rotate(${risk/100*180-90}deg)`;let n=0;const iv=setInterval(()=>{n=Math.min(n+2,risk);document.getElementById('gauge-num').textContent=n;if(n>=risk)clearInterval(iv);},16);},400);
 
 // Number roll-up
-function rollUp(){
-  document.querySelectorAll('.stat-val[data-target]').forEach(el=>{
-    const target=+el.dataset.target;let n=0;
-    const step=Math.ceil(target/60);
-    const iv=setInterval(()=>{n=Math.min(n+step,target);el.textContent=n.toLocaleString();if(n>=target)clearInterval(iv);},16);
-  });
-}
-setTimeout(rollUp,600);
+setTimeout(()=>{document.querySelectorAll('.stat-val[data-target]').forEach(el=>{const t=+el.dataset.target;let n=0;const step=Math.max(1,Math.ceil(t/44));const iv=setInterval(()=>{n=Math.min(n+step,t);el.textContent=n.toLocaleString();if(n>=t)clearInterval(iv);},16);});},600);
 
-// Baseline chart
+// Seeded pseudo-random for stable demo
+let seed=42;function rnd(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646;}
+
+// Baseline
 (function(){
-  const svg=document.getElementById('baseline-svg');
-  const W=svg.clientWidth||600,H=180,pad={l:36,r:12,t:12,b:24};
-  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
-  const N=365;
-  const mean=52,sigma=14;
-  const obs=Array.from({length:N},(_,i)=>mean+Math.sin(i/30)*18+Math.sin(i/7)*5+(Math.random()-0.5)*12);
-  obs[364]=82;
-  const toX=i=>pad.l+i/N*pw;
-  const toY=v=>pad.t+ph-(v/(mean+sigma*3+10))*(ph);
+  const svg=document.getElementById('baseline-svg');const W=svg.clientWidth||700,H=180,pad={l:36,r:12,t:12,b:24};const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  const N=365,mean=52,sigma=14;
+  const trend=Array.from({length:N},(_,i)=>mean+Math.sin(i/58)*16);
+  const obs=trend.map((t,i)=>t+Math.sin(i/7)*4+(rnd()-0.5)*14);obs[364]=88;
+  const X=i=>pad.l+i/(N-1)*pw,Y=v=>pad.t+ph-(v/110)*ph;
   let s='';
-  // Grid
-  [0,.25,.5,.75,1].forEach(f=>{const y=pad.t+ph*(1-f);s+=`<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="#1b2735" stroke-width=".8"/>`;});
-  // Sigma band
-  const top=obs.map((_,i)=>toX(i)+','+toY(mean+2*sigma)).join('L');
-  const bot=obs.map((_,i)=>toX(i)+','+toY(mean-2*sigma)).reverse().join('L');
-  s+=`<path d="M${top}L${bot}Z" fill="rgba(34,211,238,0.07)"/>`;
-  // Trend (seasonal)
-  const trend=obs.map((_,i)=>mean+Math.sin(i/30)*18);
-  s+=`<path d="M${trend.map((v,i)=>toX(i)+','+toY(v)).join('L')}" fill="none" stroke="#4e5f74" stroke-width="1" stroke-dasharray="4,3"/>`;
-  // Mean
-  s+=`<line x1="${pad.l}" y1="${toY(mean)}" x2="${W-pad.r}" y2="${toY(mean)}" stroke="#22d3ee" stroke-width="1" stroke-dasharray="4,3"/>`;
-  // Observed
-  s+=`<path d="M${obs.map((v,i)=>toX(i)+','+toY(v)).join('L')}" fill="none" stroke="#ffa94d" stroke-width="1.4"/>`;
-  // Current
-  const cx=toX(364),cy=toY(obs[364]);
-  s+=`<line x1="${cx}" y1="${cy}" x2="${cx}" y2="${pad.t+ph}" stroke="#ffa94d" stroke-width="1" stroke-dasharray="2,2"/>`;
-  s+=`<circle cx="${cx}" cy="${cy}" r="4" fill="#ffa94d" stroke="#060910" stroke-width="1.5"/>`;
-  s+=`<rect x="${cx-50}" y="${cy-22}" width="100" height="18" rx="3" fill="rgba(6,9,16,.9)" stroke="#1b2735"/>`;
-  s+=`<text x="${cx}" y="${cy-10}" fill="#ffa94d" font-size="8" font-family="JetBrains Mono" text-anchor="middle">z=+3.21 ANOMALY</text>`;
-  // Axis labels
-  ['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'].forEach((m,i)=>{
-    s+=`<text x="${pad.l+i*(pw/12)+pw/24}" y="${H-6}" fill="#4e5f74" font-size="7.5" font-family="JetBrains Mono" text-anchor="middle">${m}</text>`;
-  });
-  // Legend
-  s+=`<line x1="${pad.l+10}" y1="${pad.t+8}" x2="${pad.l+26}" y2="${pad.t+8}" stroke="#22d3ee" stroke-width="1" stroke-dasharray="4,3"/><text x="${pad.l+30}" y="${pad.t+12}" fill="#7b8da3" font-size="7.5" font-family="JetBrains Mono">Mean</text>`;
-  s+=`<line x1="${pad.l+70}" y1="${pad.t+8}" x2="${pad.l+86}" y2="${pad.t+8}" stroke="#ffa94d" stroke-width="1.4"/><text x="${pad.l+90}" y="${pad.t+12}" fill="#7b8da3" font-size="7.5" font-family="JetBrains Mono">Observed</text>`;
+  [0,25,50,75,100].forEach(v=>{s+=`<line x1="${pad.l}" y1="${Y(v)}" x2="${W-pad.r}" y2="${Y(v)}" stroke="#1b2735" stroke-width=".8"/><text x="${pad.l-6}" y="${Y(v)+3}" fill="#4e5f74" font-size="7.5" font-family="JetBrains Mono" text-anchor="end">${v}</text>`;});
+  s+=`<path d="M${trend.map((t,i)=>X(i)+','+Y(t+2*sigma)).join('L')}L${trend.map((t,i)=>X(i)+','+Y(t-2*sigma)).reverse().join('L')}Z" fill="rgba(34,211,238,0.07)"/>`;
+  s+=`<path d="M${trend.map((t,i)=>X(i)+','+Y(t)).join('L')}" fill="none" stroke="#22d3ee" stroke-width="1" stroke-dasharray="4,3"/>`;
+  s+=`<path d="M${obs.map((v,i)=>X(i)+','+Y(v)).join('L')}" fill="none" stroke="#ffa94d" stroke-width="1.3"/>`;
+  const cx=X(364),cy=Y(obs[364]);
+  s+=`<line x1="${cx}" y1="${cy}" x2="${cx}" y2="${pad.t+ph}" stroke="#ffa94d" stroke-width="1" stroke-dasharray="2,2"/><circle cx="${cx}" cy="${cy}" r="4" fill="#ffa94d" stroke="#060910" stroke-width="1.5"/>`;
+  s+=`<rect x="${cx-108}" y="${cy-8}" width="96" height="16" rx="3" fill="rgba(6,9,16,.92)" stroke="#1b2735"/><text x="${cx-60}" y="${cy+3}" fill="#ffa94d" font-size="8" font-family="JetBrains Mono" text-anchor="middle">z = +3.21 ANOMALY</text>`;
+  ['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'].forEach((m,i)=>{s+=`<text x="${pad.l+(i+.5)*pw/12}" y="${H-6}" fill="#4e5f74" font-size="7.5" font-family="JetBrains Mono" text-anchor="middle">${m}</text>`;});
   svg.innerHTML=s;
 })();
 
-// Calendar heatmap
+// Calendar
+(function(){const g=document.getElementById('cal-grid');for(let i=0;i<364;i++){const v=rnd();const c=document.createElement('div');c.className='cal-cell';const lvl=v<0.55?0:v<0.75?.3:v<0.92?.6:1;c.style.background=lvl===0?'#1b2735':`rgba(255,169,77,${lvl})`;c.title=`Day ${i+1} · ${Math.round(lvl*9)} detections`;g.appendChild(c);}})();
+
+// STL small multiples
 (function(){
-  const grid=document.getElementById('cal-grid');
-  const N=52*7;
-  for(let i=0;i<N;i++){
-    const v=Math.random();
-    const cell=document.createElement('div');
-    cell.className='cal-cell';
-    const intensity=v<0.6?0:v<0.75?0.3:v<0.9?0.6:1;
-    cell.style.background=intensity===0?'#1b2735':`rgba(255,169,77,${intensity})`;
-    cell.title=`Day ${i+1}: ${Math.round(v*80)} MW`;
-    grid.appendChild(cell);
-  }
+  const g=document.getElementById('sm-grid');const N=90;
+  const comps=[{n:'Observed',c:'#ffa94d',f:i=>50+Math.sin(i/14)*18+i*0.12+(rnd()-0.5)*12},{n:'Trend',c:'#22d3ee',f:i=>50+i*0.12},{n:'Seasonal',c:'#4ade80',f:i=>Math.sin(i/14)*18},{n:'Residual',c:'#b197fc',f:i=>(rnd()-0.5)*12}];
+  comps.forEach(cp=>{const vals=Array.from({length:N},(_,i)=>cp.f(i));const mx=Math.max(...vals),mn=Math.min(...vals);const W=200,H=56;const p=vals.map((v,i)=>(i/(N-1)*W)+','+(H-4-(v-mn)/(mx-mn||1)*(H-8))).join('L');const d=document.createElement('div');d.className='sm-panel';d.innerHTML=`<div class="sm-title">${cp.n}</div><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:56px"><line x1="0" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="#1b2735" stroke-width=".8"/><path d="M${p}" fill="none" stroke="${cp.c}" stroke-width="1.2"/></svg>`;g.appendChild(d);});
 })();
 
-// Seasonal small multiples
+// Temp distribution
 (function(){
-  const grid=document.getElementById('sm-grid');
-  const seasons=[{name:'Observed',col:'#ffa94d'},{name:'Trend',col:'#22d3ee'},{name:'Seasonal',col:'#4ade80'},{name:'Residual',col:'#b197fc'}];
-  seasons.forEach(s=>{
-    const div=document.createElement('div');div.className='sm-panel';
-    const N=90;
-    const vals=Array.from({length:N},(_,i)=>{
-      if(s.name==='Observed')return 50+Math.sin(i/10)*20+(Math.random()-0.5)*15;
-      if(s.name==='Trend')return 50+i*0.1;
-      if(s.name==='Seasonal')return Math.sin(i/10)*20;
-      return (Math.random()-0.5)*15;
-    });
-    const mx=Math.max(...vals.map(Math.abs));const mn=Math.min(...vals);
-    const W=200,H=60;
-    const toX=i=>i/N*W;
-    const toY=v=>H-(v-mn)/(mx-mn+1)*H;
-    const path=vals.map((v,i)=>toX(i)+','+toY(v)).join('L');
-    div.innerHTML=`<div class="sm-title">${s.name}</div><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:60px"><path d="M${path}" fill="none" stroke="${s.col}" stroke-width="1.2"/></svg>`;
-    grid.appendChild(div);
-  });
-})();
-
-// Temperature distribution
-(function(){
-  const svg=document.getElementById('dist-svg');
-  const W=svg.clientWidth||400,H=160,pad={l:36,r:12,t:12,b:24};
-  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
-  // Bimodal: flare ~1800K, industrial ~1100K
-  function gauss(x,mu,sig){return Math.exp(-0.5*((x-mu)/sig)**2);}
-  const xs=[];for(let x=500;x<=2200;x+=50)xs.push(x);
-  const facility=xs.map(x=>gauss(x,1820,120)*0.7+gauss(x,1100,80)*0.3);
-  const global=xs.map(x=>gauss(x,1800,200)*0.5+gauss(x,1050,150)*0.5);
-  const mx=Math.max(...facility,...global);
-  const toX=x=>pad.l+(x-500)/(2200-500)*pw;
-  const toY=v=>pad.t+ph-(v/mx)*ph;
+  const svg=document.getElementById('dist-svg');const W=svg.clientWidth||400,H=160,pad={l:12,r:12,t:12,b:24};const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  const g=(x,m,s)=>Math.exp(-0.5*((x-m)/s)**2);const xs=[];for(let x=500;x<=2200;x+=25)xs.push(x);
+  const fac=xs.map(x=>g(x,1820,110)*.75+g(x,1120,70)*.25),glob=xs.map(x=>g(x,1800,190)*.5+g(x,1080,150)*.5);
+  const X=x=>pad.l+(x-500)/1700*pw,Y=v=>pad.t+ph-v*ph;
   let s='';
-  // Grid
-  [500,900,1300,1700,2100].forEach(x=>{s+=`<line x1="${toX(x)}" y1="${pad.t}" x2="${toX(x)}" y2="${pad.t+ph}" stroke="#1b2735" stroke-width=".8"/><text x="${toX(x)}" y="${H-6}" fill="#4e5f74" font-size="7.5" font-family="JetBrains Mono" text-anchor="middle">${x}K</text>`;});
-  // Global reference (faint)
-  s+=`<path d="M${global.map((v,i)=>toX(xs[i])+','+toY(v)).join('L')}" fill="none" stroke="#2d4a5e" stroke-width="1" stroke-dasharray="3,3"/>`;
-  // Facility
-  const fp=facility.map((v,i)=>toX(xs[i])+','+toY(v)).join('L');
-  s+=`<path d="M${fp}L${toX(2200)},${pad.t+ph}L${toX(500)},${pad.t+ph}Z" fill="rgba(255,169,77,0.12)"/>`;
-  s+=`<path d="M${fp}" fill="none" stroke="#ffa94d" stroke-width="1.6"/>`;
-  // Annotations
-  s+=`<line x1="${toX(1820)}" y1="${pad.t}" x2="${toX(1820)}" y2="${pad.t+ph}" stroke="#ffa94d" stroke-width=".8" stroke-dasharray="3,3"/>`;
-  s+=`<text x="${toX(1820)+4}" y="${pad.t+14}" fill="#ffa94d" font-size="7.5" font-family="JetBrains Mono">Flare 1820K</text>`;
-  s+=`<line x1="${toX(1100)}" y1="${pad.t}" x2="${toX(1100)}" y2="${pad.t+ph}" stroke="#ff4d4d" stroke-width=".8" stroke-dasharray="3,3"/>`;
-  s+=`<text x="${toX(1100)+4}" y="${pad.t+14}" fill="#ff4d4d" font-size="7.5" font-family="JetBrains Mono">Ind. 1100K</text>`;
-  // Legend
-  s+=`<line x1="${pad.l+10}" y1="${pad.t+8}" x2="${pad.l+26}" y2="${pad.t+8}" stroke="#2d4a5e" stroke-width="1" stroke-dasharray="3,3"/><text x="${pad.l+30}" y="${pad.t+12}" fill="#4e5f74" font-size="7.5" font-family="JetBrains Mono">Global ref</text>`;
-  s+=`<line x1="${pad.l+90}" y1="${pad.t+8}" x2="${pad.l+106}" y2="${pad.t+8}" stroke="#ffa94d" stroke-width="1.6"/><text x="${pad.l+110}" y="${pad.t+12}" fill="#7b8da3" font-size="7.5" font-family="JetBrains Mono">Jamnagar</text>`;
+  [500,900,1300,1700,2100].forEach(x=>{s+=`<line x1="${X(x)}" y1="${pad.t}" x2="${X(x)}" y2="${pad.t+ph}" stroke="#1b2735" stroke-width=".8"/><text x="${X(x)}" y="${H-6}" fill="#4e5f74" font-size="7.5" font-family="JetBrains Mono" text-anchor="middle">${x} K</text>`;});
+  s+=`<path d="M${glob.map((v,i)=>X(xs[i])+','+Y(v)).join('L')}" fill="none" stroke="#2d4a5e" stroke-width="1.2" stroke-dasharray="3,3"/>`;
+  const fp=fac.map((v,i)=>X(xs[i])+','+Y(v)).join('L');
+  s+=`<path d="M${fp}L${X(2200)},${pad.t+ph}L${X(500)},${pad.t+ph}Z" fill="rgba(255,169,77,0.10)"/><path d="M${fp}" fill="none" stroke="#ffa94d" stroke-width="1.6"/>`;
+  s+=`<text x="${X(1820)}" y="${Y(.78)}" fill="#ffa94d" font-size="7.5" font-family="JetBrains Mono" text-anchor="middle">Flare 1820 K</text>`;
+  s+=`<text x="${X(1120)}" y="${Y(.3)}" fill="#ff4d4d" font-size="7.5" font-family="JetBrains Mono" text-anchor="middle">Ind. 1120 K</text>`;
+  s+=`<line x1="${pad.l+6}" y1="${pad.t+8}" x2="${pad.l+22}" y2="${pad.t+8}" stroke="#2d4a5e" stroke-width="1.2" stroke-dasharray="3,3"/><text x="${pad.l+26}" y="${pad.t+11}" fill="#4e5f74" font-size="7.5" font-family="JetBrains Mono">Global (8,413 emitters)</text>`;
   svg.innerHTML=s;
 })();
 
 // Peer table
 (function(){
-  const peers=[
-    {name:'Jamnagar Refinery',frp:58,risk:78,trend:[40,55,62,58,70,58]},
-    {name:'Vadinar Refinery',frp:44,risk:62,trend:[38,42,48,44,50,44]},
-    {name:'Hazira LNG',frp:36,risk:55,trend:[30,38,40,36,42,36]},
-    {name:'Dahej LNG',frp:28,risk:41,trend:[22,28,32,28,30,28]},
-    {name:'Panipat Refinery',frp:22,risk:38,trend:[18,22,26,22,24,22]},
-  ];
-  const tbody=document.getElementById('peer-tbody');
-  peers.forEach((p,i)=>{
-    const riskCol=p.risk>70?'#ef4444':p.risk>50?'#f59e0b':'#4ade80';
-    const W=60,H=20;
-    const mx=Math.max(...p.trend),mn=Math.min(...p.trend);
-    const pts=p.trend.map((v,j)=>(j/(p.trend.length-1)*W)+','+(H-(v-mn)/(mx-mn+1)*H)).join('L');
-    const spark=`<svg class="sparkline" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><path d="M${pts}" fill="none" stroke="${riskCol}" stroke-width="1.2"/></svg>`;
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${i===0?'<b>'+p.name+'</b>':p.name}</td><td style="color:var(--gf)">${p.frp} MW</td><td style="color:${riskCol}">${p.risk}</td><td>${spark}</td>`;
-    tbody.appendChild(tr);
-  });
+  const peers=[{n:'Jamnagar Refinery',frp:58,risk:78,t:[40,48,55,62,58,66,70,74,78]},{n:'Vadinar Refinery',frp:44,risk:62,t:[38,42,45,48,44,50,52,58,62]},{n:'Hazira LNG',frp:36,risk:55,t:[30,34,38,40,36,42,46,50,55]},{n:'Dahej LNG',frp:28,risk:41,t:[22,26,28,32,28,30,34,38,41]},{n:'Mumbai High',frp:24,risk:37,t:[26,24,28,22,24,26,30,34,37]}];
+  const tb=document.getElementById('peer-tbody');
+  peers.forEach((p,i)=>{const c=p.risk>70?'#ef4444':p.risk>50?'#f59e0b':'#4ade80';const W=64,H=18,mx=Math.max(...p.t),mn=Math.min(...p.t);const pts=p.t.map((v,j)=>(j/(p.t.length-1)*W)+','+(H-2-(v-mn)/(mx-mn||1)*(H-4))).join('L');const tr=document.createElement('tr');tr.innerHTML=`<td style="${i===0?'color:var(--cyan);font-weight:700':''}">${p.n}</td><td style="color:var(--gf)">${p.frp} MW</td><td style="color:${c};font-weight:700">${p.risk}</td><td><svg width="${W}" height="${H}" style="vertical-align:middle"><path d="M${pts}" fill="none" stroke="${c}" stroke-width="1.2"/></svg></td>`;tb.appendChild(tr);});
 })();
 </script>
 </body>
