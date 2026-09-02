@@ -1,461 +1,165 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html class="dark" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>AGNIVANI - Alert Console</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "inverse-surface": "#e0e2ed",
-                      "on-tertiary-container": "#6e4600",
-                      "secondary-container": "#404752",
-                      "tertiary-fixed": "#ffddb5",
-                      "error-container": "#93000a",
-                      "primary-fixed-dim": "#2fd9f4",
-                      "on-secondary-fixed-variant": "#404752",
-                      "on-tertiary-fixed": "#2a1800",
-                      "secondary-fixed": "#dce3f0",
-                      "on-primary-fixed-variant": "#004e5a",
-                      "outline-variant": "#3c494c",
-                      "primary-fixed": "#a2eeff",
-                      "surface-bright": "#363941",
-                      "tertiary": "#ffd6a3",
-                      "tertiary-container": "#ffb13b",
-                      "surface-container-highest": "#31353d",
-                      "on-primary-container": "#005763",
-                      "on-background": "#e0e2ed",
-                      "surface-container-low": "#181c23",
-                      "on-secondary": "#2a313b",
-                      "outline": "#859397",
-                      "primary": "#8aebff",
-                      "inverse-primary": "#006877",
-                      "surface-container": "#1c2027",
-                      "on-secondary-container": "#afb5c2",
-                      "surface-dim": "#10131b",
-                      "on-surface-variant": "#bbc9cd",
-                      "on-primary-fixed": "#001f25",
-                      "on-tertiary": "#462b00",
-                      "on-surface": "#e0e2ed",
-                      "on-error": "#690005",
-                      "surface-tint": "#2fd9f4",
-                      "on-secondary-fixed": "#151c25",
-                      "secondary": "#c0c7d4",
-                      "on-primary": "#00363e",
-                      "surface-variant": "#31353d",
-                      "tertiary-fixed-dim": "#ffb957",
-                      "surface-container-lowest": "#0b0e15",
-                      "primary-container": "#22d3ee",
-                      "surface": "#10131b",
-                      "on-tertiary-fixed-variant": "#643f00",
-                      "on-error-container": "#ffdad6",
-                      "secondary-fixed-dim": "#c0c7d4",
-                      "inverse-on-surface": "#2d3038",
-                      "background": "#10131b",
-                      "surface-container-high": "#272a32",
-                      "error": "#ffb4ab"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.125rem",
-                      "lg": "0.25rem",
-                      "xl": "0.5rem",
-                      "full": "0.75rem"
-              },
-              "spacing": {
-                      "gutter": "18px",
-                      "base": "9px",
-                      "md": "18px",
-                      "xl": "36px",
-                      "lg": "27px",
-                      "margin": "27px",
-                      "sm": "9px",
-                      "xs": "4.5px"
-              },
-              "fontFamily": {
-                      "label-caps": [
-                              "JetBrains Mono"
-                      ],
-                      "body-lg": [
-                              "Inter"
-                      ],
-                      "headline-sm": [
-                              "Inter"
-                      ],
-                      "headline-lg": [
-                              "Inter"
-                      ],
-                      "data-mono": [
-                              "JetBrains Mono"
-                      ],
-                      "headline-md": [
-                              "Inter"
-                      ],
-                      "body-md": [
-                              "Inter"
-                      ]
-              },
-              "fontSize": {
-                      "label-caps": [
-                              "11px",
-                              {
-                                      "lineHeight": "1.2",
-                                      "letterSpacing": "0.05em",
-                                      "fontWeight": "700"
-                              }
-                      ],
-                      "body-lg": [
-                              "16px",
-                              {
-                                      "lineHeight": "1.5",
-                                      "fontWeight": "400"
-                              }
-                      ],
-                      "headline-sm": [
-                              "18px",
-                              {
-                                      "lineHeight": "1.4",
-                                      "fontWeight": "600"
-                              }
-                      ],
-                      "headline-lg": [
-                              "32px",
-                              {
-                                      "lineHeight": "1.2",
-                                      "letterSpacing": "-0.02em",
-                                      "fontWeight": "600"
-                              }
-                      ],
-                      "data-mono": [
-                              "13px",
-                              {
-                                      "lineHeight": "1.2",
-                                      "fontWeight": "500"
-                              }
-                      ],
-                      "headline-md": [
-                              "24px",
-                              {
-                                      "lineHeight": "1.2",
-                                      "fontWeight": "600"
-                              }
-                      ],
-                      "body-md": [
-                              "14px",
-                              {
-                                      "lineHeight": "1.5",
-                                      "fontWeight": "400"
-                              }
-                      ]
-              }
-            }
-          }
-        }
-    </script>
+<title>AGNIVANI — Alert Console</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
-        body {
-            background-color: #060910;
-        }
-        .hud-border {
-            border: 1px solid #1b2735;
-        }
-        .hud-panel {
-            background-color: rgba(13, 20, 29, 0.72);
-        }
-        .hud-header-bg {
-            background-color: #1b2735;
-        }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3c494c;
-            border-radius: 2px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #22d3ee;
-        }
-    </style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#060910;color:#dce7f2;font-family:'Inter',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;height:100vh;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 0% 0%,rgba(34,211,238,0.06),transparent 70%),radial-gradient(ellipse 50% 40% at 100% 100%,rgba(245,158,11,0.06),transparent 70%);pointer-events:none;z-index:0}
+:root{--cyan:#22d3ee;--gf:#ffa94d;--if:#ff4d4d;--cs:#f59e0b;--wv:#4ade80;--gl:#b197fc;--border:#1b2735;--t1:#dce7f2;--t2:#7b8da3;--t3:#4e5f74;--panel:rgba(13,20,29,0.72);--crit:#ef4444;--high:#f59e0b;--mod:#22d3ee;--low:#7b8da3}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#1b2735;border-radius:2px}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+#topbar{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--border);background:rgba(6,9,16,0.97);position:relative;z-index:50;flex-shrink:0}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#f59e0b,#ea580c);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.brand-mark::after{content:'';position:absolute;inset:0;border-radius:8px;border:1.5px solid rgba(245,158,11,.6);animation:haloExpand 2.4s ease-out infinite}
+@keyframes haloExpand{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.2);opacity:0}}
+.brand-mark svg{width:18px;height:18px;fill:#fff}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border:1px solid var(--border);border-radius:4px;background:rgba(13,20,29,0.8);font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--t2);white-space:nowrap}
+.pill b{color:var(--t1)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:liveBlink 1.5s ease-in-out infinite}
+@keyframes liveBlink{0%,100%{opacity:1}50%{opacity:.3}}
+#layout{display:grid;grid-template-columns:340px 1fr 300px;grid-template-rows:1fr 200px;height:calc(100vh - 54px);position:relative;z-index:1}
+#left-col{grid-row:1/3;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+#centre-col{grid-row:1/2;border-right:1px solid var(--border);overflow-y:auto;padding:14px}
+#right-col{grid-row:1/2;overflow-y:auto;padding:14px}
+#audit-row{grid-column:2/4;grid-row:2/3;border-top:1px solid var(--border);overflow-y:auto;padding:14px}
+.filter-bar{padding:9px 12px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0}
+.chip{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid;cursor:pointer;transition:all 140ms;user-select:none}
+.chip.on{background:rgba(34,211,238,.12);border-color:var(--cyan);color:var(--cyan)}
+.chip.off{border-color:var(--border);color:var(--t3)}
+.bulk-bar{padding:6px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;background:rgba(34,211,238,.04)}
+.bulk-btn{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;padding:3px 8px;border-radius:3px;border:1px solid var(--border);background:none;color:var(--t2);cursor:pointer;transition:all 140ms}
+.bulk-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+#alert-list{flex:1;overflow-y:auto}
+.alert-row{display:grid;grid-template-columns:18px 6px 1fr auto;gap:7px;align-items:center;padding:8px 12px;border-bottom:1px solid rgba(27,39,53,.5);cursor:pointer;transition:background 140ms;position:relative}
+.alert-row:hover{background:rgba(34,211,238,.03)}
+.alert-row.selected{background:rgba(34,211,238,.06);border-left:2px solid var(--cyan)}
+.alert-row.selected{padding-left:10px}
+.alert-row.new-row{animation:slideIn 400ms cubic-bezier(.4,0,.2,1) forwards}
+@keyframes slideIn{from{transform:translateX(-14px);opacity:0}to{transform:translateX(0);opacity:1}}
+.sev-chip{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;padding:1px 5px;border-radius:2px;border:1px solid;white-space:nowrap}
+.cls-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;transition:border-color 140ms}
+.panel:hover{border-color:#243447}
+.panel-title{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.panel-title small{font-size:8.5px;color:var(--t3);text-transform:none;letter-spacing:0;font-weight:400}
+.chain-step{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(27,39,53,.4)}
+.chain-step:last-child{border-bottom:none}
+.chain-num{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--t3);flex-shrink:0;transition:all 300ms}
+.chain-num.active{border-color:var(--cyan);color:var(--cyan);background:rgba(34,211,238,.1)}
+.chain-label{font-size:10px;font-weight:600;color:var(--t2);transition:color 300ms}
+.chain-label.active{color:var(--t1)}
+.chain-val{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t3);margin-top:2px;transition:all 300ms}
+.chain-val.active{color:var(--cyan)}
+.action-check{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid rgba(27,39,53,.4)}
+.action-check:last-child{border-bottom:none}
+.check-box{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border);flex-shrink:0;margin-top:1px;cursor:pointer;transition:all 140ms;display:flex;align-items:center;justify-content:center}
+.check-box.done{border-color:#4ade80;background:rgba(74,222,128,.15)}
+.check-box.done::after{content:'\2713';font-size:9px;color:#4ade80}
+.check-text{font-size:11px;color:var(--t1);line-height:1.4}
+.check-meta{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t2);margin-top:2px}
+.dispatch-btn{width:100%;padding:10px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);border-radius:5px;color:#fca5a5;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background 140ms;margin-top:10px}
+.dispatch-btn:hover{background:rgba(239,68,68,.28)}
+.sla-bar{height:4px;border-radius:2px;background:var(--border);margin-top:6px;overflow:hidden}
+.sla-fill{height:100%;border-radius:2px;transition:width 1s linear}
+.stepper{display:flex;gap:0;margin-top:8px}
+.step{flex:1;text-align:center;position:relative}
+.step::before{content:'';position:absolute;top:7px;left:50%;right:-50%;height:1px;background:var(--border)}
+.step:last-child::before{display:none}
+.step-dot{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);background:#060910;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:8px;position:relative;z-index:1;transition:all 300ms}
+.step-dot.done{border-color:#4ade80;background:rgba(74,222,128,.15);color:#4ade80}
+.step-dot.active{border-color:var(--cyan);background:rgba(34,211,238,.15);color:var(--cyan)}
+.step-lbl{font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--t3)}
+.audit-table{width:100%;border-collapse:collapse}
+.audit-table th{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);padding:4px 8px;border-bottom:1px solid var(--border);text-align:left}
+.audit-table td{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t1);padding:5px 8px;border-bottom:1px solid rgba(27,39,53,.4)}
+.audit-table tr:hover td{background:rgba(34,211,238,.02)}
+@media(prefers-reduced-motion:reduce){.brand-mark::after,.live-dot,.alert-row.new-row{animation:none!important}}
+</style>
 </head>
-<body class="text-on-surface h-screen w-screen overflow-hidden flex flex-col font-body-md antialiased">
-<!-- TopNavBar -->
-<header class="flex justify-between items-center w-full px-margin h-[54px] bg-surface-container-low dark:bg-surface-container-low border-b border-outline-variant shrink-0 z-50">
-<div class="flex items-center gap-md">
-<span class="text-headline-md font-headline-md font-bold text-primary dark:text-primary tracking-tighter">AGNIVANI</span>
-</div>
-<div class="flex items-center gap-md">
-<div class="flex gap-sm">
-<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer" data-icon="sensors">sensors</span>
-<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer" data-icon="videocam">videocam</span>
-<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer" data-icon="precision_manufacturing">precision_manufacturing</span>
-<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer" data-icon="schedule">schedule</span>
-</div>
-<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden ml-md cursor-pointer border border-outline-variant hover:border-primary transition-colors">
-<img alt="Mission Control Operator Profile" class="w-full h-full object-cover" data-alt="A small circular profile image of a technical operator in a dark aerospace control room setting, illuminated by blue screen glow. High contrast, sharp focus, professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9kz-J0IolyRqvKlC9Qr0cTt28C4omhypaavWVIs-6iOBGR0C-O-JHH_v2wuQZKsm9kvg9fibGfhKDaM-iQvRdlFe-vm0ZEiJgdeoPR1faMjcuiPWoxYBeg1yrMNj9IV353RtivBKnpMZhw4R0_enTR9k2QD9d1ZIuGMjYPSHJNriYAv_mr9BAbIj12y0RSVaGG7wPlbqfF1py9sIQ0lNNfbQfE44S8j6yomd3ABWJyC8eQyLZBqc"/>
-</div>
-</div>
+<body>
+<header id="topbar">
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M12 2C8 7 6 10 6 14a6 6 0 0012 0c0-4-2-7-6-12z"/></svg></div>
+    <div><div style="font-size:16px;font-weight:800;letter-spacing:.11em">AGNIVANI</div><div class="mono" style="font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--t3);text-transform:uppercase">Industrial Thermal Anomaly Intelligence Grid</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:7px">
+    <div class="pill"><div class="live-dot"></div> LIVE · <b>STREAMING</b></div>
+    <div class="pill">QUEUE · <b id="queue-count">14</b></div>
+    <div class="pill">MODEL <b>gcc-xgb v4.2</b></div>
+    <div class="mono" style="font-size:13px;color:var(--cyan)" id="clock">00:00:00</div>
+  </div>
 </header>
-<div class="flex flex-1 overflow-hidden">
-<!-- SideNavBar -->
-<nav class="fixed left-0 top-[54px] h-[calc(100vh-54px)] flex flex-col z-40 bg-surface-dim/72 dark:bg-surface-dim/72 border-r border-outline-variant w-64 pt-md pb-md shrink-0">
-<div class="px-md mb-xl">
-<div class="flex items-center gap-sm mb-xs">
-<span class="material-symbols-outlined text-primary" data-icon="trip_origin">trip_origin</span>
-<h2 class="text-label-caps font-label-caps text-on-surface-variant">INTELLIGENCE GRID</h2>
+
+<div id="layout">
+  <!-- LEFT: filter + alert list -->
+  <div id="left-col">
+    <div class="filter-bar">
+      <span class="mono" style="font-size:8.5px;color:var(--t3);align-self:center">SEV</span>
+      <span class="chip on" style="border-color:#ef4444;color:#ef4444;background:rgba(239,68,68,.1)" data-f="CRITICAL">CRITICAL</span>
+      <span class="chip on" style="border-color:#f59e0b;color:#f59e0b;background:rgba(245,158,11,.1)" data-f="HIGH">HIGH</span>
+      <span class="chip off" data-f="MODERATE">MODERATE</span>
+      <span class="chip off" data-f="LOW">LOW</span>
+      <span class="mono" style="font-size:8.5px;color:var(--t3);align-self:center;margin-left:4px">CLASS</span>
+      <span class="chip on" style="border-color:#ffa94d;color:#ffa94d" data-f="GF">GF</span>
+      <span class="chip on" style="border-color:#ff4d4d;color:#ff4d4d" data-f="IF">IF</span>
+      <span class="chip off" data-f="CS">CS</span>
+      <span class="chip off" data-f="WV">WV</span>
+      <span class="chip off" data-f="GL">GL</span>
+    </div>
+    <div class="bulk-bar">
+      <input type="checkbox" id="sel-all" style="accent-color:var(--cyan)"/>
+      <span class="mono" style="font-size:8.5px;color:var(--t2)" id="sel-count">0 selected</span>
+      <button class="bulk-btn" id="ack-btn">ACKNOWLEDGE</button>
+      <button class="bulk-btn" id="dispatch-bulk">DISPATCH</button>
+      <button class="bulk-btn">EXPORT CSV</button>
+    </div>
+    <div id="alert-list"></div>
+  </div>
+
+  <!-- CENTRE: detail + checklist -->
+  <div id="centre-col">
+    <div id="detail-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--t3)">
+      <div class="mono" style="font-size:11px">□ Select an alert from the queue</div>
+      <div class="mono" style="font-size:9px;margin-top:6px">Evidence chain and action checklist will appear here</div>
+    </div>
+    <div id="detail-content" style="display:none">
+      <div class="panel" id="verdict-panel"></div>
+      <div class="panel" id="chain-panel"><div class="panel-title">Evidence Chain</div><div id="chain-steps"></div></div>
+      <div class="panel" id="check-panel"><div class="panel-title">Action Checklist</div><div id="check-items"></div><button class="dispatch-btn" id="dispatch-single">▶ DISPATCH ALERT → NODAL AUTHORITY</button></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: dispatch panel -->
+  <div id="right-col">
+    <div class="panel">
+      <div class="panel-title">Dispatch Panel</div>
+      <div class="mono" style="font-size:8.5px;color:var(--t3);margin-bottom:8px">AUTHORITY DIRECTORY</div>
+      <div id="authority-list"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">SLA Countdown <small id="sla-label">15:00 remaining</small></div>
+      <div class="sla-bar"><div class="sla-fill" id="sla-fill" style="width:100%;background:#4ade80"></div></div>
+      <div class="panel-title" style="margin-top:12px">Dispatch Status</div>
+      <div class="stepper" id="stepper"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM: audit trail -->
+  <div id="audit-row">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <span class="mono" style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2)">Immutable Audit Trail</span>
+      <span class="mono" style="font-size:8.5px;color:var(--t3)">SHA-256 chained · append-only</span>
+    </div>
+    <table class="audit-table"><thead><tr><th>Time</th><th>Alert ID</th><th>Actor</th><th>Event</th><th>Channel</th><th>Hash</th></tr></thead><tbody id="audit-tbody"></tbody></table>
+  </div>
 </div>
-<div class="text-data-mono font-data-mono text-on-surface-variant text-[10px] pl-lg opacity-70">V4.2.0-STABLE</div>
-</div>
-<div class="flex-1 flex flex-col gap-xs px-sm">
-<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT bg-secondary-container text-primary border-r-2 border-primary active:brightness-125 transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="warning">warning</span>
-<span class="text-label-caps font-label-caps">ALERTS</span>
-</a>
-<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-<span class="text-label-caps font-label-caps">TELEMETRY</span>
-</a>
-<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
-<span class="text-label-caps font-label-caps">SYSTEMS</span>
-</a>
-<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
-<span class="text-label-caps font-label-caps">LOGS</span>
-</a>
-<div class="mt-auto px-md">
-<button class="w-full bg-primary-container text-[#060910] text-label-caps font-label-caps py-sm px-md rounded-[4px] hover:brightness-110 transition-all font-bold tracking-wider">
-                        DISPATCH ALERT
-                    </button>
-</div>
-</div>
-<div class="mt-lg pt-md border-t border-outline-variant px-sm flex flex-col gap-xs">
-<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
-<span class="material-symbols-outlined text-[16px]" data-icon="help">help</span>
-<span class="text-label-caps font-label-caps opacity-70">SUPPORT</span>
-</a>
-<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
-<span class="material-symbols-outlined text-[16px]" data-icon="build">build</span>
-<span class="text-label-caps font-label-caps opacity-70">DIAGNOSTICS</span>
-</a>
-</div>
-</nav>
-<!-- Main Content Area -->
-<main class="flex-1 ml-64 p-base flex flex-col gap-base h-full overflow-hidden relative">
-<!-- Grid Layout -->
-<div class="flex-1 grid grid-cols-12 gap-base h-full overflow-hidden">
-<!-- LEFT: Filterable Queue -->
-<div class="col-span-3 hud-panel hud-border flex flex-col rounded-DEFAULT overflow-hidden">
-<div class="hud-header-bg p-sm border-b border-[#1b2735] flex justify-between items-center shrink-0">
-<span class="text-label-caps font-label-caps text-on-surface-variant">QUEUE</span>
-<div class="flex gap-xs">
-<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]" data-icon="filter_list">filter_list</span></button>
-<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]" data-icon="more_vert">more_vert</span></button>
-</div>
-</div>
-<div class="p-xs bg-[#060910] border-b border-[#1b2735] flex items-center gap-sm shrink-0">
-<input class="w-3 h-3 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
-<span class="text-label-caps font-label-caps text-on-surface-variant text-[9px]">BULK SELECT ACTIVE</span>
-</div>
-<div class="flex-1 overflow-y-auto">
-<!-- Alert Item 1 (Active) -->
-<div class="p-sm border-b border-[#1b2735] bg-secondary-container/20 relative group cursor-pointer">
-<div class="absolute left-0 top-0 bottom-0 w-[2px] bg-error"></div>
-<div class="flex justify-between items-start mb-xs pl-xs">
-<div class="flex items-center gap-xs">
-<input class="w-3 h-3 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
-<span class="text-data-mono font-data-mono text-primary text-[11px]">AGN-04832</span>
-</div>
-<span class="text-data-mono font-data-mono text-error text-[10px]">T-02:14</span>
-</div>
-<div class="pl-xs flex gap-xs items-center mt-xs">
-<div class="px-xs py-[2px] bg-error/15 border border-error rounded-[2px] text-error text-[9px] font-label-caps text-label-caps flex items-center gap-[2px]">
-<div class="w-1.5 h-1.5 bg-error rounded-sm animate-pulse"></div>
-                                    CRITICAL
-                                </div>
-<span class="text-on-surface-variant text-[10px] font-data-mono truncate">THERMAL ANOMALY - SEC 7</span>
-</div>
-</div>
-<!-- Alert Item 2 -->
-<div class="p-sm border-b border-[#1b2735] hover:bg-surface-container-highest transition-colors cursor-pointer group">
-<div class="flex justify-between items-start mb-xs pl-xs">
-<div class="flex items-center gap-xs">
-<input class="w-3 h-3 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0 focus:ring-offset-0 opacity-0 group-hover:opacity-100 transition-opacity" type="checkbox"/>
-<span class="text-data-mono font-data-mono text-on-surface text-[11px]">AGN-04831</span>
-</div>
-<span class="text-data-mono font-data-mono text-tertiary text-[10px]">T-14:20</span>
-</div>
-<div class="pl-xs flex gap-xs items-center mt-xs">
-<div class="px-xs py-[2px] bg-tertiary/15 border border-tertiary rounded-[2px] text-tertiary text-[9px] font-label-caps text-label-caps">
-                                    WARNING
-                                </div>
-<span class="text-on-surface-variant text-[10px] font-data-mono truncate">COMMS DEGRADATION - NODE 2</span>
-</div>
-</div>
-</div>
-</div>
-<!-- CENTRE: Incident Summary -->
-<div class="col-span-6 flex flex-col gap-base h-full">
-<!-- Top Panel: Summary & Visuals -->
-<div class="hud-panel hud-border flex-1 rounded-DEFAULT overflow-hidden flex flex-col relative">
-<!-- Simulated back glow for active alert -->
-<div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-error/10 via-transparent to-transparent pointer-events-none"></div>
-<div class="hud-header-bg p-sm border-b border-[#1b2735] flex justify-between items-center shrink-0 z-10">
-<div class="flex items-center gap-md">
-<span class="text-label-caps font-label-caps text-on-surface-variant">INCIDENT SUMMARY</span>
-<span class="text-data-mono font-data-mono text-primary">AGN-04832</span>
-</div>
-<div class="flex gap-sm">
-<span class="material-symbols-outlined text-error text-[16px]" data-icon="warning">warning</span>
-<span class="text-label-caps font-label-caps text-error">SEV-1</span>
-</div>
-</div>
-<div class="p-md flex-1 overflow-y-auto z-10 flex flex-col gap-md">
-<!-- Visual Evidence Chain -->
-<div class="grid grid-cols-3 gap-sm h-32 shrink-0">
-<div class="hud-border bg-[#060910] rounded-[2px] relative overflow-hidden group">
-<img alt="Thermal Imaging" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="Satellite thermal imaging showing a hot spot in a forested area, displayed on a dark technical screen interface with crosshairs and data overlays. High contrast red on dark blue." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8vSQrQAqP5v1jvqu7SqodX3GM67RK7Uo9Jng5SkMqlGePODoQLmkHhFZPSXEAAMArracktfqEU2TjeSgieDUNVPX28HzrqTBflBuJJS8KLY1XMxEVB4JgEBj2UxujghmesnCXD-Xxp9WnKq9580z8NarbzcAl0Zk9rI-KbA5Vg9cSWjEjKuhWdi035HHFpsTQSnEg0K-geNIcYl5vMFdEZ0kwIDNmNDl4llU-zKh3nl6BZVuRqAo"/>
-<div class="absolute bottom-0 left-0 w-full bg-black/60 backdrop-blur-sm p-xs border-t border-[#1b2735]">
-<span class="text-[9px] font-data-mono text-on-surface-variant block">THERMAL.IR</span>
-</div>
-</div>
-<div class="hud-border bg-[#060910] rounded-[2px] relative overflow-hidden group">
-<img alt="Telemetry Spike" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A sparse line graph on a dark terminal screen showing a sudden, sharp spike in telemetry data, with glowing cyan and red lines." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiUJJHOiE9Nmbx0dBIpTB74RBC9-4kpwz1UCD1pAzbgWohLFaqR1Fnu1OdnZVnDkS9k56W-HtpNcY5CKz7oQWfHQiQ74gJvYkMP1NZ92Jh74WPTekh8RqBJGH6CcZSW71O0yodMnezRQrEQ2hcNF8Y0cOwyl8HW0TQZOBckEMcEn2Stch6bs82NnZ6U2cvGsc-Jo5wMTSuipDV_vNfg4qUwrI69UBejBwyqasKgwbVbdqgg5FUMpo"/>
-<div class="absolute bottom-0 left-0 w-full bg-black/60 backdrop-blur-sm p-xs border-t border-[#1b2735]">
-<span class="text-[9px] font-data-mono text-on-surface-variant block">SENSOR.SIG</span>
-</div>
-</div>
-<div class="hud-border bg-[#060910] rounded-[2px] relative overflow-hidden flex items-center justify-center p-sm">
-<div class="text-center">
-<span class="material-symbols-outlined text-primary mb-xs" data-icon="map">map</span>
-<div class="text-[10px] font-data-mono text-on-surface">SEC 7: 45.12N, 12.45E</div>
-</div>
-</div>
-</div>
-<!-- Action Checklist -->
-<div class="flex-1 bg-[#060910] hud-border rounded-[2px] p-sm flex flex-col">
-<div class="text-label-caps font-label-caps text-on-surface-variant mb-sm">ACTION PROTOCOL</div>
-<div class="flex flex-col gap-xs">
-<label class="flex items-center gap-sm p-xs hover:bg-[#1b2735] rounded-[2px] cursor-pointer transition-colors border border-transparent hover:border-outline-variant">
-<input checked="" class="w-3.5 h-3.5 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
-<span class="text-data-mono font-data-mono text-on-surface text-[12px] opacity-50 line-through">Confirm coordinates</span>
-</label>
-<label class="flex items-center gap-sm p-xs hover:bg-[#1b2735] rounded-[2px] cursor-pointer transition-colors border border-transparent hover:border-outline-variant">
-<input class="w-3.5 h-3.5 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
-<span class="text-data-mono font-data-mono text-on-surface text-[12px]">Review physics signature</span>
-</label>
-<label class="flex items-center gap-sm p-xs hover:bg-[#1b2735] rounded-[2px] cursor-pointer transition-colors border border-transparent hover:border-outline-variant">
-<input class="w-3.5 h-3.5 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
-<span class="text-data-mono font-data-mono text-on-surface text-[12px]">Check data fusion integrity</span>
-</label>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- RIGHT: Dispatch Panel -->
-<div class="col-span-3 hud-panel hud-border flex flex-col rounded-DEFAULT overflow-hidden">
-<div class="hud-header-bg p-sm border-b border-[#1b2735] flex justify-between items-center shrink-0">
-<span class="text-label-caps font-label-caps text-on-surface-variant">DISPATCH PANEL</span>
-</div>
-<div class="p-sm flex flex-col gap-sm flex-1 overflow-y-auto">
-<!-- Live Stepper -->
-<div class="bg-[#060910] hud-border rounded-[2px] p-sm mb-sm">
-<div class="text-label-caps font-label-caps text-on-surface-variant mb-md">ALERT STATUS</div>
-<div class="flex flex-col gap-0 relative pl-md">
-<div class="absolute left-[13px] top-[10px] bottom-[10px] w-[1px] bg-[#1b2735]"></div>
-<div class="absolute left-[13px] top-[10px] h-[50%] w-[1px] bg-primary"></div>
-<div class="flex items-center gap-sm pb-md relative">
-<div class="absolute left-[-16px] w-2 h-2 rounded-full bg-primary ring-2 ring-[#060910]"></div>
-<span class="text-data-mono font-data-mono text-on-surface text-[11px]">Dispatched</span>
-<span class="text-data-mono font-data-mono text-on-surface-variant text-[9px] ml-auto">14:02Z</span>
-</div>
-<div class="flex items-center gap-sm pb-md relative">
-<div class="absolute left-[-16px] w-2 h-2 rounded-full bg-primary ring-2 ring-[#060910] animate-pulse"></div>
-<span class="text-data-mono font-data-mono text-primary text-[11px]">Received</span>
-<span class="text-data-mono font-data-mono text-on-surface-variant text-[9px] ml-auto">14:05Z</span>
-</div>
-<div class="flex items-center gap-sm relative opacity-50">
-<div class="absolute left-[-16px] w-2 h-2 rounded-full bg-[#1b2735] ring-2 ring-[#060910]"></div>
-<span class="text-data-mono font-data-mono text-on-surface text-[11px]">Responded</span>
-<span class="text-data-mono font-data-mono text-on-surface-variant text-[9px] ml-auto">PENDING</span>
-</div>
-</div>
-</div>
-<!-- Directory -->
-<div class="text-label-caps font-label-caps text-on-surface-variant mb-xs mt-sm">NODAL AUTHORITIES</div>
-<div class="flex flex-col gap-xs">
-<div class="flex items-center justify-between p-xs bg-[#060910] hud-border rounded-[2px] group">
-<div class="flex flex-col">
-<span class="text-data-mono font-data-mono text-on-surface text-[11px]">Dist. Collector - SEC 7</span>
-<span class="text-data-mono font-data-mono text-on-surface-variant text-[9px]">ID: AUTH-7A</span>
-</div>
-<button class="w-6 h-6 rounded-full bg-transparent border border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-[#060910] transition-colors">
-<span class="material-symbols-outlined text-[14px]" data-icon="call">call</span>
-</button>
-</div>
-<div class="flex items-center justify-between p-xs bg-[#060910] hud-border rounded-[2px] group">
-<div class="flex flex-col">
-<span class="text-data-mono font-data-mono text-on-surface text-[11px]">Disaster Mgmt HQ</span>
-<span class="text-data-mono font-data-mono text-on-surface-variant text-[9px]">ID: DM-CENTRAL</span>
-</div>
-<button class="w-6 h-6 rounded-full bg-transparent border border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-[#060910] transition-colors">
-<span class="material-symbols-outlined text-[14px]" data-icon="call">call</span>
-</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- BOTTOM: Immutable Audit Trail -->
-<div class="h-40 shrink-0 hud-panel hud-border rounded-DEFAULT overflow-hidden flex flex-col mt-base">
-<div class="hud-header-bg p-sm border-b border-[#1b2735] flex justify-between items-center shrink-0">
-<span class="text-label-caps font-label-caps text-on-surface-variant">AUDIT TRAIL</span>
-</div>
-<div class="flex-1 overflow-y-auto">
-<table class="w-full text-left border-collapse">
-<thead class="bg-[#060910] sticky top-0 z-10 border-b border-[#1b2735]">
-<tr>
-<th class="p-xs text-label-caps font-label-caps text-on-surface-variant font-normal">TIMESTAMP (Z)</th>
-<th class="p-xs text-label-caps font-label-caps text-on-surface-variant font-normal">OPERATOR ID</th>
-<th class="p-xs text-label-caps font-label-caps text-on-surface-variant font-normal">ACTION</th>
-<th class="p-xs text-label-caps font-label-caps text-on-surface-variant font-normal">REF</th>
-</tr>
-</thead>
-<tbody class="text-data-mono font-data-mono text-[11px] text-on-surface">
-<tr class="border-b border-[#1b2735] hover:bg-[#1b2735]/50 transition-colors">
-<td class="p-xs text-on-surface-variant">14:05:22.451</td>
-<td class="p-xs text-primary">OP-883A</td>
-<td class="p-xs">Confirm coordinates</td>
-<td class="p-xs text-on-surface-variant">AGN-04832</td>
-</tr>
-<tr class="border-b border-[#1b2735] bg-white/[0.02] hover:bg-[#1b2735]/50 transition-colors">
-<td class="p-xs text-on-surface-variant">14:02:10.019</td>
-<td class="p-xs text-primary">SYS-AUTO</td>
-<td class="p-xs">Alert generated; dispatched to authorities</td>
-<td class="p-xs text-on-surface-variant">AGN-04832</td>
-</tr>
-<tr class="border-b border-[#1b2735] hover:bg-[#1b2735]/50 transition-colors">
-<td class="p-xs text-on-surface-variant">13:45:00.000</td>
-<td class="p-xs text-primary">SYS-AUTO</td>
-<td class="p-xs">Routine scan completed</td>
-<td class="p-xs text-on-surface-variant">SYS-00000</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</main>
-</div>
-</body></html>
+
+<script>
+/* __AGNIVANI_JS__ */
+</script>
+</body>
+</html>
