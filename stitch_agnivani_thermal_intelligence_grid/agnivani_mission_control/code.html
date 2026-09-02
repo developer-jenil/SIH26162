@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mission Control - AGNIVANI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "inverse-surface": "#e0e2ed",
+                            "on-tertiary-container": "#6e4600",
+                            "secondary-container": "#404752",
+                            "tertiary-fixed": "#ffddb5",
+                            "error-container": "#93000a",
+                            "primary-fixed-dim": "#2fd9f4",
+                            "on-secondary-fixed-variant": "#404752",
+                            "on-tertiary-fixed": "#2a1800",
+                            "secondary-fixed": "#dce3f0",
+                            "on-primary-fixed-variant": "#004e5a",
+                            "outline-variant": "#3c494c",
+                            "primary-fixed": "#a2eeff",
+                            "surface-bright": "#363941",
+                            "tertiary": "#ffd6a3",
+                            "tertiary-container": "#ffb13b",
+                            "surface-container-highest": "#31353d",
+                            "on-primary-container": "#005763",
+                            "on-background": "#e0e2ed",
+                            "surface-container-low": "#181c23",
+                            "on-secondary": "#2a313b",
+                            "outline": "#859397",
+                            "primary": "#8aebff",
+                            "inverse-primary": "#006877",
+                            "surface-container": "#1c2027",
+                            "on-secondary-container": "#afb5c2",
+                            "surface-dim": "#10131b",
+                            "on-surface-variant": "#bbc9cd",
+                            "on-primary-fixed": "#001f25",
+                            "on-tertiary": "#462b00",
+                            "on-surface": "#e0e2ed",
+                            "on-error": "#690005",
+                            "surface-tint": "#2fd9f4",
+                            "on-secondary-fixed": "#151c25",
+                            "secondary": "#c0c7d4",
+                            "on-primary": "#00363e",
+                            "surface-variant": "#31353d",
+                            "tertiary-fixed-dim": "#ffb957",
+                            "surface-container-lowest": "#0b0e15",
+                            "primary-container": "#22d3ee",
+                            "surface": "#10131b",
+                            "on-tertiary-fixed-variant": "#643f00",
+                            "on-error-container": "#ffdad6",
+                            "secondary-fixed-dim": "#c0c7d4",
+                            "inverse-on-surface": "#2d3038",
+                            "background": "#10131b",
+                            "surface-container-high": "#272a32",
+                            "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem"
+                    },
+                    "spacing": {
+                            "gutter": "18px",
+                            "base": "9px",
+                            "md": "18px",
+                            "xl": "36px",
+                            "lg": "27px",
+                            "margin": "27px",
+                            "sm": "9px",
+                            "xs": "4.5px"
+                    },
+                    "fontFamily": {
+                            "label-caps": [
+                                    "JetBrains Mono"
+                            ],
+                            "body-lg": [
+                                    "Inter"
+                            ],
+                            "headline-sm": [
+                                    "Inter"
+                            ],
+                            "headline-lg": [
+                                    "Inter"
+                            ],
+                            "data-mono": [
+                                    "JetBrains Mono"
+                            ],
+                            "headline-md": [
+                                    "Inter"
+                            ],
+                            "body-md": [
+                                    "Inter"
+                            ]
+                    },
+                    "fontSize": {
+                            "label-caps": [
+                                    "11px",
+                                    {
+                                            "lineHeight": "1.2",
+                                            "letterSpacing": "0.05em",
+                                            "fontWeight": "700"
+                                    }
+                            ],
+                            "body-lg": [
+                                    "16px",
+                                    {
+                                            "lineHeight": "1.5",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "headline-sm": [
+                                    "18px",
+                                    {
+                                            "lineHeight": "1.4",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "headline-lg": [
+                                    "32px",
+                                    {
+                                            "lineHeight": "1.2",
+                                            "letterSpacing": "-0.02em",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "data-mono": [
+                                    "13px",
+                                    {
+                                            "lineHeight": "1.2",
+                                            "fontWeight": "500"
+                                    }
+                            ],
+                            "headline-md": [
+                                    "24px",
+                                    {
+                                            "lineHeight": "1.2",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "body-md": [
+                                    "14px",
+                                    {
+                                            "lineHeight": "1.5",
+                                            "fontWeight": "400"
+                                    }
+                            ]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #060910; overflow: hidden; }
+        .hud-border { border: 1px solid #1b2735; }
+        .hud-panel { background-color: rgba(13, 20, 29, 0.72); }
+        .hud-glow { box-shadow: 0 0 8px rgba(34, 211, 238, 0.3); }
+        
+        .pulse-critical { animation: pulseCritical 2s infinite; }
+        @keyframes pulseCritical {
+            0% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); }
+            70% { opacity: 0.5; box-shadow: 0 0 0 4px rgba(255, 77, 77, 0); }
+            100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
+        }
+        
+        .radar-sweep {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(34, 211, 238, 0.1) 60deg, transparent 60deg);
+            transform-origin: 0 0;
+            animation: sweep 4s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes sweep { 100% { transform: rotate(360deg); } }
+
+        .terminal-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9.5px;
+            line-height: 1.4;
+            color: #bbc9cd;
+        }
+        
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3c494c; border-radius: 2px; }
+    </style>
+</head>
+<body class="text-on-surface font-body-md h-screen w-screen flex flex-col antialiased">
+<!-- TOPBAR -->
+<header class="flex justify-between items-center w-full px-margin h-[54px] bg-surface-container-low dark:bg-surface-container-low border-b border-outline-variant shrink-0 z-50">
+<div class="flex items-center gap-md">
+<img alt="AGNIVANI Logo" class="h-6 w-6 object-contain rounded-sm shadow-[0_0_8px_rgba(34,211,238,0.3)]" src="https://lh3.googleusercontent.com/aida/AEtjO1UYqrkWw1Z87Njr0ldnFFOb5bXXnVgUQlXuS6y2hgNvU9DvD_KEM-2E7r7XBL1Bb0uYNdTbbYuywxOsrS9XziNywsVJCSJREQhgJGd-gwemdNC49af97H9VC1GFmJtnoltRr2hEuQswg0TEL_meVmqk2-Crzwj9zwetJXh_jlt99BSGb43h-nPUgg6NxFpoNCUsWkC-tuPJanV6Y9EdLQ6d1MlOO5gB8t9uxCdSYY6WKgCiH_HZ3vBO"/>
+<div class="flex items-baseline gap-sm">
+<span class="font-headline-md text-headline-md font-extrabold text-primary tracking-tighter">AGNIVANI</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant hidden md:inline">INDUSTRIAL THERMAL ANOMALY INTELLIGENCE GRID</span>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex gap-sm">
+<div class="hud-border bg-surface-container px-2 py-1 rounded flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-error pulse-critical"></div>
+<span class="font-label-caps text-label-caps text-error">LIVE</span>
+</div>
+<div class="hud-border bg-surface-container px-2 py-1 rounded">
+<span class="font-label-caps text-label-caps text-on-surface-variant">NOAA-20</span>
+</div>
+<div class="hud-border bg-surface-container px-2 py-1 rounded">
+<span class="font-label-caps text-label-caps text-on-surface-variant">VIIRS 375m</span>
+</div>
+</div>
+<div class="flex items-center gap-md font-data-mono text-data-mono border-l border-outline-variant pl-md">
+<span class="text-on-surface-variant">gcc-xgb v4.2</span>
+<span class="text-primary" id="system-clock">T-00:00:00</span>
+<div class="flex gap-sm">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant cursor-pointer hover:text-primary transition-colors">sensors</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant cursor-pointer hover:text-primary transition-colors">videocam</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant cursor-pointer hover:text-primary transition-colors">precision_manufacturing</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant cursor-pointer hover:text-primary transition-colors">schedule</span>
+</div>
+</div>
+</div>
+</header>
+<div class="flex-1 flex overflow-hidden">
+<!-- SIDENAV -->
+<nav class="docked full-height left-0 w-64 border-r border-outline-variant bg-surface-dim/72 dark:bg-surface-dim/72 flex flex-col z-40 shrink-0">
+<div class="p-base border-b border-outline-variant flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center hud-border">
+<span class="material-symbols-outlined text-[16px] text-primary">data_usage</span>
+</div>
+<div>
+<div class="font-label-caps text-label-caps text-on-surface-variant">INTELLIGENCE GRID</div>
+<div class="font-data-mono text-[9px] text-on-surface-variant opacity-70">V4.2.0-STABLE</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto py-base">
+<div class="px-base font-label-caps text-[9px] text-on-surface-variant mb-xs">MODULES</div>
+<ul class="space-y-[1px]">
+<li>
+<a class="flex items-center gap-sm px-base py-xs bg-secondary-container text-primary border-r-2 border-primary active:brightness-125" href="#">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+<span class="font-label-caps text-label-caps">ALERTS</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined text-[16px]">analytics</span>
+<span class="font-label-caps text-label-caps">TELEMETRY</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined text-[16px]">settings_input_component</span>
+<span class="font-label-caps text-label-caps">SYSTEMS</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined text-[16px]">terminal</span>
+<span class="font-label-caps text-label-caps">LOGS</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="p-base mt-auto">
+<button class="w-full bg-primary-container text-[#060910] font-label-caps text-label-caps py-2 rounded-sm hover:bg-primary transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">send</span>
+                    DISPATCH ALERT
+                </button>
+</div>
+<div class="border-t border-outline-variant py-base">
+<ul class="space-y-[1px]">
+<li>
+<a class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all opacity-80" href="#">
+<span class="material-symbols-outlined text-[16px]">help</span>
+<span class="font-label-caps text-label-caps">SUPPORT</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all opacity-80" href="#">
+<span class="material-symbols-outlined text-[16px]">build</span>
+<span class="font-label-caps text-label-caps">DIAGNOSTICS</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- MAIN CANVAS -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-background">
+<div class="flex flex-1 overflow-hidden">
+<!-- LEFT COLUMN: ALERTS & CLASSES -->
+<div class="w-[274px] hud-border border-r border-t-0 border-b-0 border-l-0 flex flex-col shrink-0 bg-surface-dim/30">
+<div class="h-8 hud-border border-x-0 border-t-0 bg-[#1b2735]/50 flex items-center px-base">
+<span class="font-label-caps text-label-caps text-on-surface">LIVE ALERT FEED</span>
+</div>
+<div class="flex-1 overflow-y-auto p-xs space-y-xs" id="alert-feed">
+<!-- Alert Item Template (Selected) -->
+<div class="hud-border bg-surface-container p-xs rounded-sm cursor-pointer relative overflow-hidden group border-primary/50">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex justify-between items-start mb-xs pl-1">
+<div class="flex items-center gap-xs">
+<div class="bg-error/15 border border-error px-1 rounded-sm flex items-center h-4">
+<span class="font-label-caps text-[8px] text-error">CRITICAL</span>
+</div>
+<span class="font-data-mono text-[10px] text-primary">ID:A94X</span>
+</div>
+<span class="font-data-mono text-[10px] text-on-surface-variant">14:02:11</span>
+</div>
+<div class="pl-1">
+<div class="font-body-md text-[12px] font-semibold text-on-surface">Jamnagar Refinery</div>
+<div class="flex gap-sm mt-[2px]">
+<span class="font-data-mono text-[10px] text-on-surface-variant">1847 K</span>
+<span class="font-data-mono text-[10px] text-on-surface-variant">62 MW</span>
+</div>
+</div>
+</div>
+<!-- Alert Item Template (Unselected) -->
+<div class="hud-border bg-[#0d141d]/50 p-xs rounded-sm cursor-pointer hover:bg-surface-container transition-colors">
+<div class="flex justify-between items-start mb-xs">
+<div class="flex items-center gap-xs">
+<div class="bg-tertiary-container/15 border border-tertiary-container px-1 rounded-sm flex items-center h-4">
+<span class="font-label-caps text-[8px] text-tertiary-container">HIGH</span>
+</div>
+<span class="font-data-mono text-[10px] text-on-surface-variant">ID:B21Y</span>
+</div>
+<span class="font-data-mono text-[10px] text-on-surface-variant opacity-70">13:58:44</span>
+</div>
+<div>
+<div class="font-body-md text-[12px] text-on-surface-variant">Hazira Port Facility</div>
+<div class="flex gap-sm mt-[2px]">
+<span class="font-data-mono text-[10px] text-outline">1250 K</span>
+<span class="font-data-mono text-[10px] text-outline">41 MW</span>
+</div>
+</div>
+</div>
+</div>
+<div class="h-[120px] hud-border border-x-0 border-b-0 bg-surface-dim/50 p-base flex flex-col justify-end">
+<span class="font-label-caps text-[9px] text-on-surface-variant mb-sm">CLASS DISTRIBUTION</span>
+<div class="space-y-1">
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-sm bg-[#ffa94d]"></div>
+<span class="font-label-caps text-[9px] w-20 truncate">Gas Flare</span>
+<div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-[#ffa94d] w-[60%]"></div>
+</div>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-sm bg-error"></div>
+<span class="font-label-caps text-[9px] w-20 truncate">Ind. Fire</span>
+<div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-error w-[25%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- CENTRE COLUMN: MAP & TERMINAL -->
+<div class="flex-1 flex flex-col min-w-0 relative">
+<div class="flex-1 relative overflow-hidden bg-[#060910]">
+<!-- Grid Background Placeholder -->
+<div class="absolute inset-0" style="background-image: linear-gradient(#16222f 1px, transparent 1px), linear-gradient(90deg, #16222f 1px, transparent 1px); background-size: 40px 40px; opacity: 0.3;"></div>
+<!-- Radar Sweep -->
+<div class="absolute inset-0 overflow-hidden pointer-events-none">
+<div class="radar-sweep"></div>
+</div>
+<!-- Map Content Area -->
+<div class="absolute inset-0 flex items-center justify-center p-xl">
+<div class="w-full h-full border border-primary/20 rounded relative flex items-center justify-center text-on-surface-variant/30 font-data-mono">
+                                 [MAP SVG CANVAS]
+                                 
+                                 <!-- Detections -->
+<div class="absolute top-1/3 left-1/3 w-3 h-3 bg-error rounded-full pulse-critical transform -translate-x-1/2 -translate-y-1/2"></div>
+<div class="absolute top-1/2 right-1/3 w-2 h-2 bg-[#ffa94d] transform rotate-45 -translate-x-1/2 -translate-y-1/2"></div>
+</div>
+</div>
+<!-- HUD Overlays -->
+<div class="absolute bottom-base left-base bg-surface-dim/80 hud-border p-xs rounded-sm backdrop-blur-sm">
+<span class="font-data-mono text-[9px] text-primary">PROJ EPSG:4326</span>
+</div>
+</div>
+<!-- TERMINAL -->
+<div class="h-[158px] bg-black hud-border border-x-0 border-b-0 p-sm overflow-hidden flex flex-col shrink-0">
+<div class="flex items-center gap-xs mb-xs opacity-50">
+<span class="material-symbols-outlined text-[12px]">terminal</span>
+<span class="font-label-caps text-[9px]">PIPELINE LOG</span>
+</div>
+<div class="flex-1 overflow-y-auto terminal-text space-y-1" id="terminal-log">
+<div><span class="text-on-surface-variant/50">[14:02:11]</span> <span class="text-primary-container">[GEE] </span> Initiating ingestion stream v4.2...</div>
+<div><span class="text-on-surface-variant/50">[14:02:12]</span> <span class="text-tertiary-container">[PHYS]</span> Calculating spectral signatures for cluster ID:A94X</div>
+<div><span class="text-on-surface-variant/50">[14:02:12]</span> <span class="text-[#ffa94d]">[BASE]</span> Background contextualization complete. Anomaly diff &gt; 4σ</div>
+<div><span class="text-on-surface-variant/50">[14:02:13]</span> <span class="text-error">[FUSE]</span> WARNING: Multi-band saturation detected at coords 22.3°N, 69.9°E</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: INSPECTOR -->
+<div class="w-[372px] hud-border border-l border-y-0 border-r-0 flex flex-col shrink-0 bg-surface-dim/50 overflow-y-auto">
+<div class="h-8 hud-border border-x-0 border-t-0 bg-[#1b2735]/50 flex items-center px-base">
+<span class="font-label-caps text-label-caps text-on-surface">DETECTION INSPECTOR</span>
+</div>
+<div class="p-base space-y-md">
+<!-- Verdict -->
+<div class="hud-panel hud-border p-sm rounded-sm flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[#ffa94d] text-[24px]">local_fire_department</span>
+<div>
+<div class="font-label-caps text-[9px] text-on-surface-variant">PRIMARY CLASSIFICATION</div>
+<div class="font-headline-sm text-headline-sm text-[#ffa94d]">GAS FLARE</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-label-caps text-[9px] text-on-surface-variant">CONFIDENCE</div>
+<div class="font-data-mono text-[14px] text-primary">p=0.943</div>
+</div>
+</div>
+<!-- Evidence Chain -->
+<div>
+<span class="font-label-caps text-[9px] text-on-surface-variant mb-xs block">EVIDENCE CHAIN</span>
+<div class="flex gap-xs items-center opacity-70">
+<div class="w-6 h-6 rounded border border-primary text-primary flex items-center justify-center font-data-mono text-[10px]">1</div>
+<div class="flex-1 h-[1px] bg-outline-variant"></div>
+<div class="w-6 h-6 rounded border border-primary text-primary flex items-center justify-center font-data-mono text-[10px]">2</div>
+<div class="flex-1 h-[1px] bg-outline-variant"></div>
+<div class="w-6 h-6 rounded border border-primary text-primary flex items-center justify-center font-data-mono text-[10px]">3</div>
+</div>
+</div>
+<!-- Physics Retrieval -->
+<div>
+<span class="font-label-caps text-[9px] text-on-surface-variant mb-xs block">PHYSICS RETRIEVAL</span>
+<div class="grid grid-cols-2 gap-sm">
+<div class="hud-border bg-surface-container/50 p-xs rounded-sm">
+<div class="font-label-caps text-[9px] text-on-surface-variant">EFF. TEMP</div>
+<div class="font-data-mono text-[13px] text-on-surface">1847 K</div>
+</div>
+<div class="hud-border bg-surface-container/50 p-xs rounded-sm">
+<div class="font-label-caps text-[9px] text-on-surface-variant">AREA</div>
+<div class="font-data-mono text-[13px] text-on-surface">12.4 m²</div>
+</div>
+<div class="hud-border bg-surface-container/50 p-xs rounded-sm">
+<div class="font-label-caps text-[9px] text-on-surface-variant">FRP</div>
+<div class="font-data-mono text-[13px] text-on-surface">62.1 MW</div>
+</div>
+<div class="hud-border bg-surface-container/50 p-xs rounded-sm">
+<div class="font-label-caps text-[9px] text-on-surface-variant">CH4 EST</div>
+<div class="font-data-mono text-[13px] text-on-surface">--</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- BOTTOM PANEL -->
+<div class="h-[236px] hud-border border-x-0 border-b-0 border-t bg-surface-dim/90 flex flex-col shrink-0 z-10">
+<div class="flex border-b border-outline-variant px-sm h-8">
+<button class="px-md font-label-caps text-[10px] text-primary border-b-2 border-primary h-full flex items-center">PHYSICS SIGNATURE</button>
+<button class="px-md font-label-caps text-[10px] text-on-surface-variant hover:text-on-surface h-full flex items-center opacity-70">PERSISTENT SOURCE BASELINE</button>
+<button class="px-md font-label-caps text-[10px] text-on-surface-variant hover:text-on-surface h-full flex items-center opacity-70">MODEL INTEGRITY</button>
+<button class="px-md font-label-caps text-[10px] text-on-surface-variant hover:text-on-surface h-full flex items-center opacity-70">DATA FUSION</button>
+</div>
+<div class="flex-1 p-md flex gap-lg">
+<!-- Histogram Area -->
+<div class="flex-1 hud-border bg-surface-container/30 rounded-sm relative p-sm flex items-end">
+<span class="absolute top-sm left-sm font-label-caps text-[9px] text-on-surface-variant">RADIANCE HISTOGRAM (500-2200K)</span>
+<!-- Fake Histogram Bars -->
+<div class="w-full flex items-end gap-[2px] h-32 opacity-80">
+<div class="flex-1 bg-[#1b2735] h-[10%]"></div>
+<div class="flex-1 bg-[#1b2735] h-[15%]"></div>
+<div class="flex-1 bg-outline-variant h-[30%]"></div>
+<div class="flex-1 bg-outline-variant h-[45%]"></div>
+<div class="flex-1 bg-tertiary-container/50 h-[60%]"></div>
+<div class="flex-1 bg-[#ffa94d] h-[85%]"></div>
+<div class="flex-1 bg-error h-[100%]"></div>
+<div class="flex-1 bg-[#ffa94d] h-[65%]"></div>
+<div class="flex-1 bg-tertiary-container/50 h-[30%]"></div>
+<div class="flex-1 bg-outline-variant h-[10%]"></div>
+</div>
+</div>
+<!-- Explanation Area -->
+<div class="w-64">
+<span class="font-label-caps text-[9px] text-on-surface-variant block mb-sm">DERIVATION</span>
+<p class="font-body-md text-[11px] text-on-surface-variant leading-relaxed">
+                             Dual-band retrieval indicates significant sub-pixel saturation. SWIR/MWIR ratio strongly aligns with hydrocarbon combustion signatures rather than biomass burning.
+                         </p>
+</div>
+</div>
+</div>
+<!-- FOOTER (Integrated into layout) -->
+<footer class="h-base min-h-[36px] bg-surface-container dark:bg-surface-container border-t border-outline-variant w-full flex justify-between items-center px-margin z-50 shrink-0">
+<span class="font-label-caps text-label-caps text-tertiary">©2024 AGNIVANI AEROSPACE. MISSION CRITICAL DATA.</span>
+<div class="flex gap-md">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Physics Signature</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Baseline</a>
+</div>
+</footer>
+</main>
+</div>
+<script>
+        // Simple clock update
+        setInterval(() => {
+            const now = new Date();
+            const timeStr = now.toISOString().substr(11, 8);
+            document.getElementById('system-clock').innerText = 'T-' + timeStr;
+        }, 1000);
+    </script>
+</body></html>

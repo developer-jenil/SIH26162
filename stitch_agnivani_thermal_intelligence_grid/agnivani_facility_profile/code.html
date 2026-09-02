@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Facility Profile - Jamnagar Refinery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e0e2ed",
+                        "on-tertiary-container": "#6e4600",
+                        "secondary-container": "#404752",
+                        "tertiary-fixed": "#ffddb5",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#2fd9f4",
+                        "on-secondary-fixed-variant": "#404752",
+                        "on-tertiary-fixed": "#2a1800",
+                        "secondary-fixed": "#dce3f0",
+                        "on-primary-fixed-variant": "#004e5a",
+                        "outline-variant": "#3c494c",
+                        "primary-fixed": "#a2eeff",
+                        "surface-bright": "#363941",
+                        "tertiary": "#ffd6a3",
+                        "tertiary-container": "#ffb13b",
+                        "surface-container-highest": "#31353d",
+                        "on-primary-container": "#005763",
+                        "on-background": "#e0e2ed",
+                        "surface-container-low": "#181c23",
+                        "on-secondary": "#2a313b",
+                        "outline": "#859397",
+                        "primary": "#8aebff",
+                        "inverse-primary": "#006877",
+                        "surface-container": "#1c2027",
+                        "on-secondary-container": "#afb5c2",
+                        "surface-dim": "#10131b",
+                        "on-surface-variant": "#bbc9cd",
+                        "on-primary-fixed": "#001f25",
+                        "on-tertiary": "#462b00",
+                        "on-surface": "#e0e2ed",
+                        "on-error": "#690005",
+                        "surface-tint": "#2fd9f4",
+                        "on-secondary-fixed": "#151c25",
+                        "secondary": "#c0c7d4",
+                        "on-primary": "#00363e",
+                        "surface-variant": "#31353d",
+                        "tertiary-fixed-dim": "#ffb957",
+                        "surface-container-lowest": "#0b0e15",
+                        "primary-container": "#22d3ee",
+                        "surface": "#10131b",
+                        "on-tertiary-fixed-variant": "#643f00",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#c0c7d4",
+                        "inverse-on-surface": "#2d3038",
+                        "background": "#10131b",
+                        "surface-container-high": "#272a32",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "18px",
+                        "base": "9px",
+                        "md": "18px",
+                        "xl": "36px",
+                        "lg": "27px",
+                        "margin": "27px",
+                        "sm": "9px",
+                        "xs": "4.5px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-sm": ["18px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "data-mono": ["13px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Thin scrollbar for dense telemetry console */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #10131b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3c494c;
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8aebff;
+        }
+
+        .data-panel {
+            background: rgba(13, 20, 29, 0.72);
+            border: 1px solid #1b2735;
+        }
+        
+        .data-header {
+            background: #1b2735;
+            border-bottom: 1px solid #1b2735;
+        }
+
+        .gauge-circle {
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 251.2;
+            animation: fillGauge 2s ease-out forwards;
+        }
+
+        @keyframes fillGauge {
+            to { stroke-dashoffset: 62.8; /* 75% of 251.2 */ }
+        }
+
+        .pulse-critical {
+            animation: pulseCrit 1.5s infinite;
+        }
+
+        @keyframes pulseCrit {
+            0% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 180, 171, 0.7); }
+            50% { opacity: 0.5; box-shadow: 0 0 0 4px rgba(255, 180, 171, 0); }
+            100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 180, 171, 0); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen overflow-hidden flex flex-col md:flex-row antialiased">
+<!-- SideNavBar (Hidden on Mobile, Flex on MD) -->
+<nav class="hidden md:flex flex-col fixed left-0 top-0 h-full w-64 z-40 bg-surface-dim/72 border-r border-outline-variant">
+<div class="p-margin border-b border-outline-variant flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-primary/20 border border-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">public</span>
+</div>
+<div class="flex flex-col">
+<span class="text-label-caps font-label-caps text-on-surface-variant">INTELLIGENCE GRID</span>
+<span class="text-data-mono font-data-mono text-on-surface-variant text-[9px]">V4.2.0-STABLE</span>
+</div>
+</div>
+<div class="flex-1 py-md overflow-y-auto">
+<!-- ALERTS -->
+<a class="flex items-center gap-md px-margin py-md text-on-surface-variant hover:bg-surface-container-highest transition-all group" href="#">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span class="text-label-caps font-label-caps group-hover:text-primary transition-colors">ALERTS</span>
+</a>
+<!-- TELEMETRY (Active) -->
+<a class="flex items-center gap-md px-margin py-md bg-secondary-container text-primary border-r-2 border-primary brightness-125 transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]">analytics</span>
+<span class="text-label-caps font-label-caps">TELEMETRY</span>
+</a>
+<!-- SYSTEMS -->
+<a class="flex items-center gap-md px-margin py-md text-on-surface-variant hover:bg-surface-container-highest transition-all group" href="#">
+<span class="material-symbols-outlined text-[18px]">settings_input_component</span>
+<span class="text-label-caps font-label-caps group-hover:text-primary transition-colors">SYSTEMS</span>
+</a>
+<!-- LOGS -->
+<a class="flex items-center gap-md px-margin py-md text-on-surface-variant hover:bg-surface-container-highest transition-all group" href="#">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+<span class="text-label-caps font-label-caps group-hover:text-primary transition-colors">LOGS</span>
+</a>
+</div>
+<div class="p-margin border-t border-outline-variant">
+<button class="w-full bg-primary/10 border border-primary text-primary text-label-caps font-label-caps py-sm px-md rounded flex justify-center items-center gap-sm hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-[16px]">add_alert</span>
+                DISPATCH ALERT
+            </button>
+</div>
+<div class="flex flex-col pb-margin">
+<a class="flex items-center gap-md px-margin py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all group" href="#">
+<span class="material-symbols-outlined text-[14px]">help</span>
+<span class="text-label-caps font-label-caps text-[9px] group-hover:text-primary transition-colors">SUPPORT</span>
+</a>
+<a class="flex items-center gap-md px-margin py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all group" href="#">
+<span class="material-symbols-outlined text-[14px]">build</span>
+<span class="text-label-caps font-label-caps text-[9px] group-hover:text-primary transition-colors">DIAGNOSTICS</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col md:ml-64 h-full overflow-hidden relative">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin h-[54px] bg-surface-container-low border-b border-outline-variant shrink-0 z-30">
+<div class="flex items-center gap-md">
+<span class="text-headline-md font-headline-md font-bold text-primary tracking-tighter">AGNIVANI</span>
+<span class="text-on-surface-variant mx-sm">/</span>
+<span class="text-label-caps font-label-caps text-on-surface">FACILITY PROFILE</span>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">sensors</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">videocam</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">precision_manufacturing</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">schedule</span></button>
+</div>
+<div class="w-6 h-6 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A macro photography style close up of a futuristic optical lens sensor embedded in matte black aerospace machinery, glowing softly with cyan light in a dark high-tech environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAl8so9XzEb2zN_xkXDi5rr6EDBnbq1E24bMudP7d7qYn_THJ6StaZfSIqTTubBrKlt33bmEndpqdIt-Un488MSj50kECJS5F_0Gu-tI6_mB_XdOoy85xOx4kHYC84yVcvhqHHp6Mju2qlSc5nGKn9kUu5KsPNEwpKgeyDkvUibs4AoRIVfUjlpZ-1rfTizuKMNdh0YM9tXwBYz2pacfrnGV-hP_QsSNlIK63h4aX0CwoA_MiccNJk"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 overflow-y-auto p-margin flex flex-col gap-margin relative z-10">
+<!-- Context & Header Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-base items-stretch">
+<!-- Facility Info -->
+<div class="data-panel lg:col-span-8 p-md rounded flex flex-col justify-between relative overflow-hidden">
+<!-- Faint background map overlay -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" data-alt="A highly detailed satellite topographical map rendered in monochrome dark blues and blacks, showing complex industrial infrastructure, piping, and storage tanks of a massive refinery complex viewed from space." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAmOrMQXGu6xJ_t9aJrM1h9kdN1eC1qXJw8RFznpe3x6sqWBemhFjEgYddMNTsUe52VO6hgUAgnXE5P3Hcr0jDlCxf04LZ1fLq5nvLdKK07OaroTkcRS8zALjOWGyEChKuW49LI6OmPcSAspxDQuv7IohSFPqb_qN_YrdS_x95W-5M3qwfbimB8jkRtd-qvCZaoVjj8tLLIR9JHfLxKqsL_7xPdE6gjNiJT5ABJEo2kbCH5T1m9tpU')"></div>
+<div class="relative z-10 flex justify-between items-start">
+<div>
+<div class="flex items-center gap-sm mb-sm">
+<span class="w-2 h-2 rounded-full bg-error pulse-critical"></span>
+<span class="text-label-caps font-label-caps text-error">CRITICAL MONITORING ACTIVE</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-on-surface mb-xs">JAMNAGAR REFINERY</h1>
+<div class="flex items-center gap-md">
+<span class="text-data-mono font-data-mono text-on-surface-variant">ID: RIL-JAM-01</span>
+<span class="text-outline-variant">|</span>
+<span class="text-data-mono font-data-mono text-on-surface-variant flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">location_on</span> 22.339° N, 69.832° E</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">PRIMARY OUTPUT</span>
+<span class="text-data-mono font-data-mono text-primary bg-primary/10 border border-primary/30 px-sm py-xs rounded">PETROCHEMICAL</span>
+</div>
+</div>
+<div class="relative z-10 grid grid-cols-4 gap-base mt-xl border-t border-outline-variant pt-md">
+<div>
+<span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">TOTAL AREA</span>
+<span class="text-data-mono font-data-mono text-on-surface">7,500 ACRES</span>
+</div>
+<div>
+<span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">CAPACITY</span>
+<span class="text-data-mono font-data-mono text-on-surface">1.24M BPD</span>
+</div>
+<div>
+<span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">LAST SCAN</span>
+<span class="text-data-mono font-data-mono text-on-surface">T-00:04:12</span>
+</div>
+<div>
+<span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">ACTIVE FLARES</span>
+<span class="text-data-mono font-data-mono text-tertiary">3 IDENTIFIED</span>
+</div>
+</div>
+</div>
+<!-- Risk Score Gauge -->
+<div class="data-panel lg:col-span-4 p-md rounded flex flex-col items-center justify-center relative">
+<span class="absolute top-md left-md text-label-caps font-label-caps text-on-surface-variant">THERMAL RISK INDEX</span>
+<div class="relative w-32 h-32 mt-md">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<!-- Background Track -->
+<circle cx="50" cy="50" fill="none" r="40" stroke="#1b2735" stroke-width="8"></circle>
+<!-- Progress Arc (75/100) -->
+<circle class="gauge-circle" cx="50" cy="50" fill="none" r="40" stroke="#ffb13b" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-headline-lg font-headline-lg text-tertiary-container leading-none">75</span>
+<span class="text-label-caps font-label-caps text-on-surface-variant">/100</span>
+</div>
+</div>
+<div class="mt-md text-center">
+<span class="text-data-mono font-data-mono text-tertiary-container bg-tertiary-container/10 px-md py-xs rounded border border-tertiary-container/30">ELEVATED</span>
+</div>
+</div>
+</div>
+<!-- 12-Month Baseline: Small Multiples -->
+<div class="data-panel rounded flex flex-col">
+<div class="data-header px-md py-sm flex justify-between items-center rounded-t">
+<span class="text-label-caps font-label-caps text-on-surface">12-MONTH THERMAL DECOMPOSITION BASELINE</span>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</div>
+<div class="p-md grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-base">
+<!-- Generate 12 miniature line charts via DOM elements -->
+<!-- Month 1 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">JAN 2024</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[60%] bg-primary/40 border-t border-primary"></div>
+<div class="w-full h-[80%] bg-primary/40 border-t border-primary"></div>
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[50%] bg-outline-variant/30"></div>
+</div>
+</div>
+<!-- Month 2 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">FEB 2024</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[50%] bg-outline-variant/30"></div>
+<div class="w-full h-[55%] bg-outline-variant/30"></div>
+<div class="w-full h-[90%] bg-tertiary-container/40 border-t border-tertiary-container"></div>
+<div class="w-full h-[70%] bg-tertiary-container/40 border-t border-tertiary-container"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+</div>
+</div>
+<!-- Month 3 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">MAR 2024</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+</div>
+</div>
+<!-- Month 4 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">APR 2024</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+<div class="w-full h-[60%] bg-primary/40 border-t border-primary"></div>
+<div class="w-full h-[75%] bg-primary/40 border-t border-primary"></div>
+<div class="w-full h-[85%] bg-primary/40 border-t border-primary"></div>
+<div class="w-full h-[50%] bg-outline-variant/30"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+</div>
+</div>
+<!-- Month 5 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">MAY 2024</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[50%] bg-outline-variant/30"></div>
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[55%] bg-outline-variant/30"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+<div class="w-full h-[50%] bg-outline-variant/30"></div>
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+</div>
+</div>
+<!-- Month 6 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">JUN 2024</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[50%] bg-outline-variant/30"></div>
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[25%] bg-outline-variant/30"></div>
+<div class="w-full h-[20%] bg-outline-variant/30"></div>
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+</div>
+</div>
+<!-- Repeated layout for remaining 6 months to maintain visual density -->
+<!-- Month 7 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">JUL 2023</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[25%] bg-outline-variant/30"></div>
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+</div>
+</div>
+<!-- Month 8 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">AUG 2023</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+<div class="w-full h-[60%] bg-primary/40 border-t border-primary"></div>
+<div class="w-full h-[55%] bg-outline-variant/30"></div>
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+</div>
+</div>
+<!-- Month 9 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">SEP 2023</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[25%] bg-outline-variant/30"></div>
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[60%] bg-primary/40 border-t border-primary"></div>
+<div class="w-full h-[80%] bg-tertiary-container/40 border-t border-tertiary-container"></div>
+<div class="w-full h-[50%] bg-outline-variant/30"></div>
+</div>
+</div>
+<!-- Month 10 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">OCT 2023</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[25%] bg-outline-variant/30"></div>
+</div>
+</div>
+<!-- Month 11 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">NOV 2023</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[50%] bg-outline-variant/30"></div>
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+</div>
+</div>
+<!-- Month 12 -->
+<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">DEC 2023</span>
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[50%] bg-outline-variant/30"></div>
+<div class="w-full h-[45%] bg-outline-variant/30"></div>
+<div class="w-full h-[40%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+<div class="w-full h-[30%] bg-outline-variant/30"></div>
+<div class="w-full h-[35%] bg-outline-variant/30"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Heatmap & Global Overlay -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-base">
+<!-- Activity Heatmap -->
+<div class="data-panel rounded flex flex-col">
+<div class="data-header px-md py-sm flex justify-between items-center rounded-t">
+<span class="text-label-caps font-label-caps text-on-surface">DETECTION ACTIVITY HEATMAP (T-365)</span>
+</div>
+<div class="p-md">
+<div class="flex items-end gap-sm mb-sm text-data-mono font-data-mono text-[10px] text-on-surface-variant">
+<span class="w-8">Mon</span>
+<div class="flex-1 grid grid-cols-[repeat(52,minmax(0,1fr))] gap-[2px]">
+<!-- Generate dummy column headers for months roughly -->
+<div class="col-span-4">Jan</div><div class="col-span-4">Feb</div><div class="col-span-5">Mar</div><div class="col-span-4">Apr</div><div class="col-span-4">May</div><div class="col-span-5">Jun</div><div class="col-span-4">Jul</div><div class="col-span-4">Aug</div><div class="col-span-5">Sep</div><div class="col-span-4">Oct</div><div class="col-span-4">Nov</div><div class="col-span-5">Dec</div>
+</div>
+</div>
+<!-- Heatmap Grid -->
+<div class="flex gap-sm">
+<div class="flex flex-col gap-[2px] text-data-mono font-data-mono text-[10px] text-on-surface-variant w-8">
+<span class="h-[9px]"></span>
+<span class="h-[9px] leading-[9px]">Wed</span>
+<span class="h-[9px]"></span>
+<span class="h-[9px] leading-[9px]">Fri</span>
+<span class="h-[9px]"></span>
+<span class="h-[9px] leading-[9px]">Sun</span>
+<span class="h-[9px]"></span>
+</div>
+<div class="flex-1 grid grid-rows-7 grid-flow-col gap-[2px]" id="heatmap-container">
+<!-- JS will populate this with 364 tiny divs -->
+<script>
+                                    const container = document.getElementById('heatmap-container');
+                                    const colors = ['bg-surface-container-highest', 'bg-surface-container-highest', 'bg-surface-container-highest', 'bg-primary/30', 'bg-primary/60', 'bg-primary', 'bg-tertiary-container'];
+                                    for(let i=0; i<364; i++) {
+                                        const div = document.createElement('div');
+                                        div.className = `w-full h-[9px] rounded-sm ${colors[Math.floor(Math.random() * (Math.random() > 0.8 ? colors.length : 3))]}`;
+                                        container.appendChild(div);
+                                    }
+                                </script>
+</div>
+</div>
+<div class="flex justify-end items-center gap-xs mt-md text-data-mono font-data-mono text-[10px] text-on-surface-variant">
+<span>Less</span>
+<div class="w-[9px] h-[9px] rounded-sm bg-surface-container-highest"></div>
+<div class="w-[9px] h-[9px] rounded-sm bg-primary/30"></div>
+<div class="w-[9px] h-[9px] rounded-sm bg-primary/60"></div>
+<div class="w-[9px] h-[9px] rounded-sm bg-primary"></div>
+<div class="w-[9px] h-[9px] rounded-sm bg-tertiary-container"></div>
+<span>More</span>
+</div>
+</div>
+</div>
+<!-- Global Overlay (Histogram) -->
+<div class="data-panel rounded flex flex-col relative overflow-hidden">
+<div class="data-header px-md py-sm flex justify-between items-center rounded-t relative z-10">
+<span class="text-label-caps font-label-caps text-on-surface">TEMPERATURE DISTRIBUTION OVERLAY</span>
+<span class="text-data-mono font-data-mono text-[10px] text-primary">KELVIN (K)</span>
+</div>
+<div class="flex-1 p-md relative flex items-end">
+<!-- Faint bimodal reference line -->
+<div class="absolute inset-x-md bottom-md top-md border-b border-l border-outline-variant/50">
+<!-- Reference Curve (SVG) -->
+<svg class="w-full h-full absolute inset-0 preserve-3d" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,100 C20,90 30,20 40,30 C50,40 60,80 70,10 C80,-10 90,80 100,100" fill="none" stroke="#3c494c" stroke-dasharray="2 2" stroke-width="1"></path>
+<!-- Flare threshold line -->
+<line opacity="0.5" stroke="#ffb13b" stroke-dasharray="4 4" stroke-width="1" x1="60" x2="60" y1="0" y2="100"></line>
+<text fill="#ffb13b" font-family="JetBrains Mono" font-size="4" opacity="0.7" x="62" y="10">FLARE THRESHOLD</text>
+</svg>
+</div>
+<!-- Histogram Bars -->
+<div class="relative w-full h-[80%] flex items-end gap-[2px] z-10 opacity-80">
+<div class="flex-1 bg-primary/20 h-[5%]"></div>
+<div class="flex-1 bg-primary/30 h-[10%]"></div>
+<div class="flex-1 bg-primary/40 h-[25%] border-t border-primary/50"></div>
+<div class="flex-1 bg-primary/60 h-[45%] border-t border-primary/50"></div>
+<div class="flex-1 bg-primary h-[85%] border-t border-primary"></div>
+<div class="flex-1 bg-primary/80 h-[65%] border-t border-primary"></div>
+<div class="flex-1 bg-primary/50 h-[35%] border-t border-primary/50"></div>
+<div class="flex-1 bg-primary/30 h-[15%]"></div>
+<div class="flex-1 bg-outline-variant/30 h-[5%]"></div>
+<div class="flex-1 bg-outline-variant/30 h-[8%]"></div>
+<!-- Bimodal second peak (Flares) -->
+<div class="flex-1 bg-tertiary-container/30 h-[15%]"></div>
+<div class="flex-1 bg-tertiary-container/50 h-[40%] border-t border-tertiary-container/50"></div>
+<div class="flex-1 bg-tertiary-container/80 h-[95%] border-t border-tertiary-container"></div>
+<div class="flex-1 bg-error/80 h-[60%] border-t border-error"></div>
+<div class="flex-1 bg-error/40 h-[20%] border-t border-error/50"></div>
+<div class="flex-1 bg-outline-variant/30 h-[5%]"></div>
+</div>
+<!-- X-Axis Labels -->
+<div class="absolute bottom-sm left-md right-md flex justify-between text-data-mono font-data-mono text-[9px] text-on-surface-variant">
+<span>300K</span>
+<span>800K</span>
+<span>1500K</span>
+<span>2200K+</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Benchmarking: Peer Comparison Table -->
+<div class="data-panel rounded flex flex-col mb-xl">
+<div class="data-header px-md py-sm flex justify-between items-center rounded-t">
+<span class="text-label-caps font-label-caps text-on-surface">GUJARAT SECTOR BENCHMARKING</span>
+<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant">T-30 DAYS ROLLING</span>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant text-label-caps font-label-caps text-on-surface-variant bg-surface-container-highest/50">
+<th class="px-md py-sm font-normal">FACILITY ID</th>
+<th class="px-md py-sm font-normal">AVG FRP (MW)</th>
+<th class="px-md py-sm font-normal">PEAK FRP (MW)</th>
+<th class="px-md py-sm font-normal">PERSISTENCE</th>
+<th class="px-md py-sm font-normal">TREND (30D)</th>
+</tr>
+</thead>
+<tbody class="text-data-mono font-data-mono text-[12px]">
+<!-- Row 1 (Current) -->
+<tr class="border-b border-outline-variant bg-primary/5 hover:bg-primary/10 transition-colors">
+<td class="px-md py-sm text-primary flex items-center gap-sm">
+<span class="w-[6px] h-[6px] rounded-full bg-primary pulse-critical"></span>
+                                    RIL-JAM-01 <span class="text-[9px] border border-primary/30 bg-primary/10 px-1 rounded text-primary">TARGET</span>
+</td>
+<td class="px-md py-sm">45.2</td>
+<td class="px-md py-sm text-tertiary-container">128.5</td>
+<td class="px-md py-sm">
+<div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
+<div class="h-full bg-primary" style="width: 85%"></div>
+</div>
+<span class="text-[9px] text-on-surface-variant mt-[2px] block">85% ACTIVE</span>
+</td>
+<td class="px-md py-sm w-32">
+<svg class="w-full h-4" preserveaspectratio="none" viewbox="0 0 100 20">
+<path d="M0,15 L20,12 L40,18 L60,8 L80,10 L100,2" fill="none" stroke="#22d3ee" stroke-width="1.5"></path>
+</svg>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
+<td class="px-md py-sm text-on-surface">IOCL-KOY-02</td>
+<td class="px-md py-sm text-on-surface-variant">32.8</td>
+<td class="px-md py-sm text-on-surface-variant">94.1</td>
+<td class="px-md py-sm">
+<div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
+<div class="h-full bg-outline-variant" style="width: 62%"></div>
+</div>
+<span class="text-[9px] text-on-surface-variant mt-[2px] block">62% ACTIVE</span>
+</td>
+<td class="px-md py-sm w-32">
+<svg class="w-full h-4" preserveaspectratio="none" viewbox="0 0 100 20">
+<path d="M0,10 L20,12 L40,11 L60,14 L80,12 L100,15" fill="none" stroke="#859397" stroke-width="1.5"></path>
+</svg>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="border-b border-outline-variant bg-surface-container-lowest/50 hover:bg-surface-container-highest transition-colors">
+<td class="px-md py-sm text-on-surface">RIL-DAH-03</td>
+<td class="px-md py-sm text-on-surface-variant">18.4</td>
+<td class="px-md py-sm text-on-surface-variant">45.0</td>
+<td class="px-md py-sm">
+<div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
+<div class="h-full bg-outline-variant" style="width: 30%"></div>
+</div>
+<span class="text-[9px] text-on-surface-variant mt-[2px] block">30% ACTIVE</span>
+</td>
+<td class="px-md py-sm w-32">
+<svg class="w-full h-4" preserveaspectratio="none" viewbox="0 0 100 20">
+<path d="M0,18 L20,17 L40,19 L60,16 L80,18 L100,17" fill="none" stroke="#859397" stroke-width="1.5"></path>
+</svg>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 w-full md:w-[calc(100%-16rem)] flex justify-between items-center px-margin h-base z-50 bg-surface-container border-t border-outline-variant py-md">
+<span class="text-label-caps font-label-caps text-tertiary">©2024 AGNIVANI AEROSPACE. MISSION CRITICAL DATA.</span>
+<div class="flex gap-md">
+<a class="text-label-caps font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Physics Signature</a>
+<a class="text-label-caps font-label-caps text-primary font-bold hover:text-primary transition-colors" href="#">Baseline</a>
+<a class="text-label-caps font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Model Integrity</a>
+<a class="text-label-caps font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Data Fusion</a>
+</div>
+</footer>
+</div>
+</body></html>

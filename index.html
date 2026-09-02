@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>AGNIVANI - Industrial Thermal Anomaly Intelligence Grid</title>
+  
+  <!-- Tailwind CSS & Plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Google Fonts: Inter, JetBrains Mono, Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  
+  <!-- Custom Design Tokens & Styles -->
+  <link rel="stylesheet" href="css/styles.css"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "background": "#060910",
+            "surface": "#10131b",
+            "surface-dim": "#10131b",
+            "surface-bright": "#363941",
+            "surface-container-lowest": "#0b0e15",
+            "surface-container-low": "#181c23",
+            "surface-container": "#1c2027",
+            "surface-container-high": "#272a32",
+            "surface-container-highest": "#31353d",
+            "on-surface": "#e0e2ed",
+            "on-surface-variant": "#bbc9cd",
+            "outline": "#859397",
+            "outline-variant": "#1b2735",
+            "primary": "#8aebff",
+            "primary-container": "#22d3ee",
+            "on-primary": "#00363e",
+            "secondary": "#c0c7d4",
+            "secondary-container": "#404752",
+            "tertiary": "#ffd6a3",
+            "tertiary-container": "#ffb13b",
+            "tertiary-fixed-dim": "#ffb957",
+            "error": "#ff4d4d",
+            "error-container": "#93000a",
+            "on-error": "#ffffff",
+            "on-error-container": "#ffdad6"
+          },
+          spacing: {
+            "xs": "4.5px",
+            "sm": "9px",
+            "base": "9px",
+            "md": "18px",
+            "lg": "27px",
+            "xl": "36px",
+            "margin": "27px",
+            "gutter": "18px"
+          },
+          fontFamily: {
+            "body-md": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "data-mono": ["JetBrains Mono", "monospace"],
+            "label-caps": ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-body-md h-screen w-screen flex flex-col antialiased overflow-hidden select-none">
+  
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
+  <header class="flex justify-between items-center w-full px-margin h-[54px] bg-surface-container-low border-b border-outline-variant shrink-0 z-50">
+    <div class="flex items-center gap-md">
+      <!-- Animated SVG Flame Logo -->
+      <div class="w-7 h-7 flex items-center justify-center cursor-pointer" data-nav-target="mission-control">
+        <svg viewBox="0 0 32 32" class="w-full h-full">
+          <defs>
+            <linearGradient id="flameGradNav" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#ff4d4d;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect x="2" y="2" width="28" height="28" rx="6" fill="#0d141d" stroke="#1b2735" stroke-width="1"/>
+          <circle cx="16" cy="16" r="13" fill="none" stroke="#22d3ee" stroke-width="0.5" opacity="0.4">
+            <animate attributeName="r" from="10" to="14" dur="2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" from="0.6" to="0" dur="2s" repeatCount="indefinite" />
+          </circle>
+          <path d="M16 6C16 6 10 12 10 18C10 21.3137 12.6863 24 16 24C19.3137 24 22 21.3137 22 18C22 12 16 6 16 6ZM16 21C14.3431 21 13 19.6569 13 18C13 16.5 14.5 14 16 11.5C17.5 14 19 16.5 19 18C19 19.6569 17.6569 21 16 21Z" fill="url(#flameGradNav)" />
+        </svg>
+      </div>
+
+      <div class="flex items-baseline gap-sm">
+        <span class="font-headline-md text-[20px] font-extrabold text-primary tracking-tighter cursor-pointer" data-nav-target="mission-control">AGNIVANI</span>
+        <span class="font-label-caps text-[10px] text-on-surface-variant hidden md:inline tracking-wider">INDUSTRIAL THERMAL ANOMALY INTELLIGENCE GRID</span>
+      </div>
+    </div>
+
+    <!-- Live Telemetry Status & System Clock -->
+    <div class="flex items-center gap-md">
+      <div class="hidden sm:flex gap-sm">
+        <div class="hud-border bg-surface-container px-2 py-1 rounded flex items-center gap-xs">
+          <div class="w-2 h-2 rounded-full bg-error pulse-critical"></div>
+          <span class="font-label-caps text-[10px] text-error font-bold">LIVE</span>
+        </div>
+        <div class="hud-border bg-surface-container px-2 py-1 rounded">
+          <span class="font-label-caps text-[10px] text-on-surface-variant">NOAA-20</span>
+        </div>
+        <div class="hud-border bg-surface-container px-2 py-1 rounded">
+          <span class="font-label-caps text-[10px] text-on-surface-variant">VIIRS 375m</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-md font-data-mono text-[12px] border-l border-outline-variant pl-md">
+        <span class="text-on-surface-variant hidden lg:inline">gcc-xgb v4.2</span>
+        <span class="text-primary font-bold tracking-widest" id="system-clock">T-00:00:00</span>
+        
+        <div class="flex gap-xs text-on-surface-variant">
+          <button class="p-1 hover:text-primary transition-colors" title="Sensors Telemetry"><span class="material-symbols-outlined text-[18px]">sensors</span></button>
+          <button class="p-1 hover:text-primary transition-colors" title="Video Feeds"><span class="material-symbols-outlined text-[18px]">videocam</span></button>
+          <button class="p-1 hover:text-primary transition-colors" title="Industrial Facilities"><span class="material-symbols-outlined text-[18px]">precision_manufacturing</span></button>
+          <button class="p-1 hover:text-primary transition-colors" title="Schedule Passes"><span class="material-symbols-outlined text-[18px]">schedule</span></button>
+        </div>
+
+        <div class="w-7 h-7 rounded-full bg-surface-bright border border-outline-variant overflow-hidden cursor-pointer hover:border-primary transition-colors" title="Operator Profile">
+          <img class="w-full h-full object-cover" alt="Operator Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZPAUGR6CPZlSg8DaSdFdpiJzr7YoVOloyf_oMH7_iBaCjAhbM5ZTV_ccFctiW59nlJWjqPH6hqboQ_hfBCTW9HHLxeSHTKBacMULjhdUUg465GCSIZV8YkyxefY0-qD6CGPFkvTaGFNNyRAJhywK3DmhGfl3gAt_OSiuMjP3pq7-MPzRcsxIWyPfWNgs8wdA_DvjGLcIfXqUX3A5aik0wuf3qa24XjBbQUW2yBp6EaCZjH0vfIf4"/>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN WORKSPACE ==================== -->
+  <div class="flex-1 flex overflow-hidden h-[calc(100vh-54px)] w-full">
+    
+    <!-- ==================== DOCKED SIDE NAVIGATION ==================== -->
+    <nav class="w-64 border-r border-outline-variant bg-surface-dim/72 flex flex-col z-40 shrink-0 h-full backdrop-blur-sm">
+      <div class="p-base border-b border-outline-variant flex items-center gap-sm shrink-0">
+        <div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center hud-border">
+          <span class="material-symbols-outlined text-[16px] text-primary">data_usage</span>
+        </div>
+        <div>
+          <div class="font-label-caps text-[10px] text-on-surface-variant font-bold">INTELLIGENCE GRID</div>
+          <div class="font-data-mono text-[9px] text-on-surface-variant opacity-70">V4.2.0-STABLE</div>
+        </div>
+      </div>
+
+      <!-- Module Navigation Links -->
+      <div class="flex-1 overflow-y-auto py-base">
+        <div class="px-base font-label-caps text-[9px] text-on-surface-variant mb-xs tracking-wider opacity-60">MODULES</div>
+        <ul class="space-y-[1px]">
+          <li>
+            <a href="#mission-control" data-nav-target="mission-control" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+              <span class="material-symbols-outlined text-[18px]">satellite_alt</span>
+              <span class="font-label-caps text-[11px]">MISSION CONTROL</span>
+            </a>
+          </li>
+          <li>
+            <a href="#alerts" data-nav-target="alerts" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+              <span class="material-symbols-outlined text-[18px]">warning</span>
+              <span class="font-label-caps text-[11px]">ALERTS QUEUE</span>
+            </a>
+          </li>
+          <li>
+            <a href="#analytics" data-nav-target="analytics" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+              <span class="material-symbols-outlined text-[18px]">analytics</span>
+              <span class="font-label-caps text-[11px]">TELEMETRY & INSIGHTS</span>
+            </a>
+          </li>
+          <li>
+            <a href="#dossier" data-nav-target="dossier" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+              <span class="material-symbols-outlined text-[18px]">fingerprint</span>
+              <span class="font-label-caps text-[11px]">DETECTION DOSSIER</span>
+            </a>
+          </li>
+          <li>
+            <a href="#facility" data-nav-target="facility" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+              <span class="material-symbols-outlined text-[18px]">factory</span>
+              <span class="font-label-caps text-[11px]">FACILITY PROFILE</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Dispatch Alert Action Button -->
+      <div class="p-base mt-auto shrink-0">
+        <button data-action="open-dispatch" class="w-full bg-primary-container text-[#060910] font-label-caps text-[11px] py-2 rounded-[4px] hover:bg-primary transition-all flex items-center justify-center gap-xs font-bold tracking-wider shadow-[0_0_10px_rgba(34,211,238,0.4)]">
+          <span class="material-symbols-outlined text-[16px]">send</span>
+          DISPATCH ALERT
+        </button>
+      </div>
+
+      <!-- Support & Diagnostics -->
+      <div class="border-t border-outline-variant py-base shrink-0">
+        <ul class="space-y-[1px]">
+          <li>
+            <a href="#" class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all opacity-80">
+              <span class="material-symbols-outlined text-[16px]">help</span>
+              <span class="font-label-caps text-[10px]">SUPPORT</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all opacity-80">
+              <span class="material-symbols-outlined text-[16px]">build</span>
+              <span class="font-label-caps text-[10px]">DIAGNOSTICS</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- ==================== VIEW ROUTER CONTAINER ==================== -->
+    <main class="flex-1 flex flex-col h-full w-full overflow-hidden bg-background relative min-w-0">
+      
+      <!-- ==================== MODULE 1: MISSION CONTROL ==================== -->
+      <div id="view-mission-control" class="view-panel active flex-1 flex flex-col h-full w-full overflow-hidden">
+        
+        <!-- Top 3-Column Area -->
+        <div class="flex flex-1 overflow-hidden min-h-0 w-full">
+          
+          <!-- LEFT COLUMN: LIVE ALERT FEED -->
+          <div class="w-[274px] hud-border border-r border-t-0 border-b-0 border-l-0 flex flex-col shrink-0 bg-surface-dim/30 h-full overflow-hidden">
+            <div class="h-8 hud-border border-x-0 border-t-0 bg-[#1b2735]/50 flex items-center justify-between px-base shrink-0">
+              <span class="font-label-caps text-[10px] text-on-surface">LIVE ALERT FEED</span>
+              <span class="w-2 h-2 rounded-full bg-error pulse-critical"></span>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-xs space-y-xs min-h-0" id="alert-feed">
+              <!-- Dynamically populated by app.js -->
+            </div>
+
+            <!-- Class Distribution Bar -->
+            <div class="h-[120px] hud-border border-x-0 border-b-0 bg-surface-dim/50 p-base flex flex-col justify-end shrink-0">
+              <span class="font-label-caps text-[9px] text-on-surface-variant mb-sm">CLASS DISTRIBUTION</span>
+              <div class="space-y-1">
+                <div class="flex items-center gap-xs">
+                  <div class="w-2 h-2 rounded-sm bg-[#ffa94d]"></div>
+                  <span class="font-label-caps text-[9px] w-20 truncate">Gas Flare</span>
+                  <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
+                    <div class="h-full bg-[#ffa94d] w-[60%]"></div>
+                  </div>
+                  <span class="font-data-mono text-[9px] text-on-surface-variant">60%</span>
+                </div>
+                <div class="flex items-center gap-xs">
+                  <div class="w-2 h-2 rounded-sm bg-error"></div>
+                  <span class="font-label-caps text-[9px] w-20 truncate">Ind. Fire</span>
+                  <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
+                    <div class="h-full bg-error w-[25%]"></div>
+                  </div>
+                  <span class="font-data-mono text-[9px] text-on-surface-variant">25%</span>
+                </div>
+                <div class="flex items-center gap-xs">
+                  <div class="w-2 h-2 rounded-sm bg-[#f59e0b]"></div>
+                  <span class="font-label-caps text-[9px] w-20 truncate">Coal Seam</span>
+                  <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
+                    <div class="h-full bg-[#f59e0b] w-[15%]"></div>
+                  </div>
+                  <span class="font-data-mono text-[9px] text-on-surface-variant">15%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CENTRE COLUMN: MAP & TERMINAL -->
+          <div class="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden">
+            
+            <!-- Geospatial Vector Map Canvas -->
+            <div class="flex-1 relative overflow-hidden bg-[#060910] cyber-grid min-h-0">
+              <!-- Radar Sweep -->
+              <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                <div class="radar-sweep"></div>
+              </div>
+
+              <!-- Map Interactive SVG Canvas Container -->
+              <div class="absolute inset-0 flex items-center justify-center p-md" id="mission-map-svg">
+                <!-- SVG injected by app.js -->
+              </div>
+
+              <!-- HUD Overlays -->
+              <div class="absolute bottom-base left-base bg-surface-dim/80 hud-border p-xs rounded-sm backdrop-blur-sm flex items-center gap-sm">
+                <span class="font-data-mono text-[9px] text-primary">PROJ EPSG:4326</span>
+                <span class="text-outline-variant">|</span>
+                <span class="font-data-mono text-[9px] text-on-surface-variant">INDIA WEST COAST SUB-GRID</span>
+              </div>
+
+              <div class="absolute top-base right-base bg-surface-dim/80 hud-border px-2 py-1 rounded-sm backdrop-blur-sm">
+                <span class="font-data-mono text-[9px] text-tertiary">VIIRS N-BAND SATURATED: 3 SITES</span>
+              </div>
+            </div>
+
+            <!-- Terminal Pipeline Log -->
+            <div class="h-[158px] bg-black hud-border border-x-0 border-b-0 p-sm overflow-hidden flex flex-col shrink-0">
+              <div class="flex items-center justify-between mb-xs opacity-70">
+                <div class="flex items-center gap-xs">
+                  <span class="material-symbols-outlined text-[14px] text-primary">terminal</span>
+                  <span class="font-label-caps text-[9px] text-primary">PIPELINE LOG</span>
+                </div>
+                <span class="font-data-mono text-[9px] text-on-surface-variant">AUTO-STREAMING // 100 Hz</span>
+              </div>
+              <div class="flex-1 overflow-y-auto terminal-text space-y-1" id="terminal-log">
+                <div><span class="text-on-surface-variant/50">[14:02:11]</span> <span class="text-primary-container">[GEE] </span> Initiating ingestion stream v4.2...</div>
+                <div><span class="text-on-surface-variant/50">[14:02:12]</span> <span class="text-tertiary-container">[PHYS]</span> Calculating spectral signatures for cluster ID:A94X</div>
+                <div><span class="text-on-surface-variant/50">[14:02:12]</span> <span class="text-[#ffa94d]">[BASE]</span> Background contextualization complete. Anomaly diff > 4.6σ</div>
+                <div><span class="text-on-surface-variant/50">[14:02:13]</span> <span class="text-error">[FUSE]</span> WARNING: Multi-band saturation detected at coords 22.35°N, 70.02°E</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: DETECTION INSPECTOR -->
+          <div class="w-[372px] hud-border border-l border-y-0 border-r-0 flex flex-col shrink-0 bg-surface-dim/50 h-full overflow-y-auto">
+            <div class="h-8 hud-border border-x-0 border-t-0 bg-[#1b2735]/50 flex items-center justify-between px-base shrink-0">
+              <span class="font-label-caps text-label-caps text-on-surface">DETECTION INSPECTOR</span>
+              <span class="font-data-mono text-[10px] text-primary" id="insp-selected-id">ID: A94X</span>
+            </div>
+
+            <div class="p-base space-y-md">
+              <!-- Primary Verdict Card -->
+              <div class="hud-panel hud-border p-sm rounded-sm flex items-center justify-between">
+                <div class="flex items-center gap-sm">
+                  <span class="material-symbols-outlined text-[#ffa94d] text-[24px]">local_fire_department</span>
+                  <div>
+                    <div class="font-label-caps text-[9px] text-on-surface-variant">PRIMARY CLASSIFICATION</div>
+                    <div class="font-headline-sm text-[16px] text-[#ffa94d] font-bold" id="insp-type">GAS FLARE</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-label-caps text-[9px] text-on-surface-variant">CONFIDENCE</div>
+                  <div class="font-data-mono text-[14px] text-primary font-bold" id="insp-conf">p=0.943</div>
+                </div>
+              </div>
+
+              <!-- Facility Target -->
+              <div class="hud-border bg-surface-container/40 p-xs rounded-sm">
+                <div class="font-label-caps text-[9px] text-on-surface-variant">TARGET FACILITY</div>
+                <div class="font-body-md text-[13px] font-bold text-on-surface" id="insp-name">Jamnagar Refinery</div>
+              </div>
+
+              <!-- Evidence Chain Steps -->
+              <div>
+                <span class="font-label-caps text-[9px] text-on-surface-variant mb-xs block">EVIDENCE CHAIN</span>
+                <div class="flex gap-xs items-center">
+                  <div class="w-6 h-6 rounded border border-primary text-primary flex items-center justify-center font-data-mono text-[10px] bg-primary/10">1</div>
+                  <div class="flex-1 h-[1px] bg-primary"></div>
+                  <div class="w-6 h-6 rounded border border-primary text-primary flex items-center justify-center font-data-mono text-[10px] bg-primary/10">2</div>
+                  <div class="flex-1 h-[1px] bg-primary"></div>
+                  <div class="w-6 h-6 rounded border border-primary text-primary flex items-center justify-center font-data-mono text-[10px] bg-primary/10">3</div>
+                </div>
+                <div class="flex justify-between font-data-mono text-[9px] text-on-surface-variant mt-1">
+                  <span>VIIRS SAT</span>
+                  <span>SPECTRAL</span>
+                  <span>XGB VERDICT</span>
+                </div>
+              </div>
+
+              <!-- Physics Retrieval Metrics Grid -->
+              <div>
+                <span class="font-label-caps text-[9px] text-on-surface-variant mb-xs block">PHYSICS RETRIEVAL</span>
+                <div class="grid grid-cols-2 gap-sm">
+                  <div class="hud-border bg-surface-container/50 p-xs rounded-sm">
+                    <div class="font-label-caps text-[9px] text-on-surface-variant">EFF. TEMP</div>
+                    <div class="font-data-mono text-[13px] text-primary font-bold" id="insp-temp">1847 K</div>
+                  </div>
+                  <div class="hud-border bg-surface-container/50 p-xs rounded-sm">
+                    <div class="font-label-caps text-[9px] text-on-surface-variant">AREA</div>
+                    <div class="font-data-mono text-[13px] text-on-surface" id="insp-area">12.4 m²</div>
+                  </div>
+                  <div class="hud-border bg-surface-container/50 p-xs rounded-sm">
+                    <div class="font-label-caps text-[9px] text-on-surface-variant">FRP</div>
+                    <div class="font-data-mono text-[13px] text-tertiary-container font-bold" id="insp-frp">62.1 MW</div>
+                  </div>
+                  <div class="hud-border bg-surface-container/50 p-xs rounded-sm">
+                    <div class="font-label-caps text-[9px] text-on-surface-variant">CH4 EST</div>
+                    <div class="font-data-mono text-[13px] text-on-surface" id="insp-ch4">0.42 kg/s</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Action Deep Links -->
+              <div class="pt-sm space-y-xs">
+                <button data-nav-target="dossier" class="w-full bg-surface-container-highest hover:bg-surface-bright text-on-surface border border-outline-variant font-label-caps text-[10px] py-2 rounded flex items-center justify-center gap-sm transition-colors">
+                  <span class="material-symbols-outlined text-[16px]">visibility</span>
+                  OPEN DETECTION DOSSIER
+                </button>
+                <button data-nav-target="facility" class="w-full bg-surface-container-highest hover:bg-surface-bright text-on-surface border border-outline-variant font-label-caps text-[10px] py-2 rounded flex items-center justify-center gap-sm transition-colors">
+                  <span class="material-symbols-outlined text-[16px]">domain</span>
+                  VIEW FACILITY PROFILE
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM PANEL: PHYSICS SIGNATURE & HISTOGRAM -->
+        <div class="h-[210px] hud-border border-x-0 border-b-0 border-t bg-surface-dim/90 flex flex-col shrink-0 z-10">
+          <div class="flex border-b border-outline-variant px-sm h-8 shrink-0">
+            <button class="px-md font-label-caps text-[10px] text-primary border-b-2 border-primary h-full flex items-center">PHYSICS SIGNATURE</button>
+            <button class="px-md font-label-caps text-[10px] text-on-surface-variant hover:text-on-surface h-full flex items-center opacity-70">PERSISTENT SOURCE BASELINE</button>
+            <button class="px-md font-label-caps text-[10px] text-on-surface-variant hover:text-on-surface h-full flex items-center opacity-70">MODEL INTEGRITY</button>
+            <button class="px-md font-label-caps text-[10px] text-on-surface-variant hover:text-on-surface h-full flex items-center opacity-70">DATA FUSION</button>
+          </div>
+          
+          <div class="flex-1 p-md flex gap-lg min-h-0 overflow-hidden">
+            <!-- Radiance Histogram Area -->
+            <div class="flex-1 hud-border bg-surface-container/30 rounded-sm relative p-sm flex items-end min-h-0">
+              <span class="absolute top-sm left-sm font-label-caps text-[9px] text-on-surface-variant">RADIANCE HISTOGRAM (500-2200K)</span>
+              
+              <div class="w-full flex items-end gap-[2px] h-28 opacity-85">
+                <div class="flex-1 bg-[#1b2735] h-[10%]"></div>
+                <div class="flex-1 bg-[#1b2735] h-[15%]"></div>
+                <div class="flex-1 bg-outline-variant h-[30%]"></div>
+                <div class="flex-1 bg-outline-variant h-[45%]"></div>
+                <div class="flex-1 bg-tertiary-container/50 h-[60%]"></div>
+                <div class="flex-1 bg-[#ffa94d] h-[85%]"></div>
+                <div class="flex-1 bg-error h-[100%] pulse-critical"></div>
+                <div class="flex-1 bg-[#ffa94d] h-[65%]"></div>
+                <div class="flex-1 bg-tertiary-container/50 h-[30%]"></div>
+                <div class="flex-1 bg-outline-variant h-[10%]"></div>
+              </div>
+            </div>
+
+            <!-- Derivation Notes -->
+            <div class="w-80 shrink-0">
+              <span class="font-label-caps text-[9px] text-on-surface-variant block mb-sm">DERIVATION NOTES</span>
+              <p class="font-body-md text-[11px] text-on-surface-variant leading-relaxed">
+                Dual-band retrieval indicates significant sub-pixel saturation. SWIR/MWIR ratio strongly aligns with hydrocarbon combustion signatures rather than biomass burning.
+              </p>
+              <div class="mt-sm font-data-mono text-[10px] text-primary">
+                T_sub = 1847 K &bull; Area_sub = 12.4 m²
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Integrated Footer -->
+        <footer class="h-[36px] bg-surface-container border-t border-outline-variant w-full flex justify-between items-center px-margin z-50 shrink-0">
+          <span class="font-label-caps text-[10px] text-tertiary">©2024 AGNIVANI AEROSPACE. MISSION CRITICAL DATA.</span>
+          <div class="flex gap-md">
+            <a class="font-label-caps text-[10px] text-on-surface-variant hover:text-primary transition-colors" href="#dossier" data-nav-target="dossier">Physics Signature</a>
+            <a class="font-label-caps text-[10px] text-on-surface-variant hover:text-primary transition-colors" href="#facility" data-nav-target="facility">Baseline</a>
+          </div>
+        </footer>
+      </div>
+
+      <!-- ==================== MODULE 2: ALERT CONSOLE ==================== -->
+      <div id="view-alerts" class="view-panel flex-1 flex flex-col h-full w-full overflow-hidden p-base gap-base">
+        
+        <!-- Top 3-Column Grid -->
+        <div class="flex-1 grid grid-cols-12 gap-base h-full min-h-0 overflow-hidden">
+          
+          <!-- LEFT: Filterable Queue -->
+          <div class="col-span-3 hud-panel hud-border flex flex-col rounded-DEFAULT overflow-hidden h-full">
+            <div class="hud-header-bg p-sm border-b border-[#1b2735] flex justify-between items-center shrink-0">
+              <span class="text-label-caps font-label-caps text-on-surface-variant">INCIDENT QUEUE</span>
+              <div class="flex gap-xs">
+                <button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">filter_list</span></button>
+                <button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[16px]">more_vert</span></button>
+              </div>
+            </div>
+            <div class="p-xs bg-[#060910] border-b border-[#1b2735] flex items-center gap-sm shrink-0">
+              <input class="w-3 h-3 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0" type="checkbox" checked/>
+              <span class="text-label-caps font-label-caps text-on-surface-variant text-[9px]">BULK SELECT ACTIVE</span>
+            </div>
+            <div class="flex-1 overflow-y-auto min-h-0" id="queue-alert-list">
+              <!-- Dynamically populated by app.js -->
+            </div>
+          </div>
+
+          <!-- CENTRE: Incident Summary & Visual Chain -->
+          <div class="col-span-6 flex flex-col gap-base h-full overflow-hidden">
+            <div class="hud-panel hud-border flex-1 rounded-DEFAULT overflow-hidden flex flex-col relative min-h-0">
+              <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-error/10 via-transparent to-transparent pointer-events-none"></div>
+              
+              <div class="hud-header-bg p-sm border-b border-[#1b2735] flex justify-between items-center shrink-0 z-10">
+                <div class="flex items-center gap-md">
+                  <span class="text-label-caps font-label-caps text-on-surface-variant">INCIDENT SUMMARY</span>
+                  <span class="text-data-mono font-data-mono text-primary font-bold" id="summary-anomaly-id">AGN-04832</span>
+                </div>
+                <div class="flex gap-sm items-center" id="summary-severity-badge">
+                  <span class="material-symbols-outlined text-error text-[16px]">warning</span>
+                  <span class="text-label-caps font-label-caps text-error font-bold">SEV-1 CRITICAL</span>
+                </div>
+              </div>
+
+              <div class="p-md flex-1 overflow-y-auto z-10 flex flex-col gap-md min-h-0">
+                <!-- Visual Evidence Chain Cards -->
+                <div class="grid grid-cols-3 gap-sm h-32 shrink-0">
+                  <div class="hud-border bg-[#060910] rounded-[2px] relative overflow-hidden group">
+                    <img alt="Thermal Imaging" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8vSQrQAqP5v1jvqu7SqodX3GM67RK7Uo9Jng5SkMqlGePODoQLmkHhFZPSXEAAMArracktfqEU2TjeSgieDUNVPX28HzrqTBflBuJJS8KLY1XMxEVB4JgEBj2UxujghmesnCXD-Xxp9WnKq9580z8NarbzcAl0Zk9rI-KbA5Vg9cSWjEjKuhWdi035HHFpsTQSnEg0K-geNIcYl5vMFdEZ0kwIDNmNDl4llU-zKh3nl6BZVuRqAo"/>
+                    <div class="absolute bottom-0 left-0 w-full bg-black/60 backdrop-blur-sm p-xs border-t border-[#1b2735]">
+                      <span class="text-[9px] font-data-mono text-on-surface-variant block">THERMAL.IR</span>
+                    </div>
+                  </div>
+
+                  <div class="hud-border bg-[#060910] rounded-[2px] relative overflow-hidden group">
+                    <img alt="Telemetry Spike" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiUJJHOiE9Nmbx0dBIpTB74RBC9-4kpwz1UCD1pAzbgWohLFaqR1Fnu1OdnZVnDkS9k56W-HtpNcY5CKz7oQWfHQiQ74gJvYkMP1NZ92Jh74WPTekh8RqBJGH6CcZSW71O0yodMnezRQrEQ2hcNF8Y0cOwyl8HW0TQZOBckEMcEn2Stch6bs82NnZ6U2cvGsc-Jo5wMTSuipDV_vNfg4qUwrI69UBejBwyqasKgwbVbdqgg5FUMpo"/>
+                    <div class="absolute bottom-0 left-0 w-full bg-black/60 backdrop-blur-sm p-xs border-t border-[#1b2735]">
+                      <span class="text-[9px] font-data-mono text-on-surface-variant block">SENSOR.SIG</span>
+                    </div>
+                  </div>
+
+                  <div class="hud-border bg-[#060910] rounded-[2px] relative overflow-hidden flex items-center justify-center p-sm">
+                    <div class="text-center">
+                      <span class="material-symbols-outlined text-primary mb-xs">map</span>
+                      <div class="text-[10px] font-data-mono text-on-surface" id="summary-coords">Jamnagar Refinery: 22.350° N, 70.020° E</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Action Protocol Checklist -->
+                <div class="flex-1 bg-[#060910] hud-border rounded-[2px] p-sm flex flex-col min-h-0">
+                  <div class="text-label-caps font-label-caps text-on-surface-variant mb-sm">ACTION PROTOCOL CHECKLIST</div>
+                  <div class="flex flex-col gap-xs">
+                    <label class="flex items-center gap-sm p-xs hover:bg-[#1b2735] rounded-[2px] cursor-pointer transition-colors border border-transparent">
+                      <input checked class="protocol-checkbox w-3.5 h-3.5 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0" type="checkbox"/>
+                      <span class="protocol-text text-data-mono font-data-mono text-on-surface text-[12px] opacity-50 line-through">Confirm coordinates with VIIRS Day/Night Band</span>
+                    </label>
+                    <label class="flex items-center gap-sm p-xs hover:bg-[#1b2735] rounded-[2px] cursor-pointer transition-colors border border-transparent">
+                      <input class="protocol-checkbox w-3.5 h-3.5 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0" type="checkbox"/>
+                      <span class="protocol-text text-data-mono font-data-mono text-on-surface text-[12px]">Review physics signature & subpixel Plank temperature</span>
+                    </label>
+                    <label class="flex items-center gap-sm p-xs hover:bg-[#1b2735] rounded-[2px] cursor-pointer transition-colors border border-transparent">
+                      <input class="protocol-checkbox w-3.5 h-3.5 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0" type="checkbox"/>
+                      <span class="protocol-text text-data-mono font-data-mono text-on-surface text-[12px]">Check data fusion integrity against Persistent Source register</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Dispatch Panel & Authorities -->
+          <div class="col-span-3 hud-panel hud-border flex flex-col rounded-DEFAULT overflow-hidden h-full">
+            <div class="hud-header-bg p-sm border-b border-[#1b2735] flex justify-between items-center shrink-0">
+              <span class="text-label-caps font-label-caps text-on-surface-variant">DISPATCH STATUS & DIRECTORY</span>
+            </div>
+            
+            <div class="p-sm flex flex-col gap-sm flex-1 overflow-y-auto min-h-0">
+              <!-- Live Stepper -->
+              <div class="bg-[#060910] hud-border rounded-[2px] p-sm mb-sm shrink-0">
+                <div class="text-label-caps font-label-caps text-on-surface-variant mb-md">ALERT PROGRESSION</div>
+                <div class="flex flex-col gap-0 relative pl-md">
+                  <div class="absolute left-[13px] top-[10px] bottom-[10px] w-[1px] bg-[#1b2735]"></div>
+                  <div class="absolute left-[13px] top-[10px] h-[50%] w-[1px] bg-primary"></div>
+                  
+                  <div class="flex items-center gap-sm pb-md relative">
+                    <div class="absolute left-[-16px] w-2 h-2 rounded-full bg-primary ring-2 ring-[#060910]"></div>
+                    <span class="text-data-mono font-data-mono text-on-surface text-[11px]">Dispatched</span>
+                    <span class="text-data-mono font-data-mono text-on-surface-variant text-[9px] ml-auto">14:02Z</span>
+                  </div>
+
+                  <div class="flex items-center gap-sm pb-md relative">
+                    <div class="absolute left-[-16px] w-2 h-2 rounded-full bg-primary ring-2 ring-[#060910] animate-pulse"></div>
+                    <span class="text-data-mono font-data-mono text-primary text-[11px] font-bold">Received</span>
+                    <span class="text-data-mono font-data-mono text-on-surface-variant text-[9px] ml-auto">14:05Z</span>
+                  </div>
+
+                  <div class="flex items-center gap-sm relative opacity-50">
+                    <div class="absolute left-[-16px] w-2 h-2 rounded-full bg-[#1b2735] ring-2 ring-[#060910]"></div>
+                    <span class="text-data-mono font-data-mono text-on-surface text-[11px]">Responded</span>
+                    <span class="text-data-mono font-data-mono text-on-surface-variant text-[9px] ml-auto">PENDING</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Directory of Authorities -->
+              <div class="text-label-caps font-label-caps text-on-surface-variant mb-xs mt-sm shrink-0">NODAL AUTHORITIES</div>
+              <div class="flex flex-col gap-xs">
+                <div class="flex items-center justify-between p-xs bg-[#060910] hud-border rounded-[2px]">
+                  <div class="flex flex-col">
+                    <span class="text-data-mono font-data-mono text-on-surface text-[11px] font-bold">Dist. Collector - SEC 7</span>
+                    <span class="text-data-mono font-data-mono text-on-surface-variant text-[9px]">ID: AUTH-7A</span>
+                  </div>
+                  <button class="w-6 h-6 rounded-full bg-transparent border border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-[#060910] transition-colors" title="Trigger Direct Comms">
+                    <span class="material-symbols-outlined text-[14px]">call</span>
+                  </button>
+                </div>
+
+                <div class="flex items-center justify-between p-xs bg-[#060910] hud-border rounded-[2px]">
+                  <div class="flex flex-col">
+                    <span class="text-data-mono font-data-mono text-on-surface text-[11px] font-bold">Disaster Mgmt HQ</span>
+                    <span class="text-data-mono font-data-mono text-on-surface-variant text-[9px]">ID: DM-CENTRAL</span>
+                  </div>
+                  <button class="w-6 h-6 rounded-full bg-transparent border border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-[#060910] transition-colors" title="Trigger Direct Comms">
+                    <span class="material-symbols-outlined text-[14px]">call</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-auto pt-sm shrink-0">
+                <button data-action="open-dispatch" class="w-full bg-primary-container text-[#060910] font-label-caps text-[10px] py-2 rounded-[4px] hover:bg-primary transition-all font-bold">
+                  BROADCAST UPDATE
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM: Immutable Audit Trail Table -->
+        <div class="h-40 shrink-0 hud-panel hud-border rounded-DEFAULT overflow-hidden flex flex-col">
+          <div class="hud-header-bg p-sm border-b border-[#1b2735] flex justify-between items-center shrink-0">
+            <span class="text-label-caps font-label-caps text-on-surface-variant">IMMUTABLE AUDIT TRAIL</span>
+            <span class="font-data-mono text-[9px] text-primary">CRYPTOGRAPHICALLY VERIFIED LOG</span>
+          </div>
+          <div class="flex-1 overflow-y-auto min-h-0">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-[#060910] sticky top-0 z-10 border-b border-[#1b2735]">
+                <tr>
+                  <th class="p-xs text-label-caps font-label-caps text-on-surface-variant font-normal">TIMESTAMP (Z)</th>
+                  <th class="p-xs text-label-caps font-label-caps text-on-surface-variant font-normal">OPERATOR ID</th>
+                  <th class="p-xs text-label-caps font-label-caps text-on-surface-variant font-normal">ACTION</th>
+                  <th class="p-xs text-label-caps font-label-caps text-on-surface-variant font-normal">REF</th>
+                </tr>
+              </thead>
+              <tbody id="audit-table-body">
+                <!-- Dynamically populated by app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== MODULE 3: ANALYTICS & INSIGHTS ==================== -->
+      <div id="view-analytics" class="view-panel scrollable flex-1 flex flex-col h-full w-full overflow-y-auto p-margin gap-base pb-16">
+        
+        <!-- Page Header -->
+        <div class="flex justify-between items-end mb-sm shrink-0">
+          <div>
+            <h1 class="font-headline-lg text-[26px] text-primary uppercase font-bold tracking-tight">Fleet-Wide Intelligence</h1>
+            <p class="font-data-mono text-[12px] text-on-surface-variant mt-1">GLOBAL_PERFORMANCE_METRICS // LAST 90 DAYS</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="px-3 py-1 bg-transparent border border-primary text-primary font-label-caps text-[11px] rounded flex items-center gap-2 hover:bg-primary/10 transition-colors">
+              <span class="material-symbols-outlined text-[14px]">download</span>
+              EXPORT REPORT
+            </button>
+            <button class="px-3 py-1 bg-surface-container-highest border border-outline-variant text-on-surface font-label-caps text-[11px] rounded flex items-center gap-2 hover:bg-surface-bright transition-colors">
+              <span class="material-symbols-outlined text-[14px]">filter_list</span>
+              FILTER
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Strip -->
+        <div class="grid grid-cols-4 gap-base shrink-0">
+          <div class="hud-panel p-3 flex flex-col justify-between h-24 rounded">
+            <div class="flex justify-between items-start">
+              <span class="font-label-caps text-[10px] text-on-surface-variant tracking-wider uppercase">Total Detections</span>
+              <span class="material-symbols-outlined text-[14px] text-tertiary">scatter_plot</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="font-data-mono text-[28px] text-on-surface font-bold">14,208</span>
+              <span class="font-data-mono text-[11px] text-primary">+12.4%</span>
+            </div>
+          </div>
+
+          <div class="hud-panel p-3 flex flex-col justify-between h-24 rounded">
+            <div class="flex justify-between items-start">
+              <span class="font-label-caps text-[10px] text-on-surface-variant tracking-wider uppercase">Mean Recalibrated p</span>
+              <span class="material-symbols-outlined text-[14px] text-primary">model_training</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="font-data-mono text-[28px] text-on-surface font-bold">0.942</span>
+              <span class="font-data-mono text-[11px] text-on-surface-variant">+/- 0.015</span>
+            </div>
+          </div>
+
+          <div class="hud-panel p-3 flex flex-col justify-between h-24 hud-glow border-primary/50 relative overflow-hidden rounded">
+            <div class="flex justify-between items-start relative z-10">
+              <span class="font-label-caps text-[10px] text-on-surface-variant tracking-wider uppercase">Dispatch Rate</span>
+              <span class="material-symbols-outlined text-[14px] text-error">local_fire_department</span>
+            </div>
+            <div class="flex items-baseline gap-2 relative z-10">
+              <span class="font-data-mono text-[28px] text-primary font-bold">8.4%</span>
+              <span class="font-data-mono text-[11px] text-error font-bold">CRITICAL</span>
+            </div>
+          </div>
+
+          <div class="hud-panel p-3 flex flex-col justify-between h-24 rounded">
+            <div class="flex justify-between items-start">
+              <span class="font-label-caps text-[10px] text-on-surface-variant tracking-wider uppercase">Accuracy (Causal)</span>
+              <span class="material-symbols-outlined text-[14px] text-tertiary-fixed-dim">verified</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="font-data-mono text-[28px] text-on-surface font-bold">0.868</span>
+              <span class="font-data-mono text-[11px] text-primary">OP.NOMINAL</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento Grid: Map, Insights, Calibration, Volatility -->
+        <div class="grid grid-cols-12 gap-base shrink-0 min-h-[400px]">
+          
+          <!-- Main Map Area (Cols 1-7) -->
+          <div class="col-span-7 flex flex-col hud-panel relative overflow-hidden rounded min-h-[380px]">
+            <div class="hud-header-bg px-3 py-2 flex justify-between items-center z-10 shrink-0">
+              <span class="font-label-caps text-[11px] text-on-surface uppercase tracking-widest flex items-center gap-2">
+                <span class="w-1.5 h-1.5 bg-error rounded-sm"></span>
+                Thermal Intensity Map (India)
+              </span>
+              <span class="font-data-mono text-[10px] text-on-surface-variant">LIVE.GEO.SATELLITE</span>
+            </div>
+            <div class="flex-1 relative bg-[#05080c] min-h-[320px]">
+              <div class="absolute inset-0 bg-cover bg-center opacity-65" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDShYo4frQwsmd06XCu3ZBnZlAxXfKBB_R00oY74mtbcWa14gaNUOYkZL-auKCJNbi1cZ1sDusY0q1X5zmM_knj7xzamG_142B5OYcPm2bj4ynMVdL5lZj9G7CWa5C8PSVyIIg6vV2BJmEGlGef6L3Vbxi6xZBW9VfWwNKXrurcmnOLrG4s1thPvk89ylcfdf8PxkOFvHHbAr_oPYnLFFNh4Gp1dpoxae12cNvbgM68J6Q0mFnRqU0')"></div>
+              
+              <div class="absolute bottom-3 left-3 bg-surface-dim/90 backdrop-blur-sm border border-outline-variant p-2 rounded">
+                <div class="font-label-caps text-[9px] text-on-surface-variant mb-1">INTENSITY SCALE</div>
+                <div class="w-32 h-2 bg-gradient-to-r from-primary via-tertiary-container to-error rounded-full"></div>
+                <div class="flex justify-between font-data-mono text-[9px] text-on-surface mt-1">
+                  <span>LOW</span>
+                  <span>CRIT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Side Stack: Auto-Insights & Calibration (Cols 8-12) -->
+          <div class="col-span-5 flex flex-col gap-base">
+            
+            <!-- Auto-Insights Card -->
+            <div class="hud-panel flex-1 flex flex-col rounded min-h-[200px]">
+              <div class="hud-header-bg px-3 py-2 flex justify-between items-center shrink-0">
+                <span class="font-label-caps text-[11px] text-on-surface uppercase tracking-widest flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[14px] text-primary">auto_awesome</span>
+                  Auto-Insights Feed
+                </span>
+              </div>
+              <div class="p-2 flex flex-col gap-2 overflow-y-auto">
+                <div class="bg-surface-container/50 border border-outline-variant p-2 hover:bg-surface-container-highest transition-colors cursor-pointer group rounded">
+                  <div class="flex items-start gap-2">
+                    <div class="w-1 h-full min-h-[30px] bg-error"></div>
+                    <div class="flex-1">
+                      <div class="font-data-mono text-[10px] text-error mb-0.5">ANOMALY.DETECTED</div>
+                      <div class="font-headline-sm text-[13px] text-on-surface font-semibold leading-tight mb-1">Increased Flare Activity in Jamnagar Cluster</div>
+                      <div class="h-6 w-full opacity-60 border-t border-b border-outline-variant mt-2 flex items-end">
+                        <div class="w-1/6 h-1/4 bg-primary/30 mx-px"></div>
+                        <div class="w-1/6 h-1/3 bg-primary/30 mx-px"></div>
+                        <div class="w-1/6 h-2/3 bg-tertiary-container/50 mx-px"></div>
+                        <div class="w-1/6 h-full bg-error/70 mx-px"></div>
+                        <div class="w-1/6 h-5/6 bg-error/50 mx-px"></div>
+                        <div class="w-1/6 h-1/2 bg-primary/30 mx-px"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-surface-container/50 border border-outline-variant p-2 hover:bg-surface-container-highest transition-colors cursor-pointer group rounded">
+                  <div class="flex items-start gap-2">
+                    <div class="w-1 h-full min-h-[30px] bg-tertiary"></div>
+                    <div class="flex-1">
+                      <div class="font-data-mono text-[10px] text-tertiary mb-0.5">TREND.SHIFT</div>
+                      <div class="font-headline-sm text-[13px] text-on-surface font-semibold leading-tight mb-1">Night-time false positive rate dropped by 4.2%</div>
+                      <div class="font-data-mono text-[10px] text-on-surface-variant flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined text-[12px] text-primary">trending_down</span> Model v4.1 deployment successful
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reliability Calibration Curve -->
+            <div class="hud-panel h-48 flex flex-col rounded shrink-0">
+              <div class="hud-header-bg px-3 py-2 flex justify-between items-center shrink-0">
+                <span class="font-label-caps text-[11px] text-on-surface uppercase tracking-widest flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[14px] text-on-surface-variant">straighten</span>
+                  Calibration (Reliability)
+                </span>
+                <span class="font-data-mono text-[10px] text-on-surface-variant border border-outline-variant px-1 rounded-sm">Brier: 0.112 (↓0.04)</span>
+              </div>
+              <div class="flex-1 p-3 flex gap-4 min-h-0">
+                <div class="flex-1 relative border-l border-b border-outline-variant flex items-end p-1">
+                  <div class="w-[141%] h-[1px] bg-outline-variant/30 transform origin-bottom-left -rotate-45 absolute bottom-0 left-0"></div>
+                  <span class="absolute -bottom-4 left-0 font-data-mono text-[9px] text-on-surface-variant">0.0</span>
+                  <span class="absolute -bottom-4 right-0 font-data-mono text-[9px] text-on-surface-variant">1.0</span>
+                  <span class="absolute bottom-0 -left-6 font-data-mono text-[9px] text-on-surface-variant">0.0</span>
+                  <span class="absolute top-0 -left-6 font-data-mono text-[9px] text-on-surface-variant">1.0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Volatility Time Series -->
+        <div class="hud-panel h-48 flex flex-col rounded shrink-0">
+          <div class="hud-header-bg px-3 py-2 flex justify-between items-center shrink-0">
+            <span class="font-label-caps text-[11px] text-on-surface uppercase tracking-widest flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px] text-on-surface-variant">timeline</span>
+              Detections Volatility (90 Days)
+            </span>
+            <div class="flex gap-2">
+              <button class="font-label-caps text-[9px] px-2 py-0.5 border border-outline-variant text-on-surface hover:bg-surface-bright">1W</button>
+              <button class="font-label-caps text-[9px] px-2 py-0.5 border border-outline-variant text-on-surface hover:bg-surface-bright">1M</button>
+              <button class="font-label-caps text-[9px] px-2 py-0.5 border border-primary bg-primary/10 text-primary">3M</button>
+            </div>
+          </div>
+          <div class="flex-1 relative p-2 flex flex-col justify-end border-b border-outline-variant m-2 mb-4 opacity-75">
+            <div class="w-full h-1/2 bg-gradient-to-t from-primary/20 to-transparent border-t border-primary relative">
+              <div class="absolute top-0 right-1/4 w-px h-full bg-error border-l border-dashed border-error">
+                <span class="absolute -top-4 -left-4 font-data-mono text-[9px] text-error bg-surface-container px-1 rounded-sm border border-error">PEAK EVENT</span>
+              </div>
+            </div>
+            <div class="flex justify-between absolute -bottom-4 left-0 w-full font-data-mono text-[9px] text-on-surface-variant">
+              <span>T-90</span>
+              <span>T-60</span>
+              <span>T-30</span>
+              <span>T-0 (NOW)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== MODULE 4: DETECTION DOSSIER ==================== -->
+      <div id="view-dossier" class="view-panel scrollable flex-1 flex flex-col h-full w-full overflow-y-auto p-margin pb-16">
+        <div class="max-w-7xl w-full mx-auto space-y-lg">
+          
+          <!-- Breadcrumb & Anomaly Hero Header -->
+          <header class="space-y-md">
+            <div class="text-data-mono font-data-mono text-on-surface-variant text-[11px] flex items-center gap-xs">
+              <span>INTELLIGENCE GRID</span>
+              <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+              <span class="text-primary">DETECTION DOSSIER</span>
+            </div>
+
+            <div class="flex justify-between items-start border-b border-outline-variant pb-md">
+              <div>
+                <h1 class="text-headline-lg text-[26px] font-bold text-primary flex items-center gap-md" id="dossier-id">
+                  ID AGN-04832
+                  <span id="dossier-type" class="bg-[#ffa94d]/15 border border-[#ffa94d] text-[#ffa94d] px-sm py-xs rounded-sm text-label-caps font-label-caps ml-sm">GAS FLARE</span>
+                  <span id="dossier-severity" class="bg-error/15 border border-error text-error px-sm py-xs rounded-sm text-label-caps font-label-caps flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-[12px]">warning</span> CRITICAL
+                  </span>
+                </h1>
+              </div>
+              <div class="text-right">
+                <div class="text-data-mono font-data-mono text-outline text-[11px]">FACILITY</div>
+                <div class="text-headline-sm text-[16px] font-bold" id="dossier-facility">JAMNAGAR REFINERY</div>
+              </div>
+            </div>
+          </header>
+
+          <!-- Dossier Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+            
+            <!-- Visual Proof with Interactive Swipe Split Slider -->
+            <div class="lg:col-span-2 hud-panel rounded flex flex-col critical-glow overflow-hidden min-h-[300px]">
+              <div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center shrink-0">
+                <span class="text-label-caps font-label-caps text-on-surface-variant">VISUAL PROOF (INTERACTIVE SWIPE COMPARISON)</span>
+                <span class="material-symbols-outlined text-outline text-[16px]">satellite_alt</span>
+              </div>
+              
+              <div class="relative h-72 w-full overflow-hidden flex-1 swipe-container" id="swipe-container">
+                <!-- Pre-detection image (Before) -->
+                <div class="swipe-before" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuByValVkzElEzrOZwe0e1mP2DQnY-av6vqTaKYEqNYRp778zJ3wJExpJJILpW8BXAsrXeuZdKO9TQBrc9mKqZffG8xZoLkRPAPREdboc9jGq3dDViisyCjYK-HhM7BXu_3P-lChdn4uRDuVmG3WZ1PSNGeYET3Ul91XAAv3-L02TD4-Yw3yRPjPLej1VxT5b2IGpzeo768rj3pK_wGoxEwL9lXv45AOiojwknBB1BAWscpxDmP5Jxs'); filter: saturate(0.5) brightness(0.7);"></div>
+                
+                <!-- Detection image (After with flare bloom) -->
+                <div class="swipe-after" id="swipe-after" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuByValVkzElEzrOZwe0e1mP2DQnY-av6vqTaKYEqNYRp778zJ3wJExpJJILpW8BXAsrXeuZdKO9TQBrc9mKqZffG8xZoLkRPAPREdboc9jGq3dDViisyCjYK-HhM7BXu_3P-lChdn4uRDuVmG3WZ1PSNGeYET3Ul91XAAv3-L02TD4-Yw3yRPjPLej1VxT5b2IGpzeo768rj3pK_wGoxEwL9lXv45AOiojwknBB1BAWscpxDmP5Jxs');"></div>
+                
+                <!-- Draggable Divider Line & Knob -->
+                <div class="swipe-handle" id="swipe-handle">
+                  <div class="swipe-button">
+                    <span class="material-symbols-outlined text-[16px]">swap_horiz</span>
+                  </div>
+                </div>
+
+                <div class="absolute bottom-sm left-sm bg-surface-container/90 backdrop-blur px-sm py-xs border border-outline-variant text-data-mono font-data-mono text-xs z-10">
+                  PRE-DETECTION (T-24H)
+                </div>
+                <div class="absolute bottom-sm right-sm bg-surface-container/90 backdrop-blur px-sm py-xs border border-outline-variant text-data-mono font-data-mono text-xs z-10 text-primary">
+                  DETECTION (T-0)
+                </div>
+              </div>
+            </div>
+
+            <!-- Action & Audit Timeline -->
+            <div class="hud-panel rounded flex flex-col">
+              <div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center shrink-0">
+                <span class="text-label-caps font-label-caps text-on-surface-variant">ACTION & AUDIT</span>
+                <span class="material-symbols-outlined text-outline text-[16px]">policy</span>
+              </div>
+              <div class="p-md space-y-md flex-1">
+                <button data-action="open-dispatch" class="w-full bg-error-container text-on-error-container font-label-caps text-label-caps py-sm border border-error hover:bg-error hover:text-white transition-colors flex items-center justify-center gap-xs rounded font-bold">
+                  <span class="material-symbols-outlined text-[16px]">rocket_launch</span> INITIATE DISPATCH
+                </button>
+                
+                <div class="space-y-sm mt-md relative before:absolute before:inset-y-0 before:left-3 before:w-px before:bg-outline-variant ml-xs">
+                  <div class="flex gap-sm relative z-10">
+                    <div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
+                      <div class="w-2 h-2 rounded-full bg-primary"></div>
+                    </div>
+                    <div>
+                      <div class="text-label-caps font-label-caps text-primary">ANOMALY DETECTED</div>
+                      <div class="text-data-mono font-data-mono text-outline text-[10px]">14:32:05 UTC</div>
+                    </div>
+                  </div>
+
+                  <div class="flex gap-sm relative z-10">
+                    <div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
+                      <div class="w-2 h-2 rounded-full bg-tertiary"></div>
+                    </div>
+                    <div>
+                      <div class="text-label-caps font-label-caps text-tertiary">CLASSIFICATION: GAS FLARE</div>
+                      <div class="text-data-mono font-data-mono text-outline text-[10px]">14:32:12 UTC</div>
+                    </div>
+                  </div>
+
+                  <div class="flex gap-sm relative z-10 opacity-50">
+                    <div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0"></div>
+                    <div>
+                      <div class="text-label-caps font-label-caps">AWAITING DISPATCH</div>
+                      <div class="text-data-mono font-data-mono text-outline text-[10px]">PENDING</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Spectral Evidence Planck Curve -->
+            <div class="lg:col-span-2 hud-panel rounded flex flex-col h-64">
+              <div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center shrink-0">
+                <span class="text-label-caps font-label-caps text-on-surface-variant">SPECTRAL EVIDENCE (PLANCK CURVE RETRIEVAL)</span>
+                <span class="material-symbols-outlined text-outline text-[16px]">show_chart</span>
+              </div>
+              <div class="flex-1 p-md relative flex flex-col min-h-0">
+                <div class="flex-1 border-l border-b border-outline-variant relative">
+                  <div class="absolute bottom-4 left-1/4 w-2 h-2 bg-primary rounded-full" title="Band I4 MWIR"></div>
+                  <div class="absolute bottom-12 left-2/4 w-2 h-2 bg-primary rounded-full" title="Band I5 TIR"></div>
+                  <div class="absolute top-8 right-1/3 w-2 h-2 bg-error rounded-full animate-pulse shadow-[0_0_8px_rgba(255,180,171,0.8)]" title="Peak Spectral Radiance"></div>
+                  
+                  <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 500 200">
+                    <path id="planck-svg-curve" d="M0,200 Q150,180 250,50 T500,200" fill="none" stroke="#22d3ee" stroke-dasharray="4" stroke-width="1.5"></path>
+                  </svg>
+                  
+                  <div class="absolute top-4 right-4 bg-surface-container-high border border-outline-variant p-sm text-data-mono font-data-mono text-xs rounded">
+                    T = 1847K <span class="text-error">(RETRIEVED)</span>
+                  </div>
+                </div>
+                <div class="flex justify-between text-data-mono font-data-mono text-outline text-[10px] mt-xs">
+                  <span>WAVELENGTH (0.5 - 5.0 μm)</span>
+                  <span>SPECTRAL RADIANCE (W/m²/sr/μm)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- SHAP Attribution Breakdown -->
+            <div class="hud-panel rounded flex flex-col h-64">
+              <div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center shrink-0">
+                <span class="text-label-caps font-label-caps text-on-surface-variant">ATTRIBUTION (SHAP DRIVERS)</span>
+                <span class="material-symbols-outlined text-outline text-[16px]">bar_chart</span>
+              </div>
+              <div class="flex-1 p-md space-y-sm overflow-y-auto min-h-0">
+                <div class="text-data-mono font-data-mono text-[10px] text-outline mb-xs border-b border-outline-variant pb-xs">CLASSIFICATION DRIVERS</div>
+                
+                <div class="flex items-center gap-sm">
+                  <span class="text-data-mono font-data-mono text-xs w-20 truncate">TEMP. GRAD.</span>
+                  <div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
+                    <div class="absolute left-1/2 h-full bg-error/80 border border-error w-3/4" style="transform-origin: left; transform: scaleX(0.8)"></div>
+                    <div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-sm">
+                  <span class="text-data-mono font-data-mono text-xs w-20 truncate">SWIR RAD.</span>
+                  <div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
+                    <div class="absolute left-1/2 h-full bg-error/80 border border-error w-1/2" style="transform-origin: left; transform: scaleX(0.6)"></div>
+                    <div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-sm">
+                  <span class="text-data-mono font-data-mono text-xs w-20 truncate">AREA SIZE</span>
+                  <div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
+                    <div class="absolute right-1/2 h-full bg-primary/80 border border-primary w-1/4" style="transform-origin: right; transform: scaleX(0.4)"></div>
+                    <div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-sm">
+                  <span class="text-data-mono font-data-mono text-xs w-20 truncate">MWIR ANOM.</span>
+                  <div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
+                    <div class="absolute left-1/2 h-full bg-error/80 border border-error w-1/3" style="transform-origin: left; transform: scaleX(0.5)"></div>
+                    <div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== MODULE 5: FACILITY PROFILE ==================== -->
+      <div id="view-facility" class="view-panel scrollable flex-1 flex flex-col h-full w-full overflow-y-auto p-margin gap-margin pb-16">
+        
+        <!-- Context & Header Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-base items-stretch shrink-0">
+          
+          <!-- Facility Summary Card -->
+          <div class="hud-panel lg:col-span-8 p-md rounded flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAmOrMQXGu6xJ_t9aJrM1h9kdN1eC1qXJw8RFznpe3x6sqWBemhFjEgYddMNTsUe52VO6hgUAgnXE5P3Hcr0jDlCxf04LZ1fLq5nvLdKK07OaroTkcRS8zALjOWGyEChKuW49LI6OmPcSAspxDQuv7IohSFPqb_qN_YrdS_x95W-5M3qwfbimB8jkRtd-qvCZaoVjj8tLLIR9JHfLxKqsL_7xPdE6gjNiJT5ABJEo2kbCH5T1m9tpU')"></div>
+            
+            <div class="relative z-10 flex justify-between items-start">
+              <div>
+                <div class="flex items-center gap-sm mb-sm">
+                  <span class="w-2 h-2 rounded-full bg-error pulse-critical"></span>
+                  <span class="text-label-caps font-label-caps text-error">CRITICAL MONITORING ACTIVE</span>
+                </div>
+                <h1 class="text-headline-lg text-[26px] font-bold text-on-surface mb-xs">JAMNAGAR REFINERY</h1>
+                <div class="flex items-center gap-md">
+                  <span class="text-data-mono font-data-mono text-on-surface-variant">ID: RIL-JAM-01</span>
+                  <span class="text-outline-variant">|</span>
+                  <span class="text-data-mono font-data-mono text-on-surface-variant flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-[14px]">location_on</span> 22.339° N, 69.832° E
+                  </span>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">PRIMARY OUTPUT</span>
+                <span class="text-data-mono font-data-mono text-primary bg-primary/10 border border-primary/30 px-sm py-xs rounded">PETROCHEMICAL</span>
+              </div>
+            </div>
+
+            <div class="relative z-10 grid grid-cols-4 gap-base mt-xl border-t border-outline-variant pt-md">
+              <div>
+                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">TOTAL AREA</span>
+                <span class="text-data-mono font-data-mono text-on-surface">7,500 ACRES</span>
+              </div>
+              <div>
+                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">CAPACITY</span>
+                <span class="text-data-mono font-data-mono text-on-surface">1.24M BPD</span>
+              </div>
+              <div>
+                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">LAST SCAN</span>
+                <span class="text-data-mono font-data-mono text-on-surface">T-00:04:12</span>
+              </div>
+              <div>
+                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">ACTIVE FLARES</span>
+                <span class="text-data-mono font-data-mono text-tertiary">3 IDENTIFIED</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk Score Gauge -->
+          <div class="hud-panel lg:col-span-4 p-md rounded flex flex-col items-center justify-center relative">
+            <span class="absolute top-md left-md text-label-caps font-label-caps text-on-surface-variant">THERMAL RISK INDEX</span>
+            <div class="relative w-32 h-32 mt-md">
+              <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" fill="none" r="40" stroke="#1b2735" stroke-width="8"></circle>
+                <circle class="gauge-circle" cx="50" cy="50" fill="none" r="40" stroke="#ffb13b" stroke-linecap="round" stroke-width="8" stroke-dashoffset="62.8"></circle>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="text-headline-lg font-headline-lg text-tertiary-container font-bold leading-none">75</span>
+                <span class="text-label-caps font-label-caps text-on-surface-variant text-[10px]">/100</span>
+              </div>
+            </div>
+            <div class="mt-md text-center">
+              <span class="text-data-mono font-data-mono text-tertiary-container bg-tertiary-container/10 px-md py-xs rounded border border-tertiary-container/30 text-xs font-bold">ELEVATED SEVERITY</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12-Month Baseline: Small Multiples -->
+        <div class="hud-panel rounded flex flex-col shrink-0">
+          <div class="hud-header-bg px-md py-sm flex justify-between items-center rounded-t">
+            <span class="text-label-caps font-label-caps text-on-surface">12-MONTH THERMAL DECOMPOSITION BASELINE</span>
+            <span class="text-data-mono font-data-mono text-[10px] text-primary">VIIRS DAY/NIGHT CYCLES</span>
+          </div>
+          <div class="p-md grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-base">
+            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">JAN 2024</span>
+              <div class="h-12 w-full flex items-end gap-[1px]">
+                <div class="w-full h-[40%] bg-outline-variant/30"></div>
+                <div class="w-full h-[60%] bg-primary/40 border-t border-primary"></div>
+                <div class="w-full h-[80%] bg-primary/40 border-t border-primary"></div>
+                <div class="w-full h-[45%] bg-outline-variant/30"></div>
+              </div>
+            </div>
+            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">FEB 2024</span>
+              <div class="h-12 w-full flex items-end gap-[1px]">
+                <div class="w-full h-[30%] bg-outline-variant/30"></div>
+                <div class="w-full h-[55%] bg-outline-variant/30"></div>
+                <div class="w-full h-[90%] bg-tertiary-container/40 border-t border-tertiary-container"></div>
+                <div class="w-full h-[40%] bg-outline-variant/30"></div>
+              </div>
+            </div>
+            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">MAR 2024</span>
+              <div class="h-12 w-full flex items-end gap-[1px]">
+                <div class="w-full h-[35%] bg-outline-variant/30"></div>
+                <div class="w-full h-[40%] bg-outline-variant/30"></div>
+                <div class="w-full h-[35%] bg-outline-variant/30"></div>
+                <div class="w-full h-[40%] bg-outline-variant/30"></div>
+              </div>
+            </div>
+            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">APR 2024</span>
+              <div class="h-12 w-full flex items-end gap-[1px]">
+                <div class="w-full h-[40%] bg-outline-variant/30"></div>
+                <div class="w-full h-[75%] bg-primary/40 border-t border-primary"></div>
+                <div class="w-full h-[85%] bg-primary/40 border-t border-primary"></div>
+                <div class="w-full h-[35%] bg-outline-variant/30"></div>
+              </div>
+            </div>
+            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">MAY 2024</span>
+              <div class="h-12 w-full flex items-end gap-[1px]">
+                <div class="w-full h-[45%] bg-outline-variant/30"></div>
+                <div class="w-full h-[50%] bg-outline-variant/30"></div>
+                <div class="w-full h-[45%] bg-outline-variant/30"></div>
+                <div class="w-full h-[50%] bg-outline-variant/30"></div>
+              </div>
+            </div>
+            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
+              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">JUN 2024</span>
+              <div class="h-12 w-full flex items-end gap-[1px]">
+                <div class="w-full h-[50%] bg-outline-variant/30"></div>
+                <div class="w-full h-[30%] bg-outline-variant/30"></div>
+                <div class="w-full h-[20%] bg-outline-variant/30"></div>
+                <div class="w-full h-[35%] bg-outline-variant/30"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Heatmap Grid & Temperature Distribution -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-base shrink-0">
+          
+          <!-- 365-Day Activity Heatmap Grid -->
+          <div class="hud-panel rounded flex flex-col">
+            <div class="hud-header-bg px-md py-sm flex justify-between items-center rounded-t">
+              <span class="text-label-caps font-label-caps text-on-surface">DETECTION ACTIVITY HEATMAP (T-365)</span>
+              <span class="font-data-mono text-[10px] text-on-surface-variant">DAILY FLARING INTENSITY</span>
+            </div>
+            <div class="p-md">
+              <div class="flex items-end gap-sm mb-sm text-data-mono font-data-mono text-[10px] text-on-surface-variant">
+                <span class="w-8">Mon</span>
+                <div class="flex-1 grid grid-cols-[repeat(52,minmax(0,1fr))] gap-[2px]">
+                  <div class="col-span-4">Jan</div><div class="col-span-4">Feb</div><div class="col-span-5">Mar</div><div class="col-span-4">Apr</div><div class="col-span-4">May</div><div class="col-span-5">Jun</div><div class="col-span-4">Jul</div><div class="col-span-4">Aug</div><div class="col-span-5">Sep</div><div class="col-span-4">Oct</div><div class="col-span-4">Nov</div><div class="col-span-5">Dec</div>
+                </div>
+              </div>
+              <div class="flex gap-sm">
+                <div class="flex flex-col gap-[2px] text-data-mono font-data-mono text-[10px] text-on-surface-variant w-8">
+                  <span class="h-[9px]"></span>
+                  <span class="h-[9px] leading-[9px]">Wed</span>
+                  <span class="h-[9px]"></span>
+                  <span class="h-[9px] leading-[9px]">Fri</span>
+                  <span class="h-[9px]"></span>
+                  <span class="h-[9px] leading-[9px]">Sun</span>
+                  <span class="h-[9px]"></span>
+                </div>
+                <div class="flex-1 grid grid-rows-7 grid-flow-col gap-[2px]" id="facility-heatmap-grid">
+                  <!-- Generated by app.js -->
+                </div>
+              </div>
+              <div class="flex justify-end items-center gap-xs mt-md text-data-mono font-data-mono text-[10px] text-on-surface-variant">
+                <span>Less</span>
+                <div class="w-[9px] h-[9px] rounded-sm bg-surface-container-highest"></div>
+                <div class="w-[9px] h-[9px] rounded-sm bg-primary/30"></div>
+                <div class="w-[9px] h-[9px] rounded-sm bg-primary/60"></div>
+                <div class="w-[9px] h-[9px] rounded-sm bg-primary"></div>
+                <div class="w-[9px] h-[9px] rounded-sm bg-[#ffa94d]"></div>
+                <div class="w-[9px] h-[9px] rounded-sm bg-error"></div>
+                <span>More</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bimodal Temperature Distribution Overlay -->
+          <div class="hud-panel rounded flex flex-col relative overflow-hidden">
+            <div class="hud-header-bg px-md py-sm flex justify-between items-center rounded-t relative z-10">
+              <span class="text-label-caps font-label-caps text-on-surface">TEMPERATURE DISTRIBUTION OVERLAY</span>
+              <span class="text-data-mono font-data-mono text-[10px] text-primary">KELVIN (K)</span>
+            </div>
+            <div class="flex-1 p-md relative flex items-end min-h-[220px]">
+              <div class="absolute inset-x-md bottom-md top-md border-b border-l border-outline-variant/50">
+                <svg class="w-full h-full absolute inset-0" preserveAspectRatio="none" viewBox="0 0 100 100">
+                  <path d="M0,100 C20,90 30,20 40,30 C50,40 60,80 70,10 C80,-10 90,80 100,100" fill="none" stroke="#3c494c" stroke-dasharray="2 2" stroke-width="1"></path>
+                  <line opacity="0.6" stroke="#ffb13b" stroke-dasharray="4 4" stroke-width="1" x1="60" x2="60" y1="0" y2="100"></line>
+                  <text fill="#ffb13b" font-family="JetBrains Mono" font-size="4" opacity="0.8" x="62" y="15">FLARE THRESHOLD (1500K)</text>
+                </svg>
+              </div>
+              <div class="relative w-full h-[80%] flex items-end gap-[2px] z-10 opacity-80">
+                <div class="flex-1 bg-primary/20 h-[5%]"></div>
+                <div class="flex-1 bg-primary/40 h-[25%] border-t border-primary/50"></div>
+                <div class="flex-1 bg-primary h-[85%] border-t border-primary"></div>
+                <div class="flex-1 bg-primary/50 h-[35%] border-t border-primary/50"></div>
+                <div class="flex-1 bg-outline-variant/30 h-[8%]"></div>
+                <div class="flex-1 bg-tertiary-container/50 h-[40%] border-t border-tertiary-container/50"></div>
+                <div class="flex-1 bg-tertiary-container/80 h-[95%] border-t border-tertiary-container"></div>
+                <div class="flex-1 bg-error/80 h-[60%] border-t border-error"></div>
+                <div class="flex-1 bg-outline-variant/30 h-[5%]"></div>
+              </div>
+              <div class="absolute bottom-sm left-md right-md flex justify-between text-data-mono font-data-mono text-[9px] text-on-surface-variant">
+                <span>300K</span>
+                <span>800K</span>
+                <span>1500K</span>
+                <span>2200K+</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gujarat Sector Benchmarking Table -->
+        <div class="hud-panel rounded flex flex-col mb-xl shrink-0">
+          <div class="hud-header-bg px-md py-sm flex justify-between items-center rounded-t">
+            <span class="text-label-caps font-label-caps text-on-surface">GUJARAT SECTOR BENCHMARKING</span>
+            <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant">T-30 DAYS ROLLING</span>
+          </div>
+          <div class="w-full overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-outline-variant text-label-caps font-label-caps text-on-surface-variant bg-surface-container-highest/50">
+                  <th class="px-md py-sm font-normal">FACILITY ID</th>
+                  <th class="px-md py-sm font-normal">AVG FRP (MW)</th>
+                  <th class="px-md py-sm font-normal">PEAK FRP (MW)</th>
+                  <th class="px-md py-sm font-normal">PERSISTENCE</th>
+                  <th class="px-md py-sm font-normal">TREND (30D)</th>
+                </tr>
+              </thead>
+              <tbody class="text-data-mono font-data-mono text-[12px]">
+                <tr class="border-b border-outline-variant bg-primary/5 hover:bg-primary/10 transition-colors">
+                  <td class="px-md py-sm text-primary flex items-center gap-sm">
+                    <span class="w-[6px] h-[6px] rounded-full bg-primary pulse-critical"></span>
+                    RIL-JAM-01 <span class="text-[9px] border border-primary/30 bg-primary/10 px-1 rounded text-primary">TARGET</span>
+                  </td>
+                  <td class="px-md py-sm">45.2</td>
+                  <td class="px-md py-sm text-tertiary-container font-bold">128.5</td>
+                  <td class="px-md py-sm">
+                    <div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
+                      <div class="h-full bg-primary" style="width: 85%"></div>
+                    </div>
+                    <span class="text-[9px] text-on-surface-variant mt-[2px] block">85% ACTIVE</span>
+                  </td>
+                  <td class="px-md py-sm w-32">
+                    <svg class="w-full h-4" preserveAspectRatio="none" viewBox="0 0 100 20">
+                      <path d="M0,15 L20,12 L40,18 L60,8 L80,10 L100,2" fill="none" stroke="#22d3ee" stroke-width="1.5"></path>
+                    </svg>
+                  </td>
+                </tr>
+                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
+                  <td class="px-md py-sm text-on-surface">IOCL-KOY-02</td>
+                  <td class="px-md py-sm text-on-surface-variant">32.8</td>
+                  <td class="px-md py-sm text-on-surface-variant">94.1</td>
+                  <td class="px-md py-sm">
+                    <div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
+                      <div class="h-full bg-outline-variant" style="width: 62%"></div>
+                    </div>
+                    <span class="text-[9px] text-on-surface-variant mt-[2px] block">62% ACTIVE</span>
+                  </td>
+                  <td class="px-md py-sm w-32">
+                    <svg class="w-full h-4" preserveAspectRatio="none" viewBox="0 0 100 20">
+                      <path d="M0,10 L20,12 L40,11 L60,14 L80,12 L100,15" fill="none" stroke="#859397" stroke-width="1.5"></path>
+                    </svg>
+                  </td>
+                </tr>
+                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
+                  <td class="px-md py-sm text-on-surface">RIL-DAH-03</td>
+                  <td class="px-md py-sm text-on-surface-variant">18.4</td>
+                  <td class="px-md py-sm text-on-surface-variant">45.0</td>
+                  <td class="px-md py-sm">
+                    <div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
+                      <div class="h-full bg-outline-variant" style="width: 30%"></div>
+                    </div>
+                    <span class="text-[9px] text-on-surface-variant mt-[2px] block">30% ACTIVE</span>
+                  </td>
+                  <td class="px-md py-sm w-32">
+                    <svg class="w-full h-4" preserveAspectRatio="none" viewBox="0 0 100 20">
+                      <path d="M0,18 L20,17 L40,19 L60,16 L80,18 L100,17" fill="none" stroke="#859397" stroke-width="1.5"></path>
+                    </svg>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== DISPATCH ALERT MODAL ==================== -->
+  <div id="dispatch-modal" class="hud-modal-backdrop hidden">
+    <div class="hud-panel border border-primary/50 max-w-lg w-full p-md rounded shadow-[0_0_24px_rgba(34,211,238,0.3)] flex flex-col gap-md">
+      <div class="flex justify-between items-center border-b border-outline-variant pb-sm">
+        <div class="flex items-center gap-sm">
+          <span class="material-symbols-outlined text-primary">send</span>
+          <span class="font-label-caps text-label-caps text-primary font-bold">EMERGENCY DISPATCH INITIATION</span>
+        </div>
+        <button id="close-dispatch-modal" class="text-on-surface-variant hover:text-primary">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-sm text-body-md text-xs text-on-surface-variant">
+        <p>Broadcast high-priority thermal anomaly telemetry to designated Nodal Emergency Authorities.</p>
+        
+        <div class="hud-border bg-surface-container p-sm rounded space-y-xs font-data-mono text-[11px]">
+          <div class="flex justify-between">
+            <span class="text-on-surface-variant">INCIDENT ID:</span>
+            <span class="text-primary font-bold">AGN-04832</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-on-surface-variant">TARGET LOCATION:</span>
+            <span class="text-on-surface">Jamnagar Refinery (22.35° N, 70.02° E)</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-on-surface-variant">RETRIEVED TEMP / FRP:</span>
+            <span class="text-error font-bold">1847 K / 62.1 MW (GAS FLARE)</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-on-surface-variant">PRIMARY RELAY:</span>
+            <span class="text-tertiary">DIST. COLLECTOR - SEC 7 (AUTH-7A)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-sm pt-sm border-t border-outline-variant">
+        <button id="cancel-dispatch-btn" onclick="document.getElementById('dispatch-modal').classList.add('hidden')" class="px-md py-sm bg-surface-container-highest text-on-surface font-label-caps text-[11px] rounded hover:bg-surface-bright">
+          CANCEL
+        </button>
+        <button id="confirm-dispatch-btn" class="px-md py-sm bg-error-container text-white border border-error font-label-caps text-[11px] rounded hover:bg-error flex items-center gap-xs font-bold">
+          <span class="material-symbols-outlined text-[14px]">bolt</span>
+          CONFIRM & BROADCAST
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Application Script -->
+  <script src="js/app.js"></script>
+</body>
+</html>

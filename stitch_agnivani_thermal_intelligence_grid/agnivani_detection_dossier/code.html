@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AGNIVANI - Detection Dossier</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e0e2ed",
+                        "on-tertiary-container": "#6e4600",
+                        "secondary-container": "#404752",
+                        "tertiary-fixed": "#ffddb5",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#2fd9f4",
+                        "on-secondary-fixed-variant": "#404752",
+                        "on-tertiary-fixed": "#2a1800",
+                        "secondary-fixed": "#dce3f0",
+                        "on-primary-fixed-variant": "#004e5a",
+                        "outline-variant": "#3c494c",
+                        "primary-fixed": "#a2eeff",
+                        "surface-bright": "#363941",
+                        "tertiary": "#ffd6a3",
+                        "tertiary-container": "#ffb13b",
+                        "surface-container-highest": "#31353d",
+                        "on-primary-container": "#005763",
+                        "on-background": "#e0e2ed",
+                        "surface-container-low": "#181c23",
+                        "on-secondary": "#2a313b",
+                        "outline": "#859397",
+                        "primary": "#8aebff",
+                        "inverse-primary": "#006877",
+                        "surface-container": "#1c2027",
+                        "on-secondary-container": "#afb5c2",
+                        "surface-dim": "#10131b",
+                        "on-surface-variant": "#bbc9cd",
+                        "on-primary-fixed": "#001f25",
+                        "on-tertiary": "#462b00",
+                        "on-surface": "#e0e2ed",
+                        "on-error": "#690005",
+                        "surface-tint": "#2fd9f4",
+                        "on-secondary-fixed": "#151c25",
+                        "secondary": "#c0c7d4",
+                        "on-primary": "#00363e",
+                        "surface-variant": "#31353d",
+                        "tertiary-fixed-dim": "#ffb957",
+                        "surface-container-lowest": "#0b0e15",
+                        "primary-container": "#22d3ee",
+                        "surface": "#10131b",
+                        "on-tertiary-fixed-variant": "#643f00",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#c0c7d4",
+                        "inverse-on-surface": "#2d3038",
+                        "background": "#10131b",
+                        "surface-container-high": "#272a32",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "18px",
+                        "base": "9px",
+                        "md": "18px",
+                        "xl": "36px",
+                        "lg": "27px",
+                        "margin": "27px",
+                        "sm": "9px",
+                        "xs": "4.5px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-sm": ["18px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "data-mono": ["13px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .cyber-grid {
+            background-size: 9px 9px;
+            background-image: 
+                linear-gradient(to right, rgba(60, 73, 76, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(60, 73, 76, 0.1) 1px, transparent 1px);
+        }
+        .critical-glow {
+            box-shadow: inset 0 0 20px rgba(255, 180, 171, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md h-screen flex flex-col overflow-hidden cyber-grid">
+<!-- TopNavBar -->
+<nav class="bg-surface-container-low border-b border-outline-variant flex justify-between items-center w-full px-margin h-[54px] z-50 shrink-0">
+<div class="flex items-center gap-md">
+<span class="text-headline-md font-headline-md font-bold text-primary tracking-tighter">AGNIVANI</span>
+</div>
+<div class="flex items-center gap-md text-primary">
+<span class="material-symbols-outlined hover:bg-secondary-container/50 transition-colors p-xs cursor-pointer">sensors</span>
+<span class="material-symbols-outlined hover:bg-secondary-container/50 transition-colors p-xs cursor-pointer">videocam</span>
+<span class="material-symbols-outlined hover:bg-secondary-container/50 transition-colors p-xs cursor-pointer">precision_manufacturing</span>
+<span class="material-symbols-outlined hover:bg-secondary-container/50 transition-colors p-xs cursor-pointer">schedule</span>
+<img alt="Mission Control Operator Profile" class="w-8 h-8 rounded-full border border-outline-variant ml-sm" data-alt="A detailed headshot of a mission control operator in a futuristic dark aerospace telemetry setting, lit by cyan console lights, wearing a technical headset, serious expression, modern corporate technical aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_9A1Uch7p-chW0DL5cCND7njkDj9Galf4GY2D8OlXlx6kX1ykFh8IMZ6INfU4cQh5bjEUYmpu6UTlLqZepQVF41EsYHKlwd73AijXHQSr9FiztrWwMVtQqA-8qGHuD8Jr-v93hNfTW9EA-piE-m_e1bQUBt4yR5-arUuvaNA4vSUB9NEdrKmEwELYJHZBO-UgZ0fJv1CEi5smxYzqyEDav7P2chtftos-hGXuRQOeFds6RuF7F1w"/>
+</div>
+</nav>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-[54px] h-[calc(100vh-54px)] w-64 bg-surface-dim/72 border-r border-outline-variant flex flex-col z-40 hidden md:flex shrink-0 backdrop-blur-sm">
+<div class="p-md border-b border-outline-variant">
+<div class="flex items-center gap-sm mb-xs">
+<img alt="System Status Indicator" class="w-6 h-6 rounded-full" data-alt="A small glowing circular abstract icon representing a system status indicator in a dark aerospace dashboard, emitting a subtle cyan glow against a deep navy background, conveying operational stability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAOfvnZsUVrmjEmBKulp7AzdITw-njnOZNIs1UAFkWwO_DYmcQbsxDnkAGCBk4MnVJJ9vJU2VvP6sOY4GCz-03X2zcHaylGudP2B-FenpF7aDtPTpdWkHpBjN7b7OXBjJeDPaCQPeZfq8DHuYYMmJTuJBbTGT_f6cgiJAz-sseHnf2QgTJXXxGk9NRxWHdErEvy9g6yM7DJcLNooYUczS_DH0vcpNEVbRvvTQHW-FmqhyWXSYYIIA"/>
+<span class="text-label-caps font-label-caps text-on-surface-variant">INTELLIGENCE GRID</span>
+</div>
+<div class="text-data-mono font-data-mono text-outline">V4.2.0-STABLE</div>
+</div>
+<div class="flex-1 overflow-y-auto py-sm">
+<!-- Active: bg-secondary-container text-primary border-r-2 border-primary -->
+<div class="flex items-center gap-sm px-md py-sm bg-secondary-container text-primary border-r-2 border-primary cursor-pointer hover:bg-surface-container-highest transition-all brightness-125">
+<span class="material-symbols-outlined text-lg">warning</span>
+<span class="text-label-caps font-label-caps">ALERTS</span>
+</div>
+<div class="flex items-center gap-sm px-md py-sm text-on-surface-variant cursor-pointer hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-lg">analytics</span>
+<span class="text-label-caps font-label-caps">TELEMETRY</span>
+</div>
+<div class="flex items-center gap-sm px-md py-sm text-on-surface-variant cursor-pointer hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-lg">settings_input_component</span>
+<span class="text-label-caps font-label-caps">SYSTEMS</span>
+</div>
+<div class="flex items-center gap-sm px-md py-sm text-on-surface-variant cursor-pointer hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-lg">terminal</span>
+<span class="text-label-caps font-label-caps">LOGS</span>
+</div>
+</div>
+<div class="p-md border-t border-outline-variant mt-auto">
+<button class="w-full bg-primary-container text-on-primary font-label-caps text-label-caps py-sm rounded mb-md hover:bg-primary transition-colors">
+                    DISPATCH ALERT
+                </button>
+<div class="space-y-sm">
+<div class="flex items-center gap-sm text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">help</span>
+<span class="text-label-caps font-label-caps">SUPPORT</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">build</span>
+<span class="text-label-caps font-label-caps">DIAGNOSTICS</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 md:ml-64 overflow-y-auto pb-[54px]">
+<div class="p-margin max-w-7xl mx-auto space-y-lg">
+<!-- Breadcrumb & Hero -->
+<header class="space-y-md">
+<div class="text-data-mono font-data-mono text-on-surface-variant flex items-center gap-xs">
+<span>INTELLIGENCE GRID</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary">DETECTION DOSSIER</span>
+</div>
+<div class="flex justify-between items-start border-b border-outline-variant pb-md">
+<div>
+<h1 class="text-headline-lg font-headline-lg text-primary flex items-center gap-md">
+                                ID AGN-04832
+                                <span class="bg-[#ffa94d]/15 border border-[#ffa94d] text-[#ffa94d] px-sm py-xs rounded-sm text-label-caps font-label-caps ml-sm">GAS FLARE</span>
+<span class="bg-error/15 border border-error text-error px-sm py-xs rounded-sm text-label-caps font-label-caps flex items-center gap-xs">
+<span class="material-symbols-outlined text-[12px]">warning</span> CRITICAL
+                                </span>
+</h1>
+</div>
+<div class="text-right">
+<div class="text-data-mono font-data-mono text-outline">FACILITY</div>
+<div class="text-headline-sm font-headline-sm">JAMNAGAR REFINERY</div>
+</div>
+</div>
+</header>
+<!-- Dossier Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+<!-- Visual Proof -->
+<div class="lg:col-span-2 bg-surface-dim/72 border border-outline-variant rounded flex flex-col critical-glow">
+<div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center">
+<span class="text-label-caps font-label-caps text-on-surface-variant">VISUAL PROOF (SWIPE)</span>
+<span class="material-symbols-outlined text-outline text-[16px]">satellite_alt</span>
+</div>
+<div class="relative h-64 w-full overflow-hidden flex-1 group">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A high-resolution satellite imagery view of a massive industrial refinery complex taken from space. The image is split showing a 'before' state on the left with normal operations, and an 'after' state on the right showing a massive, intense thermal bloom or gas flare anomaly highlighted in false-color cyan and orange. Dark aerospace telemetry aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuByValVkzElEzrOZwe0e1mP2DQnY-av6vqTaKYEqNYRp778zJ3wJExpJJILpW8BXAsrXeuZdKO9TQBrc9mKqZffG8xZoLkRPAPREdboc9jGq3dDViisyCjYK-HhM7BXu_3P-lChdn4uRDuVmG3WZ1PSNGeYET3Ul91XAAv3-L02TD4-Yw3yRPjPLej1VxT5b2IGpzeo768rj3pK_wGoxEwL9lXv45AOiojwknBB1BAWscpxDmP5Jxs')"></div>
+<div class="absolute inset-y-0 left-1/2 w-1 bg-primary cursor-ew-resize flex items-center justify-center transform -translate-x-1/2 z-10 shadow-[0_0_10px_rgba(34,211,238,0.8)]">
+<div class="bg-surface-container-low border border-primary text-primary rounded-full p-xs">
+<span class="material-symbols-outlined text-[16px]">swap_horiz</span>
+</div>
+</div>
+<div class="absolute bottom-sm left-sm bg-surface-container/80 backdrop-blur px-sm py-xs border border-outline-variant text-data-mono font-data-mono text-xs">PRE-DETECTION (T-24H)</div>
+<div class="absolute bottom-sm right-sm bg-surface-container/80 backdrop-blur px-sm py-xs border border-outline-variant text-data-mono font-data-mono text-xs">DETECTION (T-0)</div>
+</div>
+</div>
+<!-- Actions / Audit Trail -->
+<div class="bg-surface-dim/72 border border-outline-variant rounded flex flex-col">
+<div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center">
+<span class="text-label-caps font-label-caps text-on-surface-variant">ACTION &amp; AUDIT</span>
+<span class="material-symbols-outlined text-outline text-[16px]">policy</span>
+</div>
+<div class="p-md space-y-md flex-1">
+<button class="w-full bg-error-container text-on-error-container font-label-caps text-label-caps py-sm border border-error hover:bg-error hover:text-on-error transition-colors flex items-center justify-center gap-xs rounded">
+<span class="material-symbols-outlined text-[16px]">rocket_launch</span> INITIATE DISPATCH
+                            </button>
+<div class="space-y-sm mt-md relative before:absolute before:inset-y-0 before:left-3 before:w-px before:bg-outline-variant ml-xs">
+<div class="flex gap-sm relative z-10">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+</div>
+<div>
+<div class="text-label-caps font-label-caps text-primary">ANOMALY DETECTED</div>
+<div class="text-data-mono font-data-mono text-outline text-[10px]">14:32:05 UTC</div>
+</div>
+</div>
+<div class="flex gap-sm relative z-10">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
+<div class="w-2 h-2 rounded-full bg-tertiary"></div>
+</div>
+<div>
+<div class="text-label-caps font-label-caps text-tertiary">CLASSIFICATION: GAS FLARE</div>
+<div class="text-data-mono font-data-mono text-outline text-[10px]">14:32:12 UTC</div>
+</div>
+</div>
+<div class="flex gap-sm relative z-10 opacity-50">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
+</div>
+<div>
+<div class="text-label-caps font-label-caps">AWAITING DISPATCH</div>
+<div class="text-data-mono font-data-mono text-outline text-[10px]">PENDING</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Spectral Evidence -->
+<div class="lg:col-span-2 bg-surface-dim/72 border border-outline-variant rounded flex flex-col h-64">
+<div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center">
+<span class="text-label-caps font-label-caps text-on-surface-variant">SPECTRAL EVIDENCE (PLANCK CURVE)</span>
+<span class="material-symbols-outlined text-outline text-[16px]">show_chart</span>
+</div>
+<div class="flex-1 p-md relative flex flex-col">
+<!-- Placeholder for chart -->
+<div class="flex-1 border-l border-b border-outline-variant relative">
+<div class="absolute bottom-4 left-1/4 w-2 h-2 bg-primary rounded-full"></div>
+<div class="absolute bottom-12 left-2/4 w-2 h-2 bg-primary rounded-full"></div>
+<div class="absolute top-8 right-1/3 w-2 h-2 bg-error rounded-full animate-pulse shadow-[0_0_8px_rgba(255,180,171,0.8)]"></div>
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none">
+<path d="M0,200 Q150,180 250,50 T500,200" fill="none" stroke="#22d3ee" stroke-dasharray="4" stroke-width="1"></path>
+</svg>
+<div class="absolute top-4 right-4 bg-surface-container-high border border-outline-variant p-sm text-data-mono font-data-mono">
+                                    T = 1847K <span class="text-error">(RETRIEVED)</span>
+</div>
+</div>
+<div class="flex justify-between text-data-mono font-data-mono text-outline text-[10px] mt-xs">
+<span>WAVELENGTH (μm)</span>
+<span>RADIANCE</span>
+</div>
+</div>
+</div>
+<!-- Feature Attribution -->
+<div class="bg-surface-dim/72 border border-outline-variant rounded flex flex-col h-64">
+<div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center">
+<span class="text-label-caps font-label-caps text-on-surface-variant">ATTRIBUTION (SHAP)</span>
+<span class="material-symbols-outlined text-outline text-[16px]">bar_chart</span>
+</div>
+<div class="flex-1 p-md space-y-sm overflow-y-auto">
+<div class="text-data-mono font-data-mono text-[10px] text-outline mb-xs border-b border-outline-variant pb-xs">CLASSIFICATION DRIVERS</div>
+<div class="flex items-center gap-sm">
+<span class="text-data-mono font-data-mono text-xs w-20 truncate">TEMP. GRAD.</span>
+<div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
+<div class="absolute left-1/2 h-full bg-error/80 border border-error w-3/4" style="transform-origin: left; transform: scaleX(0.8)"></div>
+<div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="text-data-mono font-data-mono text-xs w-20 truncate">SWIR RAD.</span>
+<div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
+<div class="absolute left-1/2 h-full bg-error/80 border border-error w-1/2" style="transform-origin: left; transform: scaleX(0.6)"></div>
+<div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="text-data-mono font-data-mono text-xs w-20 truncate">AREA SIZE</span>
+<div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
+<div class="absolute right-1/2 h-full bg-primary/80 border border-primary w-1/4" style="transform-origin: right; transform: scaleX(0.4)"></div>
+<div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="text-data-mono font-data-mono text-xs w-20 truncate">MWIR ANOM.</span>
+<div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
+<div class="absolute left-1/2 h-full bg-error/80 border border-error w-1/3" style="transform-origin: left; transform: scaleX(0.5)"></div>
+<div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
