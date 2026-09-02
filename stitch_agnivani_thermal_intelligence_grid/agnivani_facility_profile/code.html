@@ -1,643 +1,362 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html class="dark" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Facility Profile - Jamnagar Refinery</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "inverse-surface": "#e0e2ed",
-                        "on-tertiary-container": "#6e4600",
-                        "secondary-container": "#404752",
-                        "tertiary-fixed": "#ffddb5",
-                        "error-container": "#93000a",
-                        "primary-fixed-dim": "#2fd9f4",
-                        "on-secondary-fixed-variant": "#404752",
-                        "on-tertiary-fixed": "#2a1800",
-                        "secondary-fixed": "#dce3f0",
-                        "on-primary-fixed-variant": "#004e5a",
-                        "outline-variant": "#3c494c",
-                        "primary-fixed": "#a2eeff",
-                        "surface-bright": "#363941",
-                        "tertiary": "#ffd6a3",
-                        "tertiary-container": "#ffb13b",
-                        "surface-container-highest": "#31353d",
-                        "on-primary-container": "#005763",
-                        "on-background": "#e0e2ed",
-                        "surface-container-low": "#181c23",
-                        "on-secondary": "#2a313b",
-                        "outline": "#859397",
-                        "primary": "#8aebff",
-                        "inverse-primary": "#006877",
-                        "surface-container": "#1c2027",
-                        "on-secondary-container": "#afb5c2",
-                        "surface-dim": "#10131b",
-                        "on-surface-variant": "#bbc9cd",
-                        "on-primary-fixed": "#001f25",
-                        "on-tertiary": "#462b00",
-                        "on-surface": "#e0e2ed",
-                        "on-error": "#690005",
-                        "surface-tint": "#2fd9f4",
-                        "on-secondary-fixed": "#151c25",
-                        "secondary": "#c0c7d4",
-                        "on-primary": "#00363e",
-                        "surface-variant": "#31353d",
-                        "tertiary-fixed-dim": "#ffb957",
-                        "surface-container-lowest": "#0b0e15",
-                        "primary-container": "#22d3ee",
-                        "surface": "#10131b",
-                        "on-tertiary-fixed-variant": "#643f00",
-                        "on-error-container": "#ffdad6",
-                        "secondary-fixed-dim": "#c0c7d4",
-                        "inverse-on-surface": "#2d3038",
-                        "background": "#10131b",
-                        "surface-container-high": "#272a32",
-                        "error": "#ffb4ab"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "spacing": {
-                        "gutter": "18px",
-                        "base": "9px",
-                        "md": "18px",
-                        "xl": "36px",
-                        "lg": "27px",
-                        "margin": "27px",
-                        "sm": "9px",
-                        "xs": "4.5px"
-                    },
-                    "fontFamily": {
-                        "label-caps": ["JetBrains Mono"],
-                        "body-lg": ["Inter"],
-                        "headline-sm": ["Inter"],
-                        "headline-lg": ["Inter"],
-                        "data-mono": ["JetBrains Mono"],
-                        "headline-md": ["Inter"],
-                        "body-md": ["Inter"]
-                    },
-                    "fontSize": {
-                        "label-caps": ["11px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "700" }],
-                        "body-lg": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
-                        "headline-sm": ["18px", { "lineHeight": "1.4", "fontWeight": "600" }],
-                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
-                        "data-mono": ["13px", { "lineHeight": "1.2", "fontWeight": "500" }],
-                        "headline-md": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
-                        "body-md": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
-                    }
-                }
-            }
-        }
-    </script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>AGNIVANI — Facility Profile · Jamnagar Refinery</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        
-        /* Thin scrollbar for dense telemetry console */
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #10131b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3c494c;
-            border-radius: 2px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #8aebff;
-        }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#060910;color:#dce7f2;font-family:'Inter',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 0% 0%,rgba(34,211,238,0.06),transparent 70%),radial-gradient(ellipse 50% 40% at 100% 100%,rgba(245,158,11,0.06),transparent 70%);pointer-events:none;z-index:0}
+:root{--cyan:#22d3ee;--gf:#ffa94d;--if:#ff4d4d;--cs:#f59e0b;--wv:#4ade80;--gl:#b197fc;--border:#1b2735;--t1:#dce7f2;--t2:#7b8da3;--t3:#4e5f74;--panel:rgba(13,20,29,0.72)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#1b2735;border-radius:2px}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
 
-        .data-panel {
-            background: rgba(13, 20, 29, 0.72);
-            border: 1px solid #1b2735;
-        }
-        
-        .data-header {
-            background: #1b2735;
-            border-bottom: 1px solid #1b2735;
-        }
+/* Topbar */
+#topbar{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--border);background:rgba(6,9,16,0.97);position:sticky;top:0;z-index:50}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#f59e0b,#ea580c);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.brand-mark::after{content:'';position:absolute;inset:0;border-radius:8px;border:1.5px solid rgba(245,158,11,.6);animation:haloExpand 2.4s ease-out infinite}
+@keyframes haloExpand{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.2);opacity:0}}
+.brand-mark svg{width:18px;height:18px;fill:#fff}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border:1px solid var(--border);border-radius:4px;background:rgba(13,20,29,0.8);font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--t2);white-space:nowrap}
+.pill b{color:var(--t1)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:liveBlink 1.5s ease-in-out infinite}
+@keyframes liveBlink{0%,100%{opacity:1}50%{opacity:.3}}
 
-        .gauge-circle {
-            stroke-dasharray: 251.2;
-            stroke-dashoffset: 251.2;
-            animation: fillGauge 2s ease-out forwards;
-        }
+/* Layout */
+#page{position:relative;z-index:1;padding:14px 18px 40px;max-width:1600px;margin:0 auto}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--t3);margin-bottom:12px}
+.breadcrumb a{color:var(--t2);text-decoration:none;transition:color 140ms}
+.breadcrumb a:hover{color:var(--cyan)}
+.breadcrumb span.cur{color:var(--cyan)}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;transition:border-color 140ms}
+.panel:hover{border-color:#243447}
+.panel-title{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.reveal{opacity:0;transform:translateY(12px);transition:opacity 500ms cubic-bezier(.4,0,.2,1),transform 500ms cubic-bezier(.4,0,.2,1)}
+.reveal.in{opacity:1;transform:translateY(0)}
 
-        @keyframes fillGauge {
-            to { stroke-dashoffset: 62.8; /* 75% of 251.2 */ }
-        }
+/* Risk gauge */
+#gauge-wrap{display:flex;align-items:center;gap:24px}
+#gauge-svg{width:140px;height:80px;flex-shrink:0}
+.gauge-score{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;color:var(--gf);font-variant-numeric:tabular-nums;line-height:1}
+.gauge-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
 
-        .pulse-critical {
-            animation: pulseCrit 1.5s infinite;
-        }
+/* Stat tiles */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.stat-tile{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
+.stat-val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--t1);font-variant-numeric:tabular-nums}
+.stat-sub{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t2);margin-top:2px}
 
-        @keyframes pulseCrit {
-            0% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 180, 171, 0.7); }
-            50% { opacity: 0.5; box-shadow: 0 0 0 4px rgba(255, 180, 171, 0); }
-            100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 180, 171, 0); }
-        }
-    </style>
+/* Calendar heatmap */
+#cal-grid{display:grid;grid-template-columns:repeat(52,1fr);gap:2px;margin-top:8px}
+.cal-cell{aspect-ratio:1;border-radius:2px;cursor:pointer;transition:opacity 140ms}
+.cal-cell:hover{opacity:.7}
+
+/* Baseline chart */
+#baseline-svg{width:100%;height:180px}
+
+/* Temp distribution */
+#dist-svg{width:100%;height:160px}
+
+/* Peer table */
+.peer-table{width:100%;border-collapse:collapse}
+.peer-table th{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);padding:5px 8px;border-bottom:1px solid var(--border);text-align:left}
+.peer-table td{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--t1);padding:6px 8px;border-bottom:1px solid rgba(27,39,53,0.5)}
+.peer-table tr:last-child td{border-bottom:none}
+.peer-table tr:hover td{background:rgba(34,211,238,0.03)}
+.sparkline{display:inline-block;vertical-align:middle}
+
+/* Seasonal small multiples */
+.sm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.sm-panel{background:rgba(6,9,16,0.6);border:1px solid var(--border);border-radius:6px;padding:8px}
+.sm-title{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+
+@media(prefers-reduced-motion:reduce){.brand-mark::after,.live-dot{animation:none!important}}
+</style>
 </head>
-<body class="bg-background text-on-surface h-screen overflow-hidden flex flex-col md:flex-row antialiased">
-<!-- SideNavBar (Hidden on Mobile, Flex on MD) -->
-<nav class="hidden md:flex flex-col fixed left-0 top-0 h-full w-64 z-40 bg-surface-dim/72 border-r border-outline-variant">
-<div class="p-margin border-b border-outline-variant flex items-center gap-md">
-<div class="w-8 h-8 rounded-full bg-primary/20 border border-primary flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">public</span>
-</div>
-<div class="flex flex-col">
-<span class="text-label-caps font-label-caps text-on-surface-variant">INTELLIGENCE GRID</span>
-<span class="text-data-mono font-data-mono text-on-surface-variant text-[9px]">V4.2.0-STABLE</span>
-</div>
-</div>
-<div class="flex-1 py-md overflow-y-auto">
-<!-- ALERTS -->
-<a class="flex items-center gap-md px-margin py-md text-on-surface-variant hover:bg-surface-container-highest transition-all group" href="#">
-<span class="material-symbols-outlined text-[18px]">warning</span>
-<span class="text-label-caps font-label-caps group-hover:text-primary transition-colors">ALERTS</span>
-</a>
-<!-- TELEMETRY (Active) -->
-<a class="flex items-center gap-md px-margin py-md bg-secondary-container text-primary border-r-2 border-primary brightness-125 transition-all" href="#">
-<span class="material-symbols-outlined text-[18px]">analytics</span>
-<span class="text-label-caps font-label-caps">TELEMETRY</span>
-</a>
-<!-- SYSTEMS -->
-<a class="flex items-center gap-md px-margin py-md text-on-surface-variant hover:bg-surface-container-highest transition-all group" href="#">
-<span class="material-symbols-outlined text-[18px]">settings_input_component</span>
-<span class="text-label-caps font-label-caps group-hover:text-primary transition-colors">SYSTEMS</span>
-</a>
-<!-- LOGS -->
-<a class="flex items-center gap-md px-margin py-md text-on-surface-variant hover:bg-surface-container-highest transition-all group" href="#">
-<span class="material-symbols-outlined text-[18px]">terminal</span>
-<span class="text-label-caps font-label-caps group-hover:text-primary transition-colors">LOGS</span>
-</a>
-</div>
-<div class="p-margin border-t border-outline-variant">
-<button class="w-full bg-primary/10 border border-primary text-primary text-label-caps font-label-caps py-sm px-md rounded flex justify-center items-center gap-sm hover:bg-primary/20 transition-colors">
-<span class="material-symbols-outlined text-[16px]">add_alert</span>
-                DISPATCH ALERT
-            </button>
-</div>
-<div class="flex flex-col pb-margin">
-<a class="flex items-center gap-md px-margin py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all group" href="#">
-<span class="material-symbols-outlined text-[14px]">help</span>
-<span class="text-label-caps font-label-caps text-[9px] group-hover:text-primary transition-colors">SUPPORT</span>
-</a>
-<a class="flex items-center gap-md px-margin py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all group" href="#">
-<span class="material-symbols-outlined text-[14px]">build</span>
-<span class="text-label-caps font-label-caps text-[9px] group-hover:text-primary transition-colors">DIAGNOSTICS</span>
-</a>
-</div>
-</nav>
-<!-- Main Content Wrapper -->
-<div class="flex-1 flex flex-col md:ml-64 h-full overflow-hidden relative">
-<!-- TopNavBar -->
-<header class="flex justify-between items-center w-full px-margin h-[54px] bg-surface-container-low border-b border-outline-variant shrink-0 z-30">
-<div class="flex items-center gap-md">
-<span class="text-headline-md font-headline-md font-bold text-primary tracking-tighter">AGNIVANI</span>
-<span class="text-on-surface-variant mx-sm">/</span>
-<span class="text-label-caps font-label-caps text-on-surface">FACILITY PROFILE</span>
-</div>
-<div class="flex items-center gap-lg">
-<div class="flex gap-md">
-<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">sensors</span></button>
-<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">videocam</span></button>
-<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">precision_manufacturing</span></button>
-<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">schedule</span></button>
-</div>
-<div class="w-6 h-6 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden">
-<img class="w-full h-full object-cover" data-alt="A macro photography style close up of a futuristic optical lens sensor embedded in matte black aerospace machinery, glowing softly with cyan light in a dark high-tech environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAl8so9XzEb2zN_xkXDi5rr6EDBnbq1E24bMudP7d7qYn_THJ6StaZfSIqTTubBrKlt33bmEndpqdIt-Un488MSj50kECJS5F_0Gu-tI6_mB_XdOoy85xOx4kHYC84yVcvhqHHp6Mju2qlSc5nGKn9kUu5KsPNEwpKgeyDkvUibs4AoRIVfUjlpZ-1rfTizuKMNdh0YM9tXwBYz2pacfrnGV-hP_QsSNlIK63h4aX0CwoA_MiccNJk"/>
-</div>
-</div>
+<body>
+<header id="topbar">
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M12 2C8 7 6 10 6 14a6 6 0 0012 0c0-4-2-7-6-12z"/></svg></div>
+    <div>
+      <div style="font-size:16px;font-weight:800;letter-spacing:.11em">AGNIVANI</div>
+      <div class="mono" style="font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--t3);text-transform:uppercase">Industrial Thermal Anomaly Intelligence Grid</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:7px">
+    <div class="pill"><div class="live-dot"></div> LIVE · <b>STREAMING</b></div>
+    <div class="pill">MODEL <b>gcc-xgb v4.2</b></div>
+    <div class="mono" style="font-size:13px;color:var(--cyan)" id="clock">00:00:00</div>
+  </div>
 </header>
-<!-- Main Canvas -->
-<main class="flex-1 overflow-y-auto p-margin flex flex-col gap-margin relative z-10">
-<!-- Context & Header Grid -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-base items-stretch">
-<!-- Facility Info -->
-<div class="data-panel lg:col-span-8 p-md rounded flex flex-col justify-between relative overflow-hidden">
-<!-- Faint background map overlay -->
-<div class="absolute inset-0 opacity-10 pointer-events-none" data-alt="A highly detailed satellite topographical map rendered in monochrome dark blues and blacks, showing complex industrial infrastructure, piping, and storage tanks of a massive refinery complex viewed from space." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAmOrMQXGu6xJ_t9aJrM1h9kdN1eC1qXJw8RFznpe3x6sqWBemhFjEgYddMNTsUe52VO6hgUAgnXE5P3Hcr0jDlCxf04LZ1fLq5nvLdKK07OaroTkcRS8zALjOWGyEChKuW49LI6OmPcSAspxDQuv7IohSFPqb_qN_YrdS_x95W-5M3qwfbimB8jkRtd-qvCZaoVjj8tLLIR9JHfLxKqsL_7xPdE6gjNiJT5ABJEo2kbCH5T1m9tpU')"></div>
-<div class="relative z-10 flex justify-between items-start">
-<div>
-<div class="flex items-center gap-sm mb-sm">
-<span class="w-2 h-2 rounded-full bg-error pulse-critical"></span>
-<span class="text-label-caps font-label-caps text-error">CRITICAL MONITORING ACTIVE</span>
+
+<div id="page">
+  <div class="breadcrumb">
+    <a href="../agnivani_mission_control/code.html">MISSION CONTROL</a><span>/</span>
+    <a href="#">FACILITIES</a><span>/</span>
+    <span class="cur">Jamnagar Refinery</span>
+  </div>
+
+  <!-- HEADER -->
+  <div class="panel reveal" style="margin-bottom:14px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px">
+      <div>
+        <div class="mono" style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Facility Profile</div>
+        <div style="font-size:22px;font-weight:800;color:var(--t1);margin-bottom:4px">Jamnagar Refinery</div>
+        <div class="mono" style="font-size:10px;color:var(--t2)">Reliance Industries · Refinery · Gujarat · 22.35°N, 70.02°E · GEM-IN-R-0021</div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;border:1px solid var(--gf);color:var(--gf);background:rgba(255,169,77,.1)">REFINERY</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;border:1px solid #ef4444;color:#ef4444;background:rgba(239,68,68,.1)">HIGH RISK</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;border:1px solid var(--border);color:var(--t2)">MONITORED 412 d</span>
+        </div>
+      </div>
+      <div id="gauge-wrap">
+        <svg id="gauge-svg" viewBox="0 0 140 80">
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#4ade80"/>
+              <stop offset="50%" stop-color="#f59e0b"/>
+              <stop offset="100%" stop-color="#ef4444"/>
+            </linearGradient>
+          </defs>
+          <!-- Track -->
+          <path d="M10,75 A60,60 0 0,1 130,75" fill="none" stroke="#1b2735" stroke-width="10" stroke-linecap="round"/>
+          <!-- Fill (risk 78%) -->
+          <path id="gauge-fill" d="M10,75 A60,60 0 0,1 130,75" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 188" style="transition:stroke-dasharray 1.2s cubic-bezier(.4,0,.2,1)"/>
+          <!-- Needle -->
+          <line id="gauge-needle" x1="70" y1="75" x2="70" y2="22" stroke="#ffa94d" stroke-width="2" stroke-linecap="round" style="transform-origin:70px 75px;transform:rotate(0deg);transition:transform 1.2s cubic-bezier(.4,0,.2,1)"/>
+          <circle cx="70" cy="75" r="4" fill="#ffa94d"/>
+          <text x="70" y="68" fill="#4e5f74" font-size="7" font-family="JetBrains Mono" text-anchor="middle">RISK</text>
+        </svg>
+        <div>
+          <div class="gauge-score" id="gauge-num">0</div>
+          <div class="gauge-label">Risk Score</div>
+          <div class="mono" style="font-size:8.5px;color:var(--t2);margin-top:4px">HIGH · 78/100</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT TILES -->
+  <div class="stat-grid reveal">
+    <div class="stat-tile"><div class="stat-lbl">Total Detections</div><div class="stat-val" data-target="847" style="color:var(--cyan)">0</div><div class="stat-sub">412-day window</div></div>
+    <div class="stat-tile"><div class="stat-lbl">Avg FRP</div><div class="stat-val" data-target="58" style="color:var(--gf)">0</div><div class="stat-sub">MW · rolling 30d</div></div>
+    <div class="stat-tile"><div class="stat-lbl">Peak Temp</div><div class="stat-val" data-target="2041" style="color:var(--if)">0</div><div class="stat-sub">K · all-time</div></div>
+    <div class="stat-tile"><div class="stat-lbl">Anomaly Days</div><div class="stat-val" data-target="23" style="color:var(--cs)">0</div><div class="stat-sub">z &gt; 3σ events</div></div>
+  </div>
+
+  <!-- BASELINE + CALENDAR -->
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px">
+    <div class="panel reveal">
+      <div class="panel-title">12-Month FRP Baseline <span class="mono" style="font-size:8.5px;color:var(--t3);text-transform:none;letter-spacing:0">with seasonal decomposition</span></div>
+      <svg id="baseline-svg"></svg>
+    </div>
+    <div class="panel reveal" style="transition-delay:80ms">
+      <div class="panel-title">Daily Detection Calendar <span class="mono" style="font-size:8.5px;color:var(--t3);text-transform:none;letter-spacing:0">52 weeks</span></div>
+      <div style="display:flex;gap:4px;margin-bottom:4px">
+        <span class="mono" style="font-size:8px;color:var(--t3)">Mon</span>
+      </div>
+      <div id="cal-grid"></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:8px">
+        <span class="mono" style="font-size:8px;color:var(--t3)">Low</span>
+        <div style="display:flex;gap:2px">
+          <div style="width:10px;height:10px;border-radius:2px;background:#1b2735"></div>
+          <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,169,77,.3)"></div>
+          <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,169,77,.6)"></div>
+          <div style="width:10px;height:10px;border-radius:2px;background:#ffa94d"></div>
+        </div>
+        <span class="mono" style="font-size:8px;color:var(--t3)">High</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEASONAL SMALL MULTIPLES -->
+  <div class="panel reveal" style="margin-bottom:14px">
+    <div class="panel-title">Seasonal Decomposition — FRP Components</div>
+    <div class="sm-grid" id="sm-grid"></div>
+  </div>
+
+  <!-- TEMP DISTRIBUTION + PEER TABLE -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+    <div class="panel reveal">
+      <div class="panel-title">Temperature Distribution <span class="mono" style="font-size:8.5px;color:var(--t3);text-transform:none;letter-spacing:0">vs global bimodal reference</span></div>
+      <svg id="dist-svg"></svg>
+    </div>
+    <div class="panel reveal" style="transition-delay:80ms">
+      <div class="panel-title">Peer Facility Comparison</div>
+      <table class="peer-table">
+        <thead><tr><th>Facility</th><th>Avg FRP</th><th>Risk</th><th>Trend</th></tr></thead>
+        <tbody id="peer-tbody"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
-<h1 class="text-headline-lg font-headline-lg text-on-surface mb-xs">JAMNAGAR REFINERY</h1>
-<div class="flex items-center gap-md">
-<span class="text-data-mono font-data-mono text-on-surface-variant">ID: RIL-JAM-01</span>
-<span class="text-outline-variant">|</span>
-<span class="text-data-mono font-data-mono text-on-surface-variant flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">location_on</span> 22.339° N, 69.832° E</span>
-</div>
-</div>
-<div class="text-right">
-<span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">PRIMARY OUTPUT</span>
-<span class="text-data-mono font-data-mono text-primary bg-primary/10 border border-primary/30 px-sm py-xs rounded">PETROCHEMICAL</span>
-</div>
-</div>
-<div class="relative z-10 grid grid-cols-4 gap-base mt-xl border-t border-outline-variant pt-md">
-<div>
-<span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">TOTAL AREA</span>
-<span class="text-data-mono font-data-mono text-on-surface">7,500 ACRES</span>
-</div>
-<div>
-<span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">CAPACITY</span>
-<span class="text-data-mono font-data-mono text-on-surface">1.24M BPD</span>
-</div>
-<div>
-<span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">LAST SCAN</span>
-<span class="text-data-mono font-data-mono text-on-surface">T-00:04:12</span>
-</div>
-<div>
-<span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">ACTIVE FLARES</span>
-<span class="text-data-mono font-data-mono text-tertiary">3 IDENTIFIED</span>
-</div>
-</div>
-</div>
-<!-- Risk Score Gauge -->
-<div class="data-panel lg:col-span-4 p-md rounded flex flex-col items-center justify-center relative">
-<span class="absolute top-md left-md text-label-caps font-label-caps text-on-surface-variant">THERMAL RISK INDEX</span>
-<div class="relative w-32 h-32 mt-md">
-<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
-<!-- Background Track -->
-<circle cx="50" cy="50" fill="none" r="40" stroke="#1b2735" stroke-width="8"></circle>
-<!-- Progress Arc (75/100) -->
-<circle class="gauge-circle" cx="50" cy="50" fill="none" r="40" stroke="#ffb13b" stroke-linecap="round" stroke-width="8"></circle>
-</svg>
-<div class="absolute inset-0 flex flex-col items-center justify-center">
-<span class="text-headline-lg font-headline-lg text-tertiary-container leading-none">75</span>
-<span class="text-label-caps font-label-caps text-on-surface-variant">/100</span>
-</div>
-</div>
-<div class="mt-md text-center">
-<span class="text-data-mono font-data-mono text-tertiary-container bg-tertiary-container/10 px-md py-xs rounded border border-tertiary-container/30">ELEVATED</span>
-</div>
-</div>
-</div>
-<!-- 12-Month Baseline: Small Multiples -->
-<div class="data-panel rounded flex flex-col">
-<div class="data-header px-md py-sm flex justify-between items-center rounded-t">
-<span class="text-label-caps font-label-caps text-on-surface">12-MONTH THERMAL DECOMPOSITION BASELINE</span>
-<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
-</div>
-<div class="p-md grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-base">
-<!-- Generate 12 miniature line charts via DOM elements -->
-<!-- Month 1 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">JAN 2024</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[60%] bg-primary/40 border-t border-primary"></div>
-<div class="w-full h-[80%] bg-primary/40 border-t border-primary"></div>
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[50%] bg-outline-variant/30"></div>
-</div>
-</div>
-<!-- Month 2 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">FEB 2024</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[50%] bg-outline-variant/30"></div>
-<div class="w-full h-[55%] bg-outline-variant/30"></div>
-<div class="w-full h-[90%] bg-tertiary-container/40 border-t border-tertiary-container"></div>
-<div class="w-full h-[70%] bg-tertiary-container/40 border-t border-tertiary-container"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-</div>
-</div>
-<!-- Month 3 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">MAR 2024</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-</div>
-</div>
-<!-- Month 4 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">APR 2024</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-<div class="w-full h-[60%] bg-primary/40 border-t border-primary"></div>
-<div class="w-full h-[75%] bg-primary/40 border-t border-primary"></div>
-<div class="w-full h-[85%] bg-primary/40 border-t border-primary"></div>
-<div class="w-full h-[50%] bg-outline-variant/30"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-</div>
-</div>
-<!-- Month 5 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">MAY 2024</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[50%] bg-outline-variant/30"></div>
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[55%] bg-outline-variant/30"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-<div class="w-full h-[50%] bg-outline-variant/30"></div>
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-</div>
-</div>
-<!-- Month 6 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">JUN 2024</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[50%] bg-outline-variant/30"></div>
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[25%] bg-outline-variant/30"></div>
-<div class="w-full h-[20%] bg-outline-variant/30"></div>
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-</div>
-</div>
-<!-- Repeated layout for remaining 6 months to maintain visual density -->
-<!-- Month 7 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">JUL 2023</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[25%] bg-outline-variant/30"></div>
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-</div>
-</div>
-<!-- Month 8 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">AUG 2023</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-<div class="w-full h-[60%] bg-primary/40 border-t border-primary"></div>
-<div class="w-full h-[55%] bg-outline-variant/30"></div>
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-</div>
-</div>
-<!-- Month 9 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">SEP 2023</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[25%] bg-outline-variant/30"></div>
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[60%] bg-primary/40 border-t border-primary"></div>
-<div class="w-full h-[80%] bg-tertiary-container/40 border-t border-tertiary-container"></div>
-<div class="w-full h-[50%] bg-outline-variant/30"></div>
-</div>
-</div>
-<!-- Month 10 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">OCT 2023</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[25%] bg-outline-variant/30"></div>
-</div>
-</div>
-<!-- Month 11 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">NOV 2023</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[50%] bg-outline-variant/30"></div>
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-</div>
-</div>
-<!-- Month 12 -->
-<div class="border border-outline-variant p-sm rounded bg-surface-container-lowest opacity-75">
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">DEC 2023</span>
-<div class="h-12 w-full flex items-end gap-[1px]">
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[50%] bg-outline-variant/30"></div>
-<div class="w-full h-[45%] bg-outline-variant/30"></div>
-<div class="w-full h-[40%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-<div class="w-full h-[30%] bg-outline-variant/30"></div>
-<div class="w-full h-[35%] bg-outline-variant/30"></div>
-</div>
-</div>
-</div>
-</div>
-<!-- Activity Heatmap & Global Overlay -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-base">
-<!-- Activity Heatmap -->
-<div class="data-panel rounded flex flex-col">
-<div class="data-header px-md py-sm flex justify-between items-center rounded-t">
-<span class="text-label-caps font-label-caps text-on-surface">DETECTION ACTIVITY HEATMAP (T-365)</span>
-</div>
-<div class="p-md">
-<div class="flex items-end gap-sm mb-sm text-data-mono font-data-mono text-[10px] text-on-surface-variant">
-<span class="w-8">Mon</span>
-<div class="flex-1 grid grid-cols-[repeat(52,minmax(0,1fr))] gap-[2px]">
-<!-- Generate dummy column headers for months roughly -->
-<div class="col-span-4">Jan</div><div class="col-span-4">Feb</div><div class="col-span-5">Mar</div><div class="col-span-4">Apr</div><div class="col-span-4">May</div><div class="col-span-5">Jun</div><div class="col-span-4">Jul</div><div class="col-span-4">Aug</div><div class="col-span-5">Sep</div><div class="col-span-4">Oct</div><div class="col-span-4">Nov</div><div class="col-span-5">Dec</div>
-</div>
-</div>
-<!-- Heatmap Grid -->
-<div class="flex gap-sm">
-<div class="flex flex-col gap-[2px] text-data-mono font-data-mono text-[10px] text-on-surface-variant w-8">
-<span class="h-[9px]"></span>
-<span class="h-[9px] leading-[9px]">Wed</span>
-<span class="h-[9px]"></span>
-<span class="h-[9px] leading-[9px]">Fri</span>
-<span class="h-[9px]"></span>
-<span class="h-[9px] leading-[9px]">Sun</span>
-<span class="h-[9px]"></span>
-</div>
-<div class="flex-1 grid grid-rows-7 grid-flow-col gap-[2px]" id="heatmap-container">
-<!-- JS will populate this with 364 tiny divs -->
+
 <script>
-                                    const container = document.getElementById('heatmap-container');
-                                    const colors = ['bg-surface-container-highest', 'bg-surface-container-highest', 'bg-surface-container-highest', 'bg-primary/30', 'bg-primary/60', 'bg-primary', 'bg-tertiary-container'];
-                                    for(let i=0; i<364; i++) {
-                                        const div = document.createElement('div');
-                                        div.className = `w-full h-[9px] rounded-sm ${colors[Math.floor(Math.random() * (Math.random() > 0.8 ? colors.length : 3))]}`;
-                                        container.appendChild(div);
-                                    }
-                                </script>
-</div>
-</div>
-<div class="flex justify-end items-center gap-xs mt-md text-data-mono font-data-mono text-[10px] text-on-surface-variant">
-<span>Less</span>
-<div class="w-[9px] h-[9px] rounded-sm bg-surface-container-highest"></div>
-<div class="w-[9px] h-[9px] rounded-sm bg-primary/30"></div>
-<div class="w-[9px] h-[9px] rounded-sm bg-primary/60"></div>
-<div class="w-[9px] h-[9px] rounded-sm bg-primary"></div>
-<div class="w-[9px] h-[9px] rounded-sm bg-tertiary-container"></div>
-<span>More</span>
-</div>
-</div>
-</div>
-<!-- Global Overlay (Histogram) -->
-<div class="data-panel rounded flex flex-col relative overflow-hidden">
-<div class="data-header px-md py-sm flex justify-between items-center rounded-t relative z-10">
-<span class="text-label-caps font-label-caps text-on-surface">TEMPERATURE DISTRIBUTION OVERLAY</span>
-<span class="text-data-mono font-data-mono text-[10px] text-primary">KELVIN (K)</span>
-</div>
-<div class="flex-1 p-md relative flex items-end">
-<!-- Faint bimodal reference line -->
-<div class="absolute inset-x-md bottom-md top-md border-b border-l border-outline-variant/50">
-<!-- Reference Curve (SVG) -->
-<svg class="w-full h-full absolute inset-0 preserve-3d" preserveaspectratio="none" viewbox="0 0 100 100">
-<path d="M0,100 C20,90 30,20 40,30 C50,40 60,80 70,10 C80,-10 90,80 100,100" fill="none" stroke="#3c494c" stroke-dasharray="2 2" stroke-width="1"></path>
-<!-- Flare threshold line -->
-<line opacity="0.5" stroke="#ffb13b" stroke-dasharray="4 4" stroke-width="1" x1="60" x2="60" y1="0" y2="100"></line>
-<text fill="#ffb13b" font-family="JetBrains Mono" font-size="4" opacity="0.7" x="62" y="10">FLARE THRESHOLD</text>
-</svg>
-</div>
-<!-- Histogram Bars -->
-<div class="relative w-full h-[80%] flex items-end gap-[2px] z-10 opacity-80">
-<div class="flex-1 bg-primary/20 h-[5%]"></div>
-<div class="flex-1 bg-primary/30 h-[10%]"></div>
-<div class="flex-1 bg-primary/40 h-[25%] border-t border-primary/50"></div>
-<div class="flex-1 bg-primary/60 h-[45%] border-t border-primary/50"></div>
-<div class="flex-1 bg-primary h-[85%] border-t border-primary"></div>
-<div class="flex-1 bg-primary/80 h-[65%] border-t border-primary"></div>
-<div class="flex-1 bg-primary/50 h-[35%] border-t border-primary/50"></div>
-<div class="flex-1 bg-primary/30 h-[15%]"></div>
-<div class="flex-1 bg-outline-variant/30 h-[5%]"></div>
-<div class="flex-1 bg-outline-variant/30 h-[8%]"></div>
-<!-- Bimodal second peak (Flares) -->
-<div class="flex-1 bg-tertiary-container/30 h-[15%]"></div>
-<div class="flex-1 bg-tertiary-container/50 h-[40%] border-t border-tertiary-container/50"></div>
-<div class="flex-1 bg-tertiary-container/80 h-[95%] border-t border-tertiary-container"></div>
-<div class="flex-1 bg-error/80 h-[60%] border-t border-error"></div>
-<div class="flex-1 bg-error/40 h-[20%] border-t border-error/50"></div>
-<div class="flex-1 bg-outline-variant/30 h-[5%]"></div>
-</div>
-<!-- X-Axis Labels -->
-<div class="absolute bottom-sm left-md right-md flex justify-between text-data-mono font-data-mono text-[9px] text-on-surface-variant">
-<span>300K</span>
-<span>800K</span>
-<span>1500K</span>
-<span>2200K+</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Benchmarking: Peer Comparison Table -->
-<div class="data-panel rounded flex flex-col mb-xl">
-<div class="data-header px-md py-sm flex justify-between items-center rounded-t">
-<span class="text-label-caps font-label-caps text-on-surface">GUJARAT SECTOR BENCHMARKING</span>
-<span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant">T-30 DAYS ROLLING</span>
-</div>
-<div class="w-full overflow-x-auto">
-<table class="w-full text-left border-collapse">
-<thead>
-<tr class="border-b border-outline-variant text-label-caps font-label-caps text-on-surface-variant bg-surface-container-highest/50">
-<th class="px-md py-sm font-normal">FACILITY ID</th>
-<th class="px-md py-sm font-normal">AVG FRP (MW)</th>
-<th class="px-md py-sm font-normal">PEAK FRP (MW)</th>
-<th class="px-md py-sm font-normal">PERSISTENCE</th>
-<th class="px-md py-sm font-normal">TREND (30D)</th>
-</tr>
-</thead>
-<tbody class="text-data-mono font-data-mono text-[12px]">
-<!-- Row 1 (Current) -->
-<tr class="border-b border-outline-variant bg-primary/5 hover:bg-primary/10 transition-colors">
-<td class="px-md py-sm text-primary flex items-center gap-sm">
-<span class="w-[6px] h-[6px] rounded-full bg-primary pulse-critical"></span>
-                                    RIL-JAM-01 <span class="text-[9px] border border-primary/30 bg-primary/10 px-1 rounded text-primary">TARGET</span>
-</td>
-<td class="px-md py-sm">45.2</td>
-<td class="px-md py-sm text-tertiary-container">128.5</td>
-<td class="px-md py-sm">
-<div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
-<div class="h-full bg-primary" style="width: 85%"></div>
-</div>
-<span class="text-[9px] text-on-surface-variant mt-[2px] block">85% ACTIVE</span>
-</td>
-<td class="px-md py-sm w-32">
-<svg class="w-full h-4" preserveaspectratio="none" viewbox="0 0 100 20">
-<path d="M0,15 L20,12 L40,18 L60,8 L80,10 L100,2" fill="none" stroke="#22d3ee" stroke-width="1.5"></path>
-</svg>
-</td>
-</tr>
-<!-- Row 2 -->
-<tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
-<td class="px-md py-sm text-on-surface">IOCL-KOY-02</td>
-<td class="px-md py-sm text-on-surface-variant">32.8</td>
-<td class="px-md py-sm text-on-surface-variant">94.1</td>
-<td class="px-md py-sm">
-<div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
-<div class="h-full bg-outline-variant" style="width: 62%"></div>
-</div>
-<span class="text-[9px] text-on-surface-variant mt-[2px] block">62% ACTIVE</span>
-</td>
-<td class="px-md py-sm w-32">
-<svg class="w-full h-4" preserveaspectratio="none" viewbox="0 0 100 20">
-<path d="M0,10 L20,12 L40,11 L60,14 L80,12 L100,15" fill="none" stroke="#859397" stroke-width="1.5"></path>
-</svg>
-</td>
-</tr>
-<!-- Row 3 -->
-<tr class="border-b border-outline-variant bg-surface-container-lowest/50 hover:bg-surface-container-highest transition-colors">
-<td class="px-md py-sm text-on-surface">RIL-DAH-03</td>
-<td class="px-md py-sm text-on-surface-variant">18.4</td>
-<td class="px-md py-sm text-on-surface-variant">45.0</td>
-<td class="px-md py-sm">
-<div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
-<div class="h-full bg-outline-variant" style="width: 30%"></div>
-</div>
-<span class="text-[9px] text-on-surface-variant mt-[2px] block">30% ACTIVE</span>
-</td>
-<td class="px-md py-sm w-32">
-<svg class="w-full h-4" preserveaspectratio="none" viewbox="0 0 100 20">
-<path d="M0,18 L20,17 L40,19 L60,16 L80,18 L100,17" fill="none" stroke="#859397" stroke-width="1.5"></path>
-</svg>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</main>
-<!-- Footer -->
-<footer class="fixed bottom-0 w-full md:w-[calc(100%-16rem)] flex justify-between items-center px-margin h-base z-50 bg-surface-container border-t border-outline-variant py-md">
-<span class="text-label-caps font-label-caps text-tertiary">©2024 AGNIVANI AEROSPACE. MISSION CRITICAL DATA.</span>
-<div class="flex gap-md">
-<a class="text-label-caps font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Physics Signature</a>
-<a class="text-label-caps font-label-caps text-primary font-bold hover:text-primary transition-colors" href="#">Baseline</a>
-<a class="text-label-caps font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Model Integrity</a>
-<a class="text-label-caps font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Data Fusion</a>
-</div>
-</footer>
-</div>
-</body></html>
+// Clock
+function tick(){const n=new Date();document.getElementById('clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');}
+setInterval(tick,1000);tick();
+
+// Scroll reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// Gauge animation
+function animGauge(){
+  const risk=78;
+  const total=188;
+  document.getElementById('gauge-fill').style.strokeDasharray=(risk/100*total)+' '+total;
+  document.getElementById('gauge-needle').style.transform=`rotate(${(risk/100)*180-90}deg)`;
+  let n=0;const target=78;
+  const iv=setInterval(()=>{n=Math.min(n+2,target);document.getElementById('gauge-num').textContent=n;if(n>=target)clearInterval(iv);},20);
+}
+setTimeout(animGauge,400);
+
+// Number roll-up
+function rollUp(){
+  document.querySelectorAll('.stat-val[data-target]').forEach(el=>{
+    const target=+el.dataset.target;let n=0;
+    const step=Math.ceil(target/60);
+    const iv=setInterval(()=>{n=Math.min(n+step,target);el.textContent=n.toLocaleString();if(n>=target)clearInterval(iv);},16);
+  });
+}
+setTimeout(rollUp,600);
+
+// Baseline chart
+(function(){
+  const svg=document.getElementById('baseline-svg');
+  const W=svg.clientWidth||600,H=180,pad={l:36,r:12,t:12,b:24};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  const N=365;
+  const mean=52,sigma=14;
+  const obs=Array.from({length:N},(_,i)=>mean+Math.sin(i/30)*18+Math.sin(i/7)*5+(Math.random()-0.5)*12);
+  obs[364]=82;
+  const toX=i=>pad.l+i/N*pw;
+  const toY=v=>pad.t+ph-(v/(mean+sigma*3+10))*(ph);
+  let s='';
+  // Grid
+  [0,.25,.5,.75,1].forEach(f=>{const y=pad.t+ph*(1-f);s+=`<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="#1b2735" stroke-width=".8"/>`;});
+  // Sigma band
+  const top=obs.map((_,i)=>toX(i)+','+toY(mean+2*sigma)).join('L');
+  const bot=obs.map((_,i)=>toX(i)+','+toY(mean-2*sigma)).reverse().join('L');
+  s+=`<path d="M${top}L${bot}Z" fill="rgba(34,211,238,0.07)"/>`;
+  // Trend (seasonal)
+  const trend=obs.map((_,i)=>mean+Math.sin(i/30)*18);
+  s+=`<path d="M${trend.map((v,i)=>toX(i)+','+toY(v)).join('L')}" fill="none" stroke="#4e5f74" stroke-width="1" stroke-dasharray="4,3"/>`;
+  // Mean
+  s+=`<line x1="${pad.l}" y1="${toY(mean)}" x2="${W-pad.r}" y2="${toY(mean)}" stroke="#22d3ee" stroke-width="1" stroke-dasharray="4,3"/>`;
+  // Observed
+  s+=`<path d="M${obs.map((v,i)=>toX(i)+','+toY(v)).join('L')}" fill="none" stroke="#ffa94d" stroke-width="1.4"/>`;
+  // Current
+  const cx=toX(364),cy=toY(obs[364]);
+  s+=`<line x1="${cx}" y1="${cy}" x2="${cx}" y2="${pad.t+ph}" stroke="#ffa94d" stroke-width="1" stroke-dasharray="2,2"/>`;
+  s+=`<circle cx="${cx}" cy="${cy}" r="4" fill="#ffa94d" stroke="#060910" stroke-width="1.5"/>`;
+  s+=`<rect x="${cx-50}" y="${cy-22}" width="100" height="18" rx="3" fill="rgba(6,9,16,.9)" stroke="#1b2735"/>`;
+  s+=`<text x="${cx}" y="${cy-10}" fill="#ffa94d" font-size="8" font-family="JetBrains Mono" text-anchor="middle">z=+3.21 ANOMALY</text>`;
+  // Axis labels
+  ['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'].forEach((m,i)=>{
+    s+=`<text x="${pad.l+i*(pw/12)+pw/24}" y="${H-6}" fill="#4e5f74" font-size="7.5" font-family="JetBrains Mono" text-anchor="middle">${m}</text>`;
+  });
+  // Legend
+  s+=`<line x1="${pad.l+10}" y1="${pad.t+8}" x2="${pad.l+26}" y2="${pad.t+8}" stroke="#22d3ee" stroke-width="1" stroke-dasharray="4,3"/><text x="${pad.l+30}" y="${pad.t+12}" fill="#7b8da3" font-size="7.5" font-family="JetBrains Mono">Mean</text>`;
+  s+=`<line x1="${pad.l+70}" y1="${pad.t+8}" x2="${pad.l+86}" y2="${pad.t+8}" stroke="#ffa94d" stroke-width="1.4"/><text x="${pad.l+90}" y="${pad.t+12}" fill="#7b8da3" font-size="7.5" font-family="JetBrains Mono">Observed</text>`;
+  svg.innerHTML=s;
+})();
+
+// Calendar heatmap
+(function(){
+  const grid=document.getElementById('cal-grid');
+  const N=52*7;
+  for(let i=0;i<N;i++){
+    const v=Math.random();
+    const cell=document.createElement('div');
+    cell.className='cal-cell';
+    const intensity=v<0.6?0:v<0.75?0.3:v<0.9?0.6:1;
+    cell.style.background=intensity===0?'#1b2735':`rgba(255,169,77,${intensity})`;
+    cell.title=`Day ${i+1}: ${Math.round(v*80)} MW`;
+    grid.appendChild(cell);
+  }
+})();
+
+// Seasonal small multiples
+(function(){
+  const grid=document.getElementById('sm-grid');
+  const seasons=[{name:'Observed',col:'#ffa94d'},{name:'Trend',col:'#22d3ee'},{name:'Seasonal',col:'#4ade80'},{name:'Residual',col:'#b197fc'}];
+  seasons.forEach(s=>{
+    const div=document.createElement('div');div.className='sm-panel';
+    const N=90;
+    const vals=Array.from({length:N},(_,i)=>{
+      if(s.name==='Observed')return 50+Math.sin(i/10)*20+(Math.random()-0.5)*15;
+      if(s.name==='Trend')return 50+i*0.1;
+      if(s.name==='Seasonal')return Math.sin(i/10)*20;
+      return (Math.random()-0.5)*15;
+    });
+    const mx=Math.max(...vals.map(Math.abs));const mn=Math.min(...vals);
+    const W=200,H=60;
+    const toX=i=>i/N*W;
+    const toY=v=>H-(v-mn)/(mx-mn+1)*H;
+    const path=vals.map((v,i)=>toX(i)+','+toY(v)).join('L');
+    div.innerHTML=`<div class="sm-title">${s.name}</div><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:60px"><path d="M${path}" fill="none" stroke="${s.col}" stroke-width="1.2"/></svg>`;
+    grid.appendChild(div);
+  });
+})();
+
+// Temperature distribution
+(function(){
+  const svg=document.getElementById('dist-svg');
+  const W=svg.clientWidth||400,H=160,pad={l:36,r:12,t:12,b:24};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  // Bimodal: flare ~1800K, industrial ~1100K
+  function gauss(x,mu,sig){return Math.exp(-0.5*((x-mu)/sig)**2);}
+  const xs=[];for(let x=500;x<=2200;x+=50)xs.push(x);
+  const facility=xs.map(x=>gauss(x,1820,120)*0.7+gauss(x,1100,80)*0.3);
+  const global=xs.map(x=>gauss(x,1800,200)*0.5+gauss(x,1050,150)*0.5);
+  const mx=Math.max(...facility,...global);
+  const toX=x=>pad.l+(x-500)/(2200-500)*pw;
+  const toY=v=>pad.t+ph-(v/mx)*ph;
+  let s='';
+  // Grid
+  [500,900,1300,1700,2100].forEach(x=>{s+=`<line x1="${toX(x)}" y1="${pad.t}" x2="${toX(x)}" y2="${pad.t+ph}" stroke="#1b2735" stroke-width=".8"/><text x="${toX(x)}" y="${H-6}" fill="#4e5f74" font-size="7.5" font-family="JetBrains Mono" text-anchor="middle">${x}K</text>`;});
+  // Global reference (faint)
+  s+=`<path d="M${global.map((v,i)=>toX(xs[i])+','+toY(v)).join('L')}" fill="none" stroke="#2d4a5e" stroke-width="1" stroke-dasharray="3,3"/>`;
+  // Facility
+  const fp=facility.map((v,i)=>toX(xs[i])+','+toY(v)).join('L');
+  s+=`<path d="M${fp}L${toX(2200)},${pad.t+ph}L${toX(500)},${pad.t+ph}Z" fill="rgba(255,169,77,0.12)"/>`;
+  s+=`<path d="M${fp}" fill="none" stroke="#ffa94d" stroke-width="1.6"/>`;
+  // Annotations
+  s+=`<line x1="${toX(1820)}" y1="${pad.t}" x2="${toX(1820)}" y2="${pad.t+ph}" stroke="#ffa94d" stroke-width=".8" stroke-dasharray="3,3"/>`;
+  s+=`<text x="${toX(1820)+4}" y="${pad.t+14}" fill="#ffa94d" font-size="7.5" font-family="JetBrains Mono">Flare 1820K</text>`;
+  s+=`<line x1="${toX(1100)}" y1="${pad.t}" x2="${toX(1100)}" y2="${pad.t+ph}" stroke="#ff4d4d" stroke-width=".8" stroke-dasharray="3,3"/>`;
+  s+=`<text x="${toX(1100)+4}" y="${pad.t+14}" fill="#ff4d4d" font-size="7.5" font-family="JetBrains Mono">Ind. 1100K</text>`;
+  // Legend
+  s+=`<line x1="${pad.l+10}" y1="${pad.t+8}" x2="${pad.l+26}" y2="${pad.t+8}" stroke="#2d4a5e" stroke-width="1" stroke-dasharray="3,3"/><text x="${pad.l+30}" y="${pad.t+12}" fill="#4e5f74" font-size="7.5" font-family="JetBrains Mono">Global ref</text>`;
+  s+=`<line x1="${pad.l+90}" y1="${pad.t+8}" x2="${pad.l+106}" y2="${pad.t+8}" stroke="#ffa94d" stroke-width="1.6"/><text x="${pad.l+110}" y="${pad.t+12}" fill="#7b8da3" font-size="7.5" font-family="JetBrains Mono">Jamnagar</text>`;
+  svg.innerHTML=s;
+})();
+
+// Peer table
+(function(){
+  const peers=[
+    {name:'Jamnagar Refinery',frp:58,risk:78,trend:[40,55,62,58,70,58]},
+    {name:'Vadinar Refinery',frp:44,risk:62,trend:[38,42,48,44,50,44]},
+    {name:'Hazira LNG',frp:36,risk:55,trend:[30,38,40,36,42,36]},
+    {name:'Dahej LNG',frp:28,risk:41,trend:[22,28,32,28,30,28]},
+    {name:'Panipat Refinery',frp:22,risk:38,trend:[18,22,26,22,24,22]},
+  ];
+  const tbody=document.getElementById('peer-tbody');
+  peers.forEach((p,i)=>{
+    const riskCol=p.risk>70?'#ef4444':p.risk>50?'#f59e0b':'#4ade80';
+    const W=60,H=20;
+    const mx=Math.max(...p.trend),mn=Math.min(...p.trend);
+    const pts=p.trend.map((v,j)=>(j/(p.trend.length-1)*W)+','+(H-(v-mn)/(mx-mn+1)*H)).join('L');
+    const spark=`<svg class="sparkline" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><path d="M${pts}" fill="none" stroke="${riskCol}" stroke-width="1.2"/></svg>`;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i===0?'<b>'+p.name+'</b>':p.name}</td><td style="color:var(--gf)">${p.frp} MW</td><td style="color:${riskCol}">${p.risk}</td><td>${spark}</td>`;
+    tbody.appendChild(tr);
+  });
+})();
+</script>
+</body>
+</html>
