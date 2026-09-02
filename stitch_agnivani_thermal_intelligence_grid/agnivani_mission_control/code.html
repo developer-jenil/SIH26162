@@ -1,512 +1,1042 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html class="dark" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Mission Control - AGNIVANI</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                            "inverse-surface": "#e0e2ed",
-                            "on-tertiary-container": "#6e4600",
-                            "secondary-container": "#404752",
-                            "tertiary-fixed": "#ffddb5",
-                            "error-container": "#93000a",
-                            "primary-fixed-dim": "#2fd9f4",
-                            "on-secondary-fixed-variant": "#404752",
-                            "on-tertiary-fixed": "#2a1800",
-                            "secondary-fixed": "#dce3f0",
-                            "on-primary-fixed-variant": "#004e5a",
-                            "outline-variant": "#3c494c",
-                            "primary-fixed": "#a2eeff",
-                            "surface-bright": "#363941",
-                            "tertiary": "#ffd6a3",
-                            "tertiary-container": "#ffb13b",
-                            "surface-container-highest": "#31353d",
-                            "on-primary-container": "#005763",
-                            "on-background": "#e0e2ed",
-                            "surface-container-low": "#181c23",
-                            "on-secondary": "#2a313b",
-                            "outline": "#859397",
-                            "primary": "#8aebff",
-                            "inverse-primary": "#006877",
-                            "surface-container": "#1c2027",
-                            "on-secondary-container": "#afb5c2",
-                            "surface-dim": "#10131b",
-                            "on-surface-variant": "#bbc9cd",
-                            "on-primary-fixed": "#001f25",
-                            "on-tertiary": "#462b00",
-                            "on-surface": "#e0e2ed",
-                            "on-error": "#690005",
-                            "surface-tint": "#2fd9f4",
-                            "on-secondary-fixed": "#151c25",
-                            "secondary": "#c0c7d4",
-                            "on-primary": "#00363e",
-                            "surface-variant": "#31353d",
-                            "tertiary-fixed-dim": "#ffb957",
-                            "surface-container-lowest": "#0b0e15",
-                            "primary-container": "#22d3ee",
-                            "surface": "#10131b",
-                            "on-tertiary-fixed-variant": "#643f00",
-                            "on-error-container": "#ffdad6",
-                            "secondary-fixed-dim": "#c0c7d4",
-                            "inverse-on-surface": "#2d3038",
-                            "background": "#10131b",
-                            "surface-container-high": "#272a32",
-                            "error": "#ffb4ab"
-                    },
-                    "borderRadius": {
-                            "DEFAULT": "0.125rem",
-                            "lg": "0.25rem",
-                            "xl": "0.5rem",
-                            "full": "0.75rem"
-                    },
-                    "spacing": {
-                            "gutter": "18px",
-                            "base": "9px",
-                            "md": "18px",
-                            "xl": "36px",
-                            "lg": "27px",
-                            "margin": "27px",
-                            "sm": "9px",
-                            "xs": "4.5px"
-                    },
-                    "fontFamily": {
-                            "label-caps": [
-                                    "JetBrains Mono"
-                            ],
-                            "body-lg": [
-                                    "Inter"
-                            ],
-                            "headline-sm": [
-                                    "Inter"
-                            ],
-                            "headline-lg": [
-                                    "Inter"
-                            ],
-                            "data-mono": [
-                                    "JetBrains Mono"
-                            ],
-                            "headline-md": [
-                                    "Inter"
-                            ],
-                            "body-md": [
-                                    "Inter"
-                            ]
-                    },
-                    "fontSize": {
-                            "label-caps": [
-                                    "11px",
-                                    {
-                                            "lineHeight": "1.2",
-                                            "letterSpacing": "0.05em",
-                                            "fontWeight": "700"
-                                    }
-                            ],
-                            "body-lg": [
-                                    "16px",
-                                    {
-                                            "lineHeight": "1.5",
-                                            "fontWeight": "400"
-                                    }
-                            ],
-                            "headline-sm": [
-                                    "18px",
-                                    {
-                                            "lineHeight": "1.4",
-                                            "fontWeight": "600"
-                                    }
-                            ],
-                            "headline-lg": [
-                                    "32px",
-                                    {
-                                            "lineHeight": "1.2",
-                                            "letterSpacing": "-0.02em",
-                                            "fontWeight": "600"
-                                    }
-                            ],
-                            "data-mono": [
-                                    "13px",
-                                    {
-                                            "lineHeight": "1.2",
-                                            "fontWeight": "500"
-                                    }
-                            ],
-                            "headline-md": [
-                                    "24px",
-                                    {
-                                            "lineHeight": "1.2",
-                                            "fontWeight": "600"
-                                    }
-                            ],
-                            "body-md": [
-                                    "14px",
-                                    {
-                                            "lineHeight": "1.5",
-                                            "fontWeight": "400"
-                                    }
-                            ]
-                    }
-                }
-            }
-        }
-    </script>
+<title>AGNIVANI — Mission Control</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
-        body { background-color: #060910; overflow: hidden; }
-        .hud-border { border: 1px solid #1b2735; }
-        .hud-panel { background-color: rgba(13, 20, 29, 0.72); }
-        .hud-glow { box-shadow: 0 0 8px rgba(34, 211, 238, 0.3); }
-        
-        .pulse-critical { animation: pulseCritical 2s infinite; }
-        @keyframes pulseCritical {
-            0% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); }
-            70% { opacity: 0.5; box-shadow: 0 0 0 4px rgba(255, 77, 77, 0); }
-            100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
-        }
-        
-        .radar-sweep {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 200%; height: 200%;
-            background: conic-gradient(from 0deg, transparent 0deg, rgba(34, 211, 238, 0.1) 60deg, transparent 60deg);
-            transform-origin: 0 0;
-            animation: sweep 4s linear infinite;
-            pointer-events: none;
-        }
-        @keyframes sweep { 100% { transform: rotate(360deg); } }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#060910;color:#dce7f2;font-family:'Inter',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
 
-        .terminal-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9.5px;
-            line-height: 1.4;
-            color: #bbc9cd;
-        }
-        
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #3c494c; border-radius: 2px; }
-    </style>
+/* ── Ambient glows ── */
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 0% 0%,rgba(34,211,238,0.06) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 100% 100%,rgba(245,158,11,0.06) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+/* ── Tokens ── */
+:root{
+  --cyan:#22d3ee;
+  --col-gas-flare:#ffa94d;
+  --col-ind-fire:#ff4d4d;
+  --col-coal:#f59e0b;
+  --col-wild:#4ade80;
+  --col-leak:#b197fc;
+  --sev-critical:#ef4444;
+  --sev-high:#f59e0b;
+  --sev-moderate:#22d3ee;
+  --sev-low:#7b8da3;
+  --text-primary:#dce7f2;
+  --text-secondary:#7b8da3;
+  --text-tertiary:#4e5f74;
+  --panel-bg:rgba(13,20,29,0.72);
+  --border:#1b2735;
+  --bg:#060910;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#1b2735;border-radius:2px}
+
+/* ── Layout ── */
+#app{display:flex;flex-direction:column;height:100vh;position:relative;z-index:1}
+#topbar{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--border);background:rgba(6,9,16,0.95);flex-shrink:0;z-index:50}
+#main{flex:1;display:flex;overflow:hidden}
+#left-col{width:274px;display:flex;flex-direction:column;border-right:1px solid var(--border);flex-shrink:0;background:rgba(13,20,29,0.5)}
+#centre-col{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+#right-col{width:372px;display:flex;flex-direction:column;border-left:1px solid var(--border);flex-shrink:0;background:rgba(13,20,29,0.5);overflow-y:auto}
+#bottom-panel{height:236px;border-top:1px solid var(--border);background:rgba(10,15,22,0.95);display:flex;flex-direction:column;flex-shrink:0;z-index:10}
+
+/* ── Panel header ── */
+.panel-hdr{height:30px;display:flex;align-items:center;padding:0 9px;border-bottom:1px solid var(--border);background:rgba(27,39,53,0.4);flex-shrink:0}
+.panel-hdr span{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)}
+
+/* ── HUD pill ── */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border:1px solid var(--border);border-radius:4px;background:rgba(13,20,29,0.8);font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--text-secondary);white-space:nowrap}
+.pill b{color:var(--text-primary)}
+
+/* ── Live dot ── */
+.live-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0}
+@keyframes liveBlink{0%,100%{opacity:1}50%{opacity:.3}}
+.live-dot{animation:liveBlink 1.5s ease-in-out infinite}
+
+/* ── Brand halo ── */
+@keyframes haloExpand{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.2);opacity:0}}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#f59e0b,#ea580c);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.brand-mark::after{content:'';position:absolute;inset:0;border-radius:8px;border:1.5px solid rgba(245,158,11,.6);animation:haloExpand 2.4s ease-out infinite}
+.brand-mark svg{width:18px;height:18px;fill:#fff}
+
+/* ── Alert feed ── */
+#alert-feed{flex:1;overflow-y:auto;padding:4px}
+.alert-row{position:relative;padding:6px 7px 6px 11px;border:1px solid var(--border);border-radius:4px;margin-bottom:3px;cursor:pointer;background:rgba(13,20,29,0.6);transition:background 140ms}
+.alert-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;border-radius:2px 0 0 2px;background:var(--border)}
+.alert-row.selected{background:rgba(34,211,238,0.05)}
+.alert-row.selected::before{background:var(--cyan)}
+.alert-row:hover{background:rgba(34,211,238,0.04)}
+.alert-row-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.sev-chip{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:.06em;padding:1px 5px;border-radius:3px;border:1px solid}
+.sev-chip.CRITICAL{color:var(--sev-critical);border-color:var(--sev-critical);background:rgba(239,68,68,.1)}
+.sev-chip.HIGH{color:var(--sev-high);border-color:var(--sev-high);background:rgba(245,158,11,.1)}
+.sev-chip.MODERATE{color:var(--sev-moderate);border-color:var(--sev-moderate);background:rgba(34,211,238,.08)}
+.sev-chip.LOW{color:var(--sev-low);border-color:var(--sev-low);background:rgba(123,141,163,.08)}
+.alert-ts{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-tertiary)}
+.alert-name{font-size:11.5px;font-weight:600;color:var(--text-primary);margin-bottom:2px}
+.alert-meta{display:flex;gap:8px;align-items:center}
+.class-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.alert-meta-val{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-secondary)}
+
+/* ── Ticker entrance ── */
+@keyframes tickerIn{from{transform:translateX(-14px);opacity:0}to{transform:translateX(0);opacity:1}}
+.ticker-new{animation:tickerIn 400ms cubic-bezier(.4,0,.2,1) forwards}
+
+/* ── Class distribution ── */
+#class-dist{padding:9px;border-top:1px solid var(--border);background:rgba(10,15,22,0.6);flex-shrink:0}
+.class-row{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.class-chip{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.class-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-secondary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.class-count{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:var(--text-primary);font-variant-numeric:tabular-nums;min-width:20px;text-align:right}
+.class-bar-track{height:3px;background:rgba(27,39,53,0.8);border-radius:2px;overflow:hidden;margin-top:2px}
+.class-bar-fill{height:100%;border-radius:2px;width:0;transition:width 600ms cubic-bezier(.4,0,.2,1)}
+
+/* ── Map ── */
+#map-container{flex:1;position:relative;overflow:hidden;background:#060910}
+#map-svg{width:100%;height:100%}
+.graticule{stroke:#16222f;stroke-width:.8;fill:none}
+.india-path{fill:url(#indiaGrad);stroke:#2a7c96;stroke-width:1.4}
+.facility-marker{fill:#2d4a5e;stroke:#3a5f78;stroke-width:.8}
+.detection-circle{cursor:pointer;transition:r 200ms}
+@keyframes ripple{0%{r:5;opacity:.7}100%{r:18;opacity:0}}
+.ripple-ring{animation:ripple 2.4s ease-out infinite;fill:none;stroke-width:1.5;pointer-events:none}
+.ripple-ring:nth-child(2){animation-delay:.8s}
+.ripple-ring:nth-child(3){animation-delay:1.6s}
+#radar-wedge{transform-origin:50% 50%;animation:radarSpin 7s linear infinite;opacity:.18}
+@keyframes radarSpin{to{transform:rotate(360deg)}}
+@keyframes gridDrift{0%{transform:translate(0,0)}50%{transform:translate(2px,1px)}100%{transform:translate(0,0)}}
+.graticule-group{animation:gridDrift 12s ease-in-out infinite}
+
+/* ── Map HUD ── */
+.map-hud{position:absolute;background:rgba(6,9,16,0.85);border:1px solid var(--border);border-radius:4px;padding:4px 7px;font-family:'JetBrains Mono',monospace;font-size:9px;backdrop-filter:blur(4px)}
+.map-hud-tl{top:9px;left:9px}
+.map-hud-tr{top:9px;right:9px;text-align:right}
+.map-hud-bl{bottom:9px;left:9px}
+.map-legend{position:absolute;bottom:9px;left:9px;background:rgba(6,9,16,0.85);border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:8.5px}
+.legend-row{display:flex;align-items:center;gap:5px;margin-bottom:3px;color:var(--text-secondary)}
+.legend-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ── Terminal ── */
+#terminal{height:158px;background:#03060b;border-top:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+#terminal-log{flex:1;overflow-y:auto;padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:9.5px;line-height:1.65;color:#7b8da3}
+.tlog-line{display:flex;gap:6px;opacity:0;animation:logFadeIn 300ms forwards}
+@keyframes logFadeIn{to{opacity:1}}
+.tlog-ts{color:#4e5f74;flex-shrink:0}
+.tlog-GEE{color:#a78bfa}
+.tlog-PHYS{color:var(--cyan)}
+.tlog-BASE{color:#4ade80}
+.tlog-FUSE{color:#f59e0b}
+.tlog-MODEL{color:#fb923c}
+.tlog-ALERT{color:#ef4444}
+.tlog-msg{color:#7b8da3}
+
+/* ── Right inspector ── */
+#inspector-body{padding:9px;display:flex;flex-direction:column;gap:12px}
+.verdict-block{background:rgba(13,20,29,0.8);border:1px solid var(--border);border-radius:6px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between}
+.verdict-class{font-size:14px;font-weight:800;letter-spacing:.02em}
+.verdict-sub{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text-secondary);margin-top:2px}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:6px;display:block}
+
+/* ── Evidence chain ── */
+.chain-stage{display:flex;gap:10px;align-items:flex-start;padding:6px 0;opacity:.35;transition:opacity 300ms}
+.chain-stage.active{opacity:1}
+.chain-num{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--text-tertiary);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--text-tertiary);flex-shrink:0;transition:border-color 300ms,color 300ms}
+.chain-stage.active .chain-num{border-color:var(--cyan);color:var(--cyan)}
+.chain-connector{width:1.5px;background:var(--border);margin:0 10px;flex-shrink:0;align-self:stretch;min-height:8px}
+.chain-stage.active .chain-connector{background:var(--cyan)}
+.chain-title{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--text-secondary);text-transform:uppercase}
+.chain-stage.active .chain-title{color:var(--text-primary)}
+.chain-val{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cyan);margin-top:2px;line-height:1.4}
+
+/* ── Physics tiles ── */
+.phys-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}
+.phys-tile{background:rgba(13,20,29,0.7);border:1px solid var(--border);border-radius:4px;padding:6px 7px}
+.phys-tile:first-child{border-color:rgba(34,211,238,.3)}
+.phys-tile-label{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:3px}
+.phys-tile-val{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:500;color:var(--text-primary);font-variant-numeric:tabular-nums}
+.phys-tile:first-child .phys-tile-val{color:var(--cyan)}
+
+/* ── Classification bars ── */
+.clf-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.clf-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-secondary);flex:1}
+.clf-pct{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--text-primary);font-variant-numeric:tabular-nums;min-width:32px;text-align:right}
+.clf-bar-track{height:4px;background:rgba(27,39,53,0.8);border-radius:2px;overflow:hidden;flex:2}
+.clf-bar-fill{height:100%;border-radius:2px;width:0;transition:width 900ms cubic-bezier(.4,0,.2,1)}
+.conformal-block{border:1px solid var(--border);border-radius:4px;padding:8px 10px;background:rgba(6,9,16,0.6);font-family:'JetBrains Mono',monospace;font-size:8.5px;line-height:1.6;color:var(--text-secondary);margin-top:8px}
+.conformal-block b{color:var(--cyan)}
+.counterfactual{border:1px solid rgba(239,68,68,.25);border-radius:4px;padding:7px 9px;background:rgba(239,68,68,.05);font-family:'JetBrains Mono',monospace;font-size:8.5px;line-height:1.5;color:#fca5a5;margin-top:6px}
+
+/* ── Action cards ── */
+.action-card{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border)}
+.action-num{width:22px;height:22px;border-radius:4px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--cyan);flex-shrink:0}
+.action-text{font-size:11.5px;color:var(--text-primary);line-height:1.4}
+.action-detail{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-secondary);margin-top:2px}
+.dispatch-btn{width:100%;margin-top:10px;padding:10px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);border-radius:5px;color:#fca5a5;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background 140ms,border-color 140ms}
+.dispatch-btn:hover{background:rgba(239,68,68,.25);border-color:rgba(239,68,68,.6)}
+
+/* ── Bottom tabs ── */
+#tab-bar{display:flex;border-bottom:1px solid var(--border);padding:0 9px;height:32px;flex-shrink:0}
+.tab-btn{padding:0 14px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;height:100%;transition:color 200ms,border-color 200ms;white-space:nowrap}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tab-badge{display:inline-block;margin-left:5px;padding:1px 4px;border-radius:3px;background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.2);font-size:8px;color:var(--cyan)}
+#tab-content{flex:1;overflow:hidden;position:relative}
+.tab-pane{position:absolute;inset:0;display:none;padding:10px 14px;gap:14px}
+.tab-pane.active{display:flex}
+
+/* ── Histogram ── */
+#hist-bars{display:flex;align-items:flex-end;gap:2px;height:100%;flex:1}
+.hist-bar{flex:1;border-radius:1px 1px 0 0;min-width:3px;width:0;transition:height 900ms cubic-bezier(.4,0,.2,1)}
+.hist-marker{position:absolute;border-left:1.5px dashed var(--cyan);height:100%;top:0}
+.hist-marker-label{position:absolute;top:2px;left:3px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--cyan)}
+
+/* ── Baseline chart ── */
+#baseline-svg{width:100%;height:100%}
+
+/* ── Model integrity bars ── */
+.model-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.model-label{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-secondary);width:140px;flex-shrink:0}
+.model-bar-track{flex:1;height:5px;background:rgba(27,39,53,0.8);border-radius:3px;overflow:hidden}
+.model-bar-fill{height:100%;border-radius:3px;width:0;transition:width 900ms cubic-bezier(.4,0,.2,1)}
+.model-val{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;font-variant-numeric:tabular-nums;min-width:36px;text-align:right}
+.model-warn{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#ef4444;margin-top:8px;line-height:1.5}
+
+/* ── Data fusion cards ── */
+.fusion-card{background:rgba(13,20,29,0.7);border:1px solid var(--border);border-radius:4px;padding:7px 9px;margin-bottom:5px}
+.fusion-card-title{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--text-primary);margin-bottom:4px}
+.fusion-layers{display:flex;flex-wrap:wrap;gap:4px}
+.fusion-chip{font-family:'JetBrains Mono',monospace;font-size:8px;padding:1px 5px;border-radius:3px;border:1px solid rgba(34,211,238,.25);background:rgba(34,211,238,.07);color:var(--cyan)}
+
+/* ── Countdown ── */
+#next-pass{font-variant-numeric:tabular-nums}
+@keyframes passFlash{0%,100%{opacity:1}50%{opacity:.2}}
+.pass-flash{animation:passFlash 400ms ease-in-out 3}
+
+/* ── Skeleton shimmer ── */
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.skeleton{background:linear-gradient(90deg,rgba(27,39,53,0) 0%,rgba(27,39,53,0.6) 50%,rgba(27,39,53,0) 100%);background-size:400px 100%;animation:shimmer 1.2s ease-in-out infinite}
+
+/* ── prefers-reduced-motion ── */
+@media(prefers-reduced-motion:reduce){
+  .live-dot,.brand-mark::after,#radar-wedge,.ripple-ring,.graticule-group{animation:none!important}
+  #next-pass{animation:none!important}
+}
+</style>
 </head>
-<body class="text-on-surface font-body-md h-screen w-screen flex flex-col antialiased">
-<!-- TOPBAR -->
-<header class="flex justify-between items-center w-full px-margin h-[54px] bg-surface-container-low dark:bg-surface-container-low border-b border-outline-variant shrink-0 z-50">
-<div class="flex items-center gap-md">
-<img alt="AGNIVANI Logo" class="h-6 w-6 object-contain rounded-sm shadow-[0_0_8px_rgba(34,211,238,0.3)]" src="https://lh3.googleusercontent.com/aida/AEtjO1UYqrkWw1Z87Njr0ldnFFOb5bXXnVgUQlXuS6y2hgNvU9DvD_KEM-2E7r7XBL1Bb0uYNdTbbYuywxOsrS9XziNywsVJCSJREQhgJGd-gwemdNC49af97H9VC1GFmJtnoltRr2hEuQswg0TEL_meVmqk2-Crzwj9zwetJXh_jlt99BSGb43h-nPUgg6NxFpoNCUsWkC-tuPJanV6Y9EdLQ6d1MlOO5gB8t9uxCdSYY6WKgCiH_HZ3vBO"/>
-<div class="flex items-baseline gap-sm">
-<span class="font-headline-md text-headline-md font-extrabold text-primary tracking-tighter">AGNIVANI</span>
-<span class="font-label-caps text-label-caps text-on-surface-variant hidden md:inline">INDUSTRIAL THERMAL ANOMALY INTELLIGENCE GRID</span>
-</div>
-</div>
-<div class="flex items-center gap-lg">
-<div class="flex gap-sm">
-<div class="hud-border bg-surface-container px-2 py-1 rounded flex items-center gap-xs">
-<div class="w-2 h-2 rounded-full bg-error pulse-critical"></div>
-<span class="font-label-caps text-label-caps text-error">LIVE</span>
-</div>
-<div class="hud-border bg-surface-container px-2 py-1 rounded">
-<span class="font-label-caps text-label-caps text-on-surface-variant">NOAA-20</span>
-</div>
-<div class="hud-border bg-surface-container px-2 py-1 rounded">
-<span class="font-label-caps text-label-caps text-on-surface-variant">VIIRS 375m</span>
-</div>
-</div>
-<div class="flex items-center gap-md font-data-mono text-data-mono border-l border-outline-variant pl-md">
-<span class="text-on-surface-variant">gcc-xgb v4.2</span>
-<span class="text-primary" id="system-clock">T-00:00:00</span>
-<div class="flex gap-sm">
-<span class="material-symbols-outlined text-[18px] text-on-surface-variant cursor-pointer hover:text-primary transition-colors">sensors</span>
-<span class="material-symbols-outlined text-[18px] text-on-surface-variant cursor-pointer hover:text-primary transition-colors">videocam</span>
-<span class="material-symbols-outlined text-[18px] text-on-surface-variant cursor-pointer hover:text-primary transition-colors">precision_manufacturing</span>
-<span class="material-symbols-outlined text-[18px] text-on-surface-variant cursor-pointer hover:text-primary transition-colors">schedule</span>
-</div>
-</div>
-</div>
+<body>
+<div id="app">
+
+<!-- ═══════════════════════════════════════════════════════ TOPBAR ══ -->
+<header id="topbar">
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2C8 7 6 10 6 14a6 6 0 0012 0c0-4-2-7-6-12zm0 16a4 4 0 01-4-4c0-2.5 1.2-5 4-9 2.8 4 4 6.5 4 9a4 4 0 01-4 4z"/></svg>
+    </div>
+    <div>
+      <div style="font-size:16px;font-weight:800;letter-spacing:.11em;color:#dce7f2">AGNIVANI</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.06em;color:#4e5f74;text-transform:uppercase">Industrial Thermal Anomaly Intelligence Grid</div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:7px">
+    <div class="pill"><div class="live-dot"></div> LIVE · <b>STREAMING</b></div>
+    <div class="pill">SAT · <b>NOAA-20 / 21</b></div>
+    <div class="pill">SENSOR · <b>VIIRS 375m</b></div>
+    <div class="pill">FACILITIES · <b>38</b></div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="pill">NEXT PASS <b id="next-pass" style="color:var(--cyan)">T-07:23</b></div>
+    <div class="pill">MODEL <b>gcc-xgb v4.2</b></div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:var(--cyan);font-variant-numeric:tabular-nums" id="clock">00:00:00</div>
+  </div>
 </header>
-<div class="flex-1 flex overflow-hidden">
-<!-- SIDENAV -->
-<nav class="docked full-height left-0 w-64 border-r border-outline-variant bg-surface-dim/72 dark:bg-surface-dim/72 flex flex-col z-40 shrink-0">
-<div class="p-base border-b border-outline-variant flex items-center gap-sm">
-<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center hud-border">
-<span class="material-symbols-outlined text-[16px] text-primary">data_usage</span>
+
+<!-- ═══════════════════════════════════════════════════════ MAIN ══ -->
+<div id="main">
+
+<!-- ─────────────────────────────────────────── LEFT COLUMN ── -->
+<div id="left-col">
+  <div class="panel-hdr"><span>Live Alert Feed</span></div>
+  <div id="alert-feed"></div>
+
+  <div id="class-dist">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--text-secondary);text-transform:uppercase;margin-bottom:7px">Class Distribution</div>
+    <div id="class-dist-rows"></div>
+  </div>
 </div>
-<div>
-<div class="font-label-caps text-label-caps text-on-surface-variant">INTELLIGENCE GRID</div>
-<div class="font-data-mono text-[9px] text-on-surface-variant opacity-70">V4.2.0-STABLE</div>
+
+<!-- ─────────────────────────────────────────── CENTRE COLUMN ── -->
+<div id="centre-col">
+  <div id="map-container">
+    <!-- Radar wedge -->
+    <svg id="radar-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2">
+      <defs>
+        <radialGradient id="radarGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#22d3ee" stop-opacity=".22"/>
+          <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <g id="radar-wedge">
+        <path id="radar-path" fill="url(#radarGrad)"/>
+      </g>
+    </svg>
+
+    <!-- Main map SVG -->
+    <svg id="map-svg" viewBox="60 5 30 35" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="indiaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#22d3ee" stop-opacity=".13"/>
+          <stop offset="100%" stop-color="#22d3ee" stop-opacity=".05"/>
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="0.15" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- Graticule -->
+      <g class="graticule-group">
+        <!-- Vertical lines (lon) -->
+        <line class="graticule" x1="64" y1="5" x2="64" y2="40"/>
+        <line class="graticule" x1="68" y1="5" x2="68" y2="40"/>
+        <line class="graticule" x1="72" y1="5" x2="72" y2="40"/>
+        <line class="graticule" x1="76" y1="5" x2="76" y2="40"/>
+        <line class="graticule" x1="80" y1="5" x2="80" y2="40"/>
+        <line class="graticule" x1="84" y1="5" x2="84" y2="40"/>
+        <line class="graticule" x1="88" y1="5" x2="88" y2="40"/>
+        <!-- Horizontal lines (lat) -->
+        <line class="graticule" x1="60" y1="8" x2="90" y2="8"/>
+        <line class="graticule" x1="60" y1="12" x2="90" y2="12"/>
+        <line class="graticule" x1="60" y1="16" x2="90" y2="16"/>
+        <line class="graticule" x1="60" y1="20" x2="90" y2="20"/>
+        <line class="graticule" x1="60" y1="24" x2="90" y2="24"/>
+        <line class="graticule" x1="60" y1="28" x2="90" y2="28"/>
+        <line class="graticule" x1="60" y1="32" x2="90" y2="32"/>
+        <line class="graticule" x1="60" y1="36" x2="90" y2="36"/>
+      </g>
+
+      <!-- India outline (simplified but recognisable) -->
+      <path class="india-path" d="
+        M68.1,37.1 L67.5,35.8 L66.8,34.2 L67.2,32.5 L68.5,31.0 L70.0,30.2
+        L70.5,28.8 L71.2,27.5 L72.6,26.8 L73.8,25.5 L74.5,24.0 L75.8,23.2
+        L77.0,22.5 L78.5,21.8 L80.0,21.2 L81.5,20.8 L83.0,20.5 L84.5,20.2
+        L86.0,20.0 L87.5,20.5 L88.5,21.5 L89.0,23.0 L88.5,24.5 L87.5,25.8
+        L86.5,27.0 L85.5,28.5 L84.5,30.0 L83.5,31.5 L82.5,33.0 L81.5,34.5
+        L80.5,35.8 L79.5,36.8 L78.5,37.5 L77.5,38.0 L76.5,38.2 L75.5,38.0
+        L74.5,37.5 L73.5,37.0 L72.5,36.8 L71.5,37.0 L70.5,37.5 L69.5,37.5
+        L68.8,37.3 Z
+        M76.5,38.2 L77.0,39.0 L77.5,39.5 L78.0,39.8 L78.5,39.5 L78.8,38.8
+        L78.5,38.2 L77.5,38.0 Z
+      "/>
+
+      <!-- Facility markers (diamonds) -->
+      <g id="facility-markers"></g>
+
+      <!-- Detection markers -->
+      <g id="detection-markers"></g>
+    </svg>
+
+    <!-- Map HUD top-right -->
+    <div class="map-hud map-hud-tr" style="color:var(--text-secondary)">
+      <div>PROJ <span style="color:var(--cyan)">EPSG:4326</span></div>
+      <div>DETECTIONS <span style="color:var(--text-primary)" id="det-count">12</span></div>
+      <div>SCAN <span style="color:#4ade80" id="scan-status">SCANNING</span></div>
+    </div>
+
+    <!-- Map legend bottom-left -->
+    <div class="map-legend">
+      <div class="legend-row"><div class="legend-dot" style="background:var(--col-gas-flare)"></div>Gas Flare</div>
+      <div class="legend-row"><div class="legend-dot" style="background:var(--col-ind-fire)"></div>Industrial Fire</div>
+      <div class="legend-row"><div class="legend-dot" style="background:var(--col-coal)"></div>Coal Seam Fire</div>
+      <div class="legend-row"><div class="legend-dot" style="background:var(--col-wild)"></div>Wildfire / Veg</div>
+      <div class="legend-row" style="margin-bottom:0"><div class="legend-dot" style="background:var(--col-leak)"></div>Gas Leak</div>
+    </div>
+  </div>
+
+  <!-- Terminal -->
+  <div id="terminal">
+    <div class="panel-hdr" style="border-top:none"><span>Processing Pipeline Log</span></div>
+    <div id="terminal-log"></div>
+  </div>
 </div>
+
+<!-- ─────────────────────────────────────────── RIGHT COLUMN ── -->
+<div id="right-col">
+  <div class="panel-hdr"><span>Detection Inspector</span></div>
+  <div id="inspector-body">
+
+    <!-- Verdict -->
+    <div class="verdict-block">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--col-gas-flare)"><path d="M12 2C8 7 6 10 6 14a6 6 0 0012 0c0-4-2-7-6-12zm0 16a4 4 0 01-4-4c0-2.5 1.2-5 4-9 2.8 4 4 6.5 4 9a4 4 0 01-4 4z"/></svg>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em">Primary Classification</div>
+          <div class="verdict-class" style="color:var(--col-gas-flare)">GAS FLARE</div>
+          <div class="verdict-sub">AGN-04832 · NOAA-20 · p = 0.943</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-secondary);text-transform:uppercase">Severity</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--sev-critical);margin-top:2px">CRITICAL</div>
+      </div>
+    </div>
+
+    <!-- Evidence Chain -->
+    <div>
+      <span class="section-label">Evidence Chain</span>
+      <div id="evidence-chain">
+        <div class="chain-stage" data-stage="0">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="chain-num">1</div>
+            <div class="chain-connector" style="height:28px"></div>
+          </div>
+          <div style="padding-top:2px">
+            <div class="chain-title">INGEST</div>
+            <div class="chain-val">NOAA-20 · VIIRS 375m · FIRMS / <b>62.4 MW FRP</b> @ 22.351, 70.018</div>
+          </div>
+        </div>
+        <div class="chain-stage" data-stage="1">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="chain-num">2</div>
+            <div class="chain-connector" style="height:28px"></div>
+          </div>
+          <div style="padding-top:2px">
+            <div class="chain-title">PHYSICS</div>
+            <div class="chain-val">Dual-band Planck unmixing / <b>T = 1847 K</b> · A = 0.42 m² · 0.78 MW</div>
+          </div>
+        </div>
+        <div class="chain-stage" data-stage="2">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="chain-num">3</div>
+            <div class="chain-connector" style="height:28px"></div>
+          </div>
+          <div style="padding-top:2px">
+            <div class="chain-title">BASELINE</div>
+            <div class="chain-val">Jamnagar Refinery / persist <b>412 d</b> · z = +3.21</div>
+          </div>
+        </div>
+        <div class="chain-stage" data-stage="3">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="chain-num">4</div>
+            <div class="chain-connector" style="height:28px"></div>
+          </div>
+          <div style="padding-top:2px">
+            <div class="chain-title">FUSION</div>
+            <div class="chain-val">S-2 SWIR + L9 TIRS + S-5P / <b>XCH4 +284 ppb</b> · LULC joined</div>
+          </div>
+        </div>
+        <div class="chain-stage" data-stage="4">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="chain-num">5</div>
+            <div class="chain-connector" style="height:28px"></div>
+          </div>
+          <div style="padding-top:2px">
+            <div class="chain-title">CLASSIFY</div>
+            <div class="chain-val">gcc-xgb · coordinate-free / trailing-window density <b>6h / 24h</b></div>
+          </div>
+        </div>
+        <div class="chain-stage" data-stage="5">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="chain-num">6</div>
+          </div>
+          <div style="padding-top:2px">
+            <div class="chain-title">CALIBRATE</div>
+            <div class="chain-val">Isotonic + conformal / <b>p = 0.943</b> · alpha = 0.10</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Physics Retrieval -->
+    <div>
+      <span class="section-label">Physics Retrieval — Planck Dual-Band Unmixing</span>
+      <div class="phys-grid">
+        <div class="phys-tile"><div class="phys-tile-label">Emitter Temp</div><div class="phys-tile-val">1847 K</div></div>
+        <div class="phys-tile"><div class="phys-tile-label">Radiant Power</div><div class="phys-tile-val">62.4 MW</div></div>
+        <div class="phys-tile"><div class="phys-tile-label">Emitter Area</div><div class="phys-tile-val">0.42 m²</div></div>
+        <div class="phys-tile"><div class="phys-tile-label">CH4 Enhance</div><div class="phys-tile-val">+284 ppb</div></div>
+        <div class="phys-tile"><div class="phys-tile-label">Persistence</div><div class="phys-tile-val">412 d</div></div>
+        <div class="phys-tile"><div class="phys-tile-label">Baseline Dev</div><div class="phys-tile-val">z +3.21</div></div>
+      </div>
+    </div>
+
+    <!-- Classification -->
+    <div>
+      <span class="section-label">Classification</span>
+      <div id="clf-rows"></div>
+      <div class="conformal-block">
+        <b>CONFORMAL PREDICTION INTERVAL (alpha = 0.10)</b><br/>
+        p(class) in [0.873, 0.999] · coverage 90% guaranteed<br/>
+        Isotonic-calibrated — Brier <b>0.169 → 0.061</b> after recalibration
+      </div>
+      <div class="counterfactual">
+        FIRMS confidence=high would MISS this. At that threshold F1 collapses to
+        <b>0.128</b> — roughly 93% of real fires are dropped.
+      </div>
+    </div>
+
+    <!-- Recommended Action -->
+    <div>
+      <span class="section-label">Recommended Action</span>
+      <div class="action-card">
+        <div class="action-num">1</div>
+        <div><div class="action-text">Notify District Collector, Jamnagar</div><div class="action-detail">SLA: 15 min · Channel: NDMA Portal + SMS</div></div>
+      </div>
+      <div class="action-card">
+        <div class="action-num">2</div>
+        <div><div class="action-text">Dispatch SDRF rapid-assessment team</div><div class="action-detail">Nearest unit: Rajkot · ETA 42 min</div></div>
+      </div>
+      <div class="action-card">
+        <div class="action-num">3</div>
+        <div><div class="action-text">Flag for NTRO satellite tasking — next pass</div><div class="action-detail">NOAA-21 overpass T-07:23 · Request SWIR capture</div></div>
+      </div>
+      <button class="dispatch-btn">▶ DISPATCH ALERT → NODAL AUTHORITY</button>
+    </div>
+
+  </div>
 </div>
-<div class="flex-1 overflow-y-auto py-base">
-<div class="px-base font-label-caps text-[9px] text-on-surface-variant mb-xs">MODULES</div>
-<ul class="space-y-[1px]">
-<li>
-<a class="flex items-center gap-sm px-base py-xs bg-secondary-container text-primary border-r-2 border-primary active:brightness-125" href="#">
-<span class="material-symbols-outlined text-[16px]">warning</span>
-<span class="font-label-caps text-label-caps">ALERTS</span>
-</a>
-</li>
-<li>
-<a class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
-<span class="material-symbols-outlined text-[16px]">analytics</span>
-<span class="font-label-caps text-label-caps">TELEMETRY</span>
-</a>
-</li>
-<li>
-<a class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
-<span class="material-symbols-outlined text-[16px]">settings_input_component</span>
-<span class="font-label-caps text-label-caps">SYSTEMS</span>
-</a>
-</li>
-<li>
-<a class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
-<span class="material-symbols-outlined text-[16px]">terminal</span>
-<span class="font-label-caps text-label-caps">LOGS</span>
-</a>
-</li>
-</ul>
+
+</div><!-- /main -->
+
+<!-- ═══════════════════════════════════════════════════════ BOTTOM PANEL ══ -->
+<div id="bottom-panel">
+  <div id="tab-bar">
+    <button class="tab-btn active" data-tab="physics">Physics Signature</button>
+    <button class="tab-btn" data-tab="baseline">Persistent Source Baseline</button>
+    <button class="tab-btn" data-tab="model">Model Integrity <span class="tab-badge">MOAT</span></button>
+    <button class="tab-btn" data-tab="fusion">Data Fusion <span class="tab-badge">7 LAYERS</span></button>
+  </div>
+  <div id="tab-content">
+
+    <!-- TAB 1: Physics Signature -->
+    <div class="tab-pane active" id="tab-physics" style="align-items:stretch">
+      <div style="flex:1;position:relative;display:flex;flex-direction:column">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-secondary);margin-bottom:6px">TEMPERATURE HISTOGRAM — 500–2200 K · 34 bins · Dual-band Planck retrieval</div>
+        <div style="flex:1;position:relative;display:flex;align-items:flex-end;gap:2px" id="hist-bars"></div>
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary);margin-top:3px">
+          <span>500 K</span><span>900 K</span><span>1300 K</span><span>1700 K</span><span>2200 K</span>
+        </div>
+      </div>
+      <div style="width:220px;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-secondary);margin-bottom:8px">TEMPERATURE CLASSES</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px">
+          <div style="background:rgba(13,20,29,0.7);border:1px solid var(--border);border-radius:4px;padding:6px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary)">Flare</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--col-gas-flare)">1810 K</div>
+          </div>
+          <div style="background:rgba(13,20,29,0.7);border:1px solid var(--border);border-radius:4px;padding:6px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary)">Industrial</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--col-ind-fire)">1228 K</div>
+          </div>
+          <div style="background:rgba(13,20,29,0.7);border:1px solid var(--border);border-radius:4px;padding:6px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary)">Metallurgy</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--col-coal)">1084 K</div>
+          </div>
+          <div style="background:rgba(13,20,29,0.7);border:1px solid var(--border);border-radius:4px;padding:6px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary)">Coal/Cement</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--text-secondary)">&lt;1000 K</div>
+          </div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary);line-height:1.5">FIRMS supplies no temperature — we derive it via dual-band Planck unmixing. Bimodality: flare ~1800 K vs industrial ~1100–1230 K. Daytime VIIRS blind spot: solar contamination &gt;1.6 µm.</div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Persistent Source Baseline -->
+    <div class="tab-pane" id="tab-baseline" style="align-items:stretch">
+      <div style="flex:1;position:relative">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-secondary);margin-bottom:6px">90-DAY FRP BASELINE — Jamnagar Refinery · Gas Flare · NOAA-20</div>
+        <svg id="baseline-svg" style="width:100%;height:calc(100% - 20px)">
+          <defs>
+            <linearGradient id="baselineGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffa94d" stop-opacity=".25"/>
+              <stop offset="100%" stop-color="#ffa94d" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <!-- Sigma band -->
+          <path id="sigma-band" fill="rgba(34,211,238,0.07)" stroke="none"/>
+          <!-- Mean line -->
+          <path id="mean-line" fill="none" stroke="#22d3ee" stroke-width="1" stroke-dasharray="4,3"/>
+          <!-- Observed line -->
+          <path id="obs-line" fill="none" stroke="#ffa94d" stroke-width="1.5"/>
+          <!-- Current point -->
+          <circle id="cur-point" r="4" fill="#ffa94d" stroke="#060910" stroke-width="1.5"/>
+          <line id="cur-drop" stroke="#ffa94d" stroke-width="1" stroke-dasharray="2,2"/>
+        </svg>
+      </div>
+      <div style="width:200px;flex-shrink:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-secondary);margin-bottom:6px">WHY A STATIC MASK FAILS</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary);line-height:1.5;margin-bottom:8px">Static masks miss seasonal variation, plant shutdowns, and new emitters. A z-score against a rolling 90-day window catches anomalies a fixed threshold cannot.</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-secondary);margin-bottom:6px">OUR APPROACH</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="background:rgba(13,20,29,0.7);border:1px solid var(--border);border-radius:4px;padding:5px 7px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-secondary)">Rolling 90-d median ± 2σ band</div>
+          <div style="background:rgba(13,20,29,0.7);border:1px solid var(--border);border-radius:4px;padding:5px 7px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-secondary)">Seasonal decomposition (STL)</div>
+          <div style="background:rgba(13,20,29,0.7);border:1px solid var(--border);border-radius:4px;padding:5px 7px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-secondary)">z = +3.21 → anomaly confirmed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Model Integrity -->
+    <div class="tab-pane" id="tab-model" style="flex-direction:column;align-items:stretch">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-secondary);margin-bottom:10px">F1 SCORE COMPARISON — spatial-block cross-validation · 8,413 labelled emitters</div>
+      <div id="model-bars"></div>
+      <div class="model-warn">⚠ Random-split reports F1 = 0.985 (spatial leakage) — we report the honest number. Spatial-block CV eliminates geographic memorisation.</div>
+    </div>
+
+    <!-- TAB 4: Data Fusion -->
+    <div class="tab-pane" id="tab-fusion" style="flex-direction:column;overflow-y:auto">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-secondary);margin-bottom:8px">ACTIVE FUSION LAYERS — 7 sources ingested per detection</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+        <div class="fusion-card"><div class="fusion-card-title">NASA FIRMS / VIIRS</div><div class="fusion-layers"><span class="fusion-chip">ACTIVE</span><span class="fusion-chip">375m</span><span class="fusion-chip">NOAA-20/21</span></div></div>
+        <div class="fusion-card"><div class="fusion-card-title">Sentinel-2 L2A</div><div class="fusion-layers"><span class="fusion-chip">ACTIVE</span><span class="fusion-chip">SWIR</span><span class="fusion-chip">10m</span></div></div>
+        <div class="fusion-card"><div class="fusion-card-title">Landsat-9 TIRS</div><div class="fusion-layers"><span class="fusion-chip">ACTIVE</span><span class="fusion-chip">TIR</span><span class="fusion-chip">100m</span></div></div>
+        <div class="fusion-card"><div class="fusion-card-title">Sentinel-5P TROPOMI</div><div class="fusion-layers"><span class="fusion-chip">ACTIVE</span><span class="fusion-chip">XCH4</span><span class="fusion-chip">5.5km</span></div></div>
+        <div class="fusion-card"><div class="fusion-card-title">Global Energy Monitor</div><div class="fusion-layers"><span class="fusion-chip">ACTIVE</span><span class="fusion-chip">GEM</span></div></div>
+        <div class="fusion-card"><div class="fusion-card-title">OpenStreetMap + Bhuvan</div><div class="fusion-layers"><span class="fusion-chip">ACTIVE</span><span class="fusion-chip">LULC</span><span class="fusion-chip">OSM</span></div></div>
+        <div class="fusion-card" style="grid-column:span 2"><div class="fusion-card-title">GROUND TRUTH — THE REAL MOAT</div><div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary);margin-top:3px">8,413 manually labelled emitters · 22 facility operators · PCAOB-audited incident logs · EOG VIIRS Nightfire cross-validation</div></div>
+      </div>
+    </div>
+
+  </div>
 </div>
-<div class="p-base mt-auto">
-<button class="w-full bg-primary-container text-[#060910] font-label-caps text-label-caps py-2 rounded-sm hover:bg-primary transition-colors flex items-center justify-center gap-xs">
-<span class="material-symbols-outlined text-[16px]">send</span>
-                    DISPATCH ALERT
-                </button>
-</div>
-<div class="border-t border-outline-variant py-base">
-<ul class="space-y-[1px]">
-<li>
-<a class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all opacity-80" href="#">
-<span class="material-symbols-outlined text-[16px]">help</span>
-<span class="font-label-caps text-label-caps">SUPPORT</span>
-</a>
-</li>
-<li>
-<a class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all opacity-80" href="#">
-<span class="material-symbols-outlined text-[16px]">build</span>
-<span class="font-label-caps text-label-caps">DIAGNOSTICS</span>
-</a>
-</li>
-</ul>
-</div>
-</nav>
-<!-- MAIN CANVAS -->
-<main class="flex-1 flex flex-col h-full overflow-hidden bg-background">
-<div class="flex flex-1 overflow-hidden">
-<!-- LEFT COLUMN: ALERTS & CLASSES -->
-<div class="w-[274px] hud-border border-r border-t-0 border-b-0 border-l-0 flex flex-col shrink-0 bg-surface-dim/30">
-<div class="h-8 hud-border border-x-0 border-t-0 bg-[#1b2735]/50 flex items-center px-base">
-<span class="font-label-caps text-label-caps text-on-surface">LIVE ALERT FEED</span>
-</div>
-<div class="flex-1 overflow-y-auto p-xs space-y-xs" id="alert-feed">
-<!-- Alert Item Template (Selected) -->
-<div class="hud-border bg-surface-container p-xs rounded-sm cursor-pointer relative overflow-hidden group border-primary/50">
-<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
-<div class="flex justify-between items-start mb-xs pl-1">
-<div class="flex items-center gap-xs">
-<div class="bg-error/15 border border-error px-1 rounded-sm flex items-center h-4">
-<span class="font-label-caps text-[8px] text-error">CRITICAL</span>
-</div>
-<span class="font-data-mono text-[10px] text-primary">ID:A94X</span>
-</div>
-<span class="font-data-mono text-[10px] text-on-surface-variant">14:02:11</span>
-</div>
-<div class="pl-1">
-<div class="font-body-md text-[12px] font-semibold text-on-surface">Jamnagar Refinery</div>
-<div class="flex gap-sm mt-[2px]">
-<span class="font-data-mono text-[10px] text-on-surface-variant">1847 K</span>
-<span class="font-data-mono text-[10px] text-on-surface-variant">62 MW</span>
-</div>
-</div>
-</div>
-<!-- Alert Item Template (Unselected) -->
-<div class="hud-border bg-[#0d141d]/50 p-xs rounded-sm cursor-pointer hover:bg-surface-container transition-colors">
-<div class="flex justify-between items-start mb-xs">
-<div class="flex items-center gap-xs">
-<div class="bg-tertiary-container/15 border border-tertiary-container px-1 rounded-sm flex items-center h-4">
-<span class="font-label-caps text-[8px] text-tertiary-container">HIGH</span>
-</div>
-<span class="font-data-mono text-[10px] text-on-surface-variant">ID:B21Y</span>
-</div>
-<span class="font-data-mono text-[10px] text-on-surface-variant opacity-70">13:58:44</span>
-</div>
-<div>
-<div class="font-body-md text-[12px] text-on-surface-variant">Hazira Port Facility</div>
-<div class="flex gap-sm mt-[2px]">
-<span class="font-data-mono text-[10px] text-outline">1250 K</span>
-<span class="font-data-mono text-[10px] text-outline">41 MW</span>
-</div>
-</div>
-</div>
-</div>
-<div class="h-[120px] hud-border border-x-0 border-b-0 bg-surface-dim/50 p-base flex flex-col justify-end">
-<span class="font-label-caps text-[9px] text-on-surface-variant mb-sm">CLASS DISTRIBUTION</span>
-<div class="space-y-1">
-<div class="flex items-center gap-xs">
-<div class="w-2 h-2 rounded-sm bg-[#ffa94d]"></div>
-<span class="font-label-caps text-[9px] w-20 truncate">Gas Flare</span>
-<div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-[#ffa94d] w-[60%]"></div>
-</div>
-</div>
-<div class="flex items-center gap-xs">
-<div class="w-2 h-2 rounded-sm bg-error"></div>
-<span class="font-label-caps text-[9px] w-20 truncate">Ind. Fire</span>
-<div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-error w-[25%]"></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- CENTRE COLUMN: MAP & TERMINAL -->
-<div class="flex-1 flex flex-col min-w-0 relative">
-<div class="flex-1 relative overflow-hidden bg-[#060910]">
-<!-- Grid Background Placeholder -->
-<div class="absolute inset-0" style="background-image: linear-gradient(#16222f 1px, transparent 1px), linear-gradient(90deg, #16222f 1px, transparent 1px); background-size: 40px 40px; opacity: 0.3;"></div>
-<!-- Radar Sweep -->
-<div class="absolute inset-0 overflow-hidden pointer-events-none">
-<div class="radar-sweep"></div>
-</div>
-<!-- Map Content Area -->
-<div class="absolute inset-0 flex items-center justify-center p-xl">
-<div class="w-full h-full border border-primary/20 rounded relative flex items-center justify-center text-on-surface-variant/30 font-data-mono">
-                                 [MAP SVG CANVAS]
-                                 
-                                 <!-- Detections -->
-<div class="absolute top-1/3 left-1/3 w-3 h-3 bg-error rounded-full pulse-critical transform -translate-x-1/2 -translate-y-1/2"></div>
-<div class="absolute top-1/2 right-1/3 w-2 h-2 bg-[#ffa94d] transform rotate-45 -translate-x-1/2 -translate-y-1/2"></div>
-</div>
-</div>
-<!-- HUD Overlays -->
-<div class="absolute bottom-base left-base bg-surface-dim/80 hud-border p-xs rounded-sm backdrop-blur-sm">
-<span class="font-data-mono text-[9px] text-primary">PROJ EPSG:4326</span>
-</div>
-</div>
-<!-- TERMINAL -->
-<div class="h-[158px] bg-black hud-border border-x-0 border-b-0 p-sm overflow-hidden flex flex-col shrink-0">
-<div class="flex items-center gap-xs mb-xs opacity-50">
-<span class="material-symbols-outlined text-[12px]">terminal</span>
-<span class="font-label-caps text-[9px]">PIPELINE LOG</span>
-</div>
-<div class="flex-1 overflow-y-auto terminal-text space-y-1" id="terminal-log">
-<div><span class="text-on-surface-variant/50">[14:02:11]</span> <span class="text-primary-container">[GEE] </span> Initiating ingestion stream v4.2...</div>
-<div><span class="text-on-surface-variant/50">[14:02:12]</span> <span class="text-tertiary-container">[PHYS]</span> Calculating spectral signatures for cluster ID:A94X</div>
-<div><span class="text-on-surface-variant/50">[14:02:12]</span> <span class="text-[#ffa94d]">[BASE]</span> Background contextualization complete. Anomaly diff &gt; 4σ</div>
-<div><span class="text-on-surface-variant/50">[14:02:13]</span> <span class="text-error">[FUSE]</span> WARNING: Multi-band saturation detected at coords 22.3°N, 69.9°E</div>
-</div>
-</div>
-</div>
-<!-- RIGHT COLUMN: INSPECTOR -->
-<div class="w-[372px] hud-border border-l border-y-0 border-r-0 flex flex-col shrink-0 bg-surface-dim/50 overflow-y-auto">
-<div class="h-8 hud-border border-x-0 border-t-0 bg-[#1b2735]/50 flex items-center px-base">
-<span class="font-label-caps text-label-caps text-on-surface">DETECTION INSPECTOR</span>
-</div>
-<div class="p-base space-y-md">
-<!-- Verdict -->
-<div class="hud-panel hud-border p-sm rounded-sm flex items-center justify-between">
-<div class="flex items-center gap-sm">
-<span class="material-symbols-outlined text-[#ffa94d] text-[24px]">local_fire_department</span>
-<div>
-<div class="font-label-caps text-[9px] text-on-surface-variant">PRIMARY CLASSIFICATION</div>
-<div class="font-headline-sm text-headline-sm text-[#ffa94d]">GAS FLARE</div>
-</div>
-</div>
-<div class="text-right">
-<div class="font-label-caps text-[9px] text-on-surface-variant">CONFIDENCE</div>
-<div class="font-data-mono text-[14px] text-primary">p=0.943</div>
-</div>
-</div>
-<!-- Evidence Chain -->
-<div>
-<span class="font-label-caps text-[9px] text-on-surface-variant mb-xs block">EVIDENCE CHAIN</span>
-<div class="flex gap-xs items-center opacity-70">
-<div class="w-6 h-6 rounded border border-primary text-primary flex items-center justify-center font-data-mono text-[10px]">1</div>
-<div class="flex-1 h-[1px] bg-outline-variant"></div>
-<div class="w-6 h-6 rounded border border-primary text-primary flex items-center justify-center font-data-mono text-[10px]">2</div>
-<div class="flex-1 h-[1px] bg-outline-variant"></div>
-<div class="w-6 h-6 rounded border border-primary text-primary flex items-center justify-center font-data-mono text-[10px]">3</div>
-</div>
-</div>
-<!-- Physics Retrieval -->
-<div>
-<span class="font-label-caps text-[9px] text-on-surface-variant mb-xs block">PHYSICS RETRIEVAL</span>
-<div class="grid grid-cols-2 gap-sm">
-<div class="hud-border bg-surface-container/50 p-xs rounded-sm">
-<div class="font-label-caps text-[9px] text-on-surface-variant">EFF. TEMP</div>
-<div class="font-data-mono text-[13px] text-on-surface">1847 K</div>
-</div>
-<div class="hud-border bg-surface-container/50 p-xs rounded-sm">
-<div class="font-label-caps text-[9px] text-on-surface-variant">AREA</div>
-<div class="font-data-mono text-[13px] text-on-surface">12.4 m²</div>
-</div>
-<div class="hud-border bg-surface-container/50 p-xs rounded-sm">
-<div class="font-label-caps text-[9px] text-on-surface-variant">FRP</div>
-<div class="font-data-mono text-[13px] text-on-surface">62.1 MW</div>
-</div>
-<div class="hud-border bg-surface-container/50 p-xs rounded-sm">
-<div class="font-label-caps text-[9px] text-on-surface-variant">CH4 EST</div>
-<div class="font-data-mono text-[13px] text-on-surface">--</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- BOTTOM PANEL -->
-<div class="h-[236px] hud-border border-x-0 border-b-0 border-t bg-surface-dim/90 flex flex-col shrink-0 z-10">
-<div class="flex border-b border-outline-variant px-sm h-8">
-<button class="px-md font-label-caps text-[10px] text-primary border-b-2 border-primary h-full flex items-center">PHYSICS SIGNATURE</button>
-<button class="px-md font-label-caps text-[10px] text-on-surface-variant hover:text-on-surface h-full flex items-center opacity-70">PERSISTENT SOURCE BASELINE</button>
-<button class="px-md font-label-caps text-[10px] text-on-surface-variant hover:text-on-surface h-full flex items-center opacity-70">MODEL INTEGRITY</button>
-<button class="px-md font-label-caps text-[10px] text-on-surface-variant hover:text-on-surface h-full flex items-center opacity-70">DATA FUSION</button>
-</div>
-<div class="flex-1 p-md flex gap-lg">
-<!-- Histogram Area -->
-<div class="flex-1 hud-border bg-surface-container/30 rounded-sm relative p-sm flex items-end">
-<span class="absolute top-sm left-sm font-label-caps text-[9px] text-on-surface-variant">RADIANCE HISTOGRAM (500-2200K)</span>
-<!-- Fake Histogram Bars -->
-<div class="w-full flex items-end gap-[2px] h-32 opacity-80">
-<div class="flex-1 bg-[#1b2735] h-[10%]"></div>
-<div class="flex-1 bg-[#1b2735] h-[15%]"></div>
-<div class="flex-1 bg-outline-variant h-[30%]"></div>
-<div class="flex-1 bg-outline-variant h-[45%]"></div>
-<div class="flex-1 bg-tertiary-container/50 h-[60%]"></div>
-<div class="flex-1 bg-[#ffa94d] h-[85%]"></div>
-<div class="flex-1 bg-error h-[100%]"></div>
-<div class="flex-1 bg-[#ffa94d] h-[65%]"></div>
-<div class="flex-1 bg-tertiary-container/50 h-[30%]"></div>
-<div class="flex-1 bg-outline-variant h-[10%]"></div>
-</div>
-</div>
-<!-- Explanation Area -->
-<div class="w-64">
-<span class="font-label-caps text-[9px] text-on-surface-variant block mb-sm">DERIVATION</span>
-<p class="font-body-md text-[11px] text-on-surface-variant leading-relaxed">
-                             Dual-band retrieval indicates significant sub-pixel saturation. SWIR/MWIR ratio strongly aligns with hydrocarbon combustion signatures rather than biomass burning.
-                         </p>
-</div>
-</div>
-</div>
-<!-- FOOTER (Integrated into layout) -->
-<footer class="h-base min-h-[36px] bg-surface-container dark:bg-surface-container border-t border-outline-variant w-full flex justify-between items-center px-margin z-50 shrink-0">
-<span class="font-label-caps text-label-caps text-tertiary">©2024 AGNIVANI AEROSPACE. MISSION CRITICAL DATA.</span>
-<div class="flex gap-md">
-<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Physics Signature</a>
-<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Baseline</a>
-</div>
-</footer>
-</main>
-</div>
+
+</div><!-- /app -->
+
 <script>
-        // Simple clock update
-        setInterval(() => {
-            const now = new Date();
-            const timeStr = now.toISOString().substr(11, 8);
-            document.getElementById('system-clock').innerText = 'T-' + timeStr;
-        }, 1000);
-    </script>
-</body></html>
+// ═══════════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════════
+const FACILITIES = [
+  {name:'Jamnagar Refinery',lat:22.35,lon:70.02,op:'Reliance'},
+  {name:'Vadinar Refinery',lat:22.56,lon:69.73,op:'Nayara Energy'},
+  {name:'Dahej LNG',lat:21.71,lon:72.58,op:'Petronet LNG'},
+  {name:'Hazira',lat:21.13,lon:72.64,op:'ONGC/SAIL'},
+  {name:'Mumbai High',lat:18.88,lon:72.95,op:'ONGC'},
+  {name:'Panipat Refinery',lat:29.39,lon:76.97,op:'IOCL'},
+  {name:'Barauni Refinery',lat:25.44,lon:86.05,op:'IOCL'},
+  {name:'Digboi',lat:27.39,lon:95.62,op:'IOCL'},
+  {name:'Duliajan',lat:27.36,lon:95.32,op:'Oil India'},
+  {name:'Bokaro Steel',lat:23.67,lon:86.15,op:'SAIL'},
+  {name:'Jharia Coalfield',lat:23.75,lon:86.42,op:'BCCL'},
+  {name:'Rourkela Steel',lat:22.25,lon:84.88,op:'SAIL'},
+  {name:'Bhilai Steel',lat:21.19,lon:81.35,op:'SAIL'},
+  {name:'Korba',lat:22.36,lon:82.68,op:'NTPC/SECL'},
+  {name:'Singrauli',lat:24.20,lon:82.67,op:'NCL/NTPC'},
+  {name:'Talcher',lat:20.95,lon:85.23,op:'MCL/NTPC'},
+  {name:'Paradip Refinery',lat:20.31,lon:86.61,op:'IOCL'},
+  {name:'Visakhapatnam',lat:17.70,lon:83.20,op:'HPCL/RINL'},
+  {name:'Manali Refinery',lat:13.23,lon:80.33,op:'CPCL'},
+  {name:'Neyveli Lignite',lat:11.60,lon:79.48,op:'NLC'},
+  {name:'Mangalore Refinery',lat:12.96,lon:74.80,op:'MRPL'},
+  {name:'Kochi Refinery',lat:10.00,lon:76.28,op:'BPCL'},
+];
+
+const DETECTIONS = [
+  {id:'AGN-04832',name:'Jamnagar Refinery',lat:22.35,lon:70.02,cls:'Gas Flare',sev:'CRITICAL',temp:1847,frp:62.4,sat:'NOAA-20',ts:'14:02:11'},
+  {id:'AGN-04831',name:'Bokaro Steel',lat:23.67,lon:86.15,cls:'Industrial Fire',sev:'CRITICAL',temp:1180,frp:142,sat:'NOAA-21',ts:'13:58:44'},
+  {id:'AGN-04830',name:'Jharia Coalfield',lat:23.75,lon:86.42,cls:'Coal Seam Fire',sev:'HIGH',temp:920,frp:18,sat:'NOAA-20',ts:'13:55:02'},
+  {id:'AGN-04829',name:'Korba NTPC',lat:22.36,lon:82.68,cls:'Industrial Fire',sev:'HIGH',temp:1050,frp:88,sat:'NOAA-21',ts:'13:51:30'},
+  {id:'AGN-04828',name:'Singrauli NCL',lat:24.20,lon:82.67,cls:'Coal Seam Fire',sev:'HIGH',temp:870,frp:12,sat:'NOAA-20',ts:'13:48:17'},
+  {id:'AGN-04827',name:'Hazira LNG',lat:21.13,lon:72.64,cls:'Gas Flare',sev:'HIGH',temp:1790,frp:38,sat:'NOAA-20',ts:'13:44:55'},
+  {id:'AGN-04826',name:'Bhilai Steel',lat:21.19,lon:81.35,cls:'Industrial Fire',sev:'MODERATE',temp:1120,frp:64,sat:'NOAA-21',ts:'13:41:22'},
+  {id:'AGN-04825',name:'Talcher MCL',lat:20.95,lon:85.23,cls:'Coal Seam Fire',sev:'MODERATE',temp:810,frp:8,sat:'NOAA-20',ts:'13:38:09'},
+  {id:'AGN-04824',name:'Rourkela Steel',lat:22.25,lon:84.88,cls:'Industrial Fire',sev:'MODERATE',temp:1240,frp:96,sat:'NOAA-21',ts:'13:34:47'},
+  {id:'AGN-04823',name:'Paradip Refinery',lat:20.31,lon:86.61,cls:'Gas Flare',sev:'MODERATE',temp:1820,frp:28,sat:'NOAA-20',ts:'13:31:14'},
+  {id:'AGN-04822',name:'Neyveli Lignite',lat:11.60,lon:79.48,cls:'Wildfire/Vegetation',sev:'LOW',temp:780,frp:14,sat:'NOAA-21',ts:'13:27:52'},
+  {id:'AGN-04821',name:'Panipat Refinery',lat:29.39,lon:76.97,cls:'Gas Leak',sev:'HIGH',temp:null,frp:0,sat:'NOAA-20',ts:'13:24:30'},
+];
+
+const CLASS_COLORS = {
+  'Gas Flare':'#ffa94d',
+  'Industrial Fire':'#ff4d4d',
+  'Coal Seam Fire':'#f59e0b',
+  'Wildfire/Vegetation':'#4ade80',
+  'Gas Leak':'#b197fc',
+};
+const CLASS_CODES = {
+  'Gas Flare':'GF','Industrial Fire':'IF','Coal Seam Fire':'CS','Wildfire/Vegetation':'WV','Gas Leak':'GL'
+};
+const SEV_COLORS = {CRITICAL:'#ef4444',HIGH:'#f59e0b',MODERATE:'#22d3ee',LOW:'#7b8da3'};
+
+// ═══════════════════════════════════════════════════════════════════
+// CLOCK & COUNTDOWN
+// ═══════════════════════════════════════════════════════════════════
+let passSeconds = 7*60+23;
+function updateClock(){
+  const now=new Date();
+  document.getElementById('clock').textContent=
+    String(now.getHours()).padStart(2,'0')+':'+
+    String(now.getMinutes()).padStart(2,'0')+':'+
+    String(now.getSeconds()).padStart(2,'0');
+  passSeconds--;
+  if(passSeconds<0){passSeconds=12*60+8;const el=document.getElementById('next-pass');el.classList.add('pass-flash');setTimeout(()=>el.classList.remove('pass-flash'),1200);}
+  const m=Math.floor(passSeconds/60),s=passSeconds%60;
+  document.getElementById('next-pass').textContent='T-'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+setInterval(updateClock,1000);
+updateClock();
+
+// ═══════════════════════════════════════════════════════════════════
+// ALERT FEED
+// ═══════════════════════════════════════════════════════════════════
+function buildAlertFeed(){
+  const feed=document.getElementById('alert-feed');
+  DETECTIONS.forEach((d,i)=>{
+    const row=document.createElement('div');
+    row.className='alert-row'+(i===0?' selected':'');
+    row.style.animationDelay=(i*60)+'ms';
+    const col=CLASS_COLORS[d.cls];
+    const code=CLASS_CODES[d.cls];
+    const tempStr=d.temp?d.temp+' K':'N/A';
+    row.innerHTML=`
+      <div class="alert-row-top">
+        <div style="display:flex;align-items:center;gap:5px">
+          <span class="sev-chip ${d.sev}">${d.sev}</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:${col}">${code}</span>
+        </div>
+        <span class="alert-ts">${d.ts}</span>
+      </div>
+      <div class="alert-name">${d.name}</div>
+      <div class="alert-meta">
+        <div class="class-dot" style="background:${col}"></div>
+        <span class="alert-meta-val">${tempStr}</span>
+        <span class="alert-meta-val">FRP ${d.frp} MW</span>
+        <span class="alert-meta-val">${d.sat}</span>
+      </div>`;
+    row.addEventListener('click',()=>selectDetection(d,row));
+    feed.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CLASS DISTRIBUTION
+// ═══════════════════════════════════════════════════════════════════
+function buildClassDist(){
+  const counts={};
+  DETECTIONS.forEach(d=>{counts[d.cls]=(counts[d.cls]||0)+1;});
+  const total=DETECTIONS.length;
+  const container=document.getElementById('class-dist-rows');
+  Object.entries(CLASS_COLORS).forEach(([cls,col])=>{
+    const n=counts[cls]||0;
+    const pct=Math.round(n/total*100);
+    const div=document.createElement('div');
+    div.innerHTML=`
+      <div class="class-row">
+        <div class="class-chip" style="background:${col}"></div>
+        <span class="class-label">${cls}</span>
+        <span class="class-count">${n}</span>
+      </div>
+      <div class="class-bar-track"><div class="class-bar-fill" style="background:${col}" data-pct="${pct}"></div></div>`;
+    container.appendChild(div);
+  });
+  // Animate bars after paint
+  setTimeout(()=>{
+    document.querySelectorAll('.class-bar-fill').forEach((el,i)=>{
+      setTimeout(()=>{el.style.width=el.dataset.pct+'%';},i*80);
+    });
+  },400);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MAP
+// ═══════════════════════════════════════════════════════════════════
+function latLonToViewBox(lat,lon){
+  // viewBox: "60 5 30 35" => x=lon-60, y=40-lat (flip)
+  return {x:lon,y:40-lat+5};
+}
+
+function buildMap(){
+  const svg=document.getElementById('map-svg');
+  const fGroup=document.getElementById('facility-markers');
+  const dGroup=document.getElementById('detection-markers');
+
+  // Facility diamonds
+  FACILITIES.forEach(f=>{
+    const {x,y}=latLonToViewBox(f.lat,f.lon);
+    const size=0.35;
+    const diamond=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    diamond.setAttribute('points',`${x},${y-size} ${x+size},${y} ${x},${y+size} ${x-size},${y}`);
+    diamond.setAttribute('class','facility-marker');
+    diamond.setAttribute('title',f.name);
+    fGroup.appendChild(diamond);
+  });
+
+  // Detection circles
+  DETECTIONS.forEach((d,i)=>{
+    const {x,y}=latLonToViewBox(d.lat,d.lon);
+    const col=CLASS_COLORS[d.cls];
+    const r=d.sev==='CRITICAL'?0.55:d.sev==='HIGH'?0.45:d.sev==='MODERATE'?0.38:0.3;
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+
+    // Ripple rings for critical/high
+    if(d.sev==='CRITICAL'||d.sev==='HIGH'){
+      [0,0.8,1.6].forEach(delay=>{
+        const ring=document.createElementNS('http://www.w3.org/2000/svg','circle');
+        ring.setAttribute('cx',x);ring.setAttribute('cy',y);ring.setAttribute('r',r);
+        ring.setAttribute('stroke',col);ring.setAttribute('fill','none');ring.setAttribute('stroke-width','0.12');
+        ring.style.animation=`ripple 2.4s ease-out ${delay}s infinite`;
+        g.appendChild(ring);
+      });
+    }
+
+    const circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx',x);circle.setAttribute('cy',y);circle.setAttribute('r',r);
+    circle.setAttribute('fill',col);circle.setAttribute('stroke','#060910');circle.setAttribute('stroke-width','0.08');
+    circle.setAttribute('class','detection-circle');
+    circle.style.cursor='pointer';
+    circle.addEventListener('click',()=>{
+      document.querySelectorAll('.alert-row').forEach((r,ri)=>r.classList.toggle('selected',ri===i));
+      selectDetection(d,document.querySelectorAll('.alert-row')[i]);
+    });
+    g.appendChild(circle);
+    dGroup.appendChild(g);
+  });
+
+  // Radar wedge path
+  buildRadarWedge();
+}
+
+function buildRadarWedge(){
+  const svg=document.getElementById('radar-svg');
+  const path=document.getElementById('radar-path');
+  // Will be updated on resize
+  function update(){
+    const w=svg.clientWidth,h=svg.clientHeight;
+    const cx=w/2,cy=h/2,r=Math.max(w,h)*0.7;
+    const angle=60*Math.PI/180;
+    const x1=cx+r*Math.cos(-angle/2),y1=cy+r*Math.sin(-angle/2);
+    const x2=cx+r*Math.cos(angle/2),y2=cy+r*Math.sin(angle/2);
+    path.setAttribute('d',`M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z`);
+    document.getElementById('radar-wedge').setAttribute('transform',`translate(${cx},${cy}) translate(${-cx},${-cy})`);
+  }
+  update();
+  window.addEventListener('resize',update);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TERMINAL
+// ═══════════════════════════════════════════════════════════════════
+const LOG_LINES=[
+  {sys:'GEE',msg:'Initiating FIRMS VIIRS ingestion stream — NOAA-20 pass 14:00 UTC'},
+  {sys:'PHYS',msg:'Dual-band Planck unmixing: cluster AGN-04832 · T=1847K · FRP=62.4MW'},
+  {sys:'BASE',msg:'Jamnagar Refinery baseline loaded · 412-day persist · z=+3.21 ANOMALY'},
+  {sys:'FUSE',msg:'S-2 SWIR tile acquired · XCH4 +284 ppb from S-5P TROPOMI'},
+  {sys:'MODEL',msg:'gcc-xgb v4.2 inference: Gas Flare p=0.943 · conformal interval [0.873,0.999]'},
+  {sys:'ALERT',msg:'CRITICAL alert dispatched → AGN-04832 · Jamnagar · District Collector notified'},
+  {sys:'GEE',msg:'NOAA-21 pass scheduled T-07:23 · SWIR capture requested'},
+  {sys:'PHYS',msg:'Bokaro Steel cluster AGN-04831 · T=1180K · FRP=142MW · Industrial Fire'},
+  {sys:'BASE',msg:'Bokaro baseline z=+5.84 · 3-sigma exceedance confirmed'},
+  {sys:'FUSE',msg:'Landsat-9 TIRS thermal band fused · LULC: Heavy Industry confirmed'},
+  {sys:'MODEL',msg:'Industrial Fire p=0.887 · Brier 0.061 post-calibration'},
+  {sys:'ALERT',msg:'CRITICAL alert → AGN-04831 · Bokaro · SDRF Jharkhand notified'},
+  {sys:'GEE',msg:'Jharia coalfield cluster AGN-04830 · persistent emitter 1840d'},
+  {sys:'PHYS',msg:'Coal Seam Fire T=920K · slow thermal drift confirmed · FRP=18MW'},
+  {sys:'BASE',msg:'Seasonal decomposition complete · STL residual +2.1σ'},
+  {sys:'FUSE',msg:'OSM mine boundary overlay · BCCL facility match confirmed'},
+  {sys:'MODEL',msg:'Coal Seam Fire p=0.912 · coordinate-free spatial block CV'},
+  {sys:'GEE',msg:'Ingestion heartbeat OK · 38 facilities monitored · scan ACTIVE'},
+];
+let logIdx=0;
+function appendLog(){
+  const log=document.getElementById('terminal-log');
+  const entry=LOG_LINES[logIdx%LOG_LINES.length];
+  logIdx++;
+  const now=new Date();
+  const ts=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+  const line=document.createElement('div');
+  line.className='tlog-line';
+  line.innerHTML=`<span class="tlog-ts">[${ts}]</span><span class="tlog-${entry.sys}">[${entry.sys}]</span><span class="tlog-msg">${entry.msg}</span>`;
+  log.appendChild(line);
+  if(log.children.length>40)log.removeChild(log.firstChild);
+  log.scrollTop=log.scrollHeight;
+}
+// Seed with initial lines
+for(let i=0;i<9;i++)appendLog();
+setInterval(appendLog,1500);
+
+// ═══════════════════════════════════════════════════════════════════
+// EVIDENCE CHAIN ACTIVATION
+// ═══════════════════════════════════════════════════════════════════
+function activateChain(){
+  const stages=document.querySelectorAll('.chain-stage');
+  stages.forEach(s=>s.classList.remove('active'));
+  stages.forEach((s,i)=>{
+    setTimeout(()=>s.classList.add('active'),i*130);
+  });
+}
+activateChain();
+
+// ═══════════════════════════════════════════════════════════════════
+// CLASSIFICATION BARS
+// ═══════════════════════════════════════════════════════════════════
+const CLF_DATA=[
+  {cls:'Gas Flare',pct:94.3,col:'#ffa94d'},
+  {cls:'Industrial Fire',pct:3.1,col:'#ff4d4d'},
+  {cls:'Coal Seam Fire',pct:1.8,col:'#f59e0b'},
+  {cls:'Wildfire/Veg',pct:0.6,col:'#4ade80'},
+  {cls:'Gas Leak',pct:0.2,col:'#b197fc'},
+];
+function buildClfRows(){
+  const container=document.getElementById('clf-rows');
+  CLF_DATA.forEach(c=>{
+    const div=document.createElement('div');
+    div.className='clf-row';
+    div.innerHTML=`
+      <span class="clf-label">${c.cls}</span>
+      <div class="clf-bar-track"><div class="clf-bar-fill" style="background:${c.col}" data-pct="${c.pct}"></div></div>
+      <span class="clf-pct">${c.pct}%</span>`;
+    container.appendChild(div);
+  });
+  setTimeout(()=>{
+    document.querySelectorAll('.clf-bar-fill').forEach((el,i)=>{
+      setTimeout(()=>{el.style.width=el.dataset.pct+'%';},i*90);
+    });
+  },600);
+}
+buildClfRows();
+
+// ═══════════════════════════════════════════════════════════════════
+// BOTTOM TABS
+// ═══════════════════════════════════════════════════════════════════
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='baseline')buildBaselineChart();
+    if(btn.dataset.tab==='model')buildModelBars();
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// HISTOGRAM (34 bars)
+// ═══════════════════════════════════════════════════════════════════
+const HIST_HEIGHTS=[
+  2,3,4,5,6,8,10,12,15,18,22,28,35,42,38,30,22,16,12,
+  8,6,5,4,3,2,2,1,1,1,1,1,1,1,1
+];
+const HIST_COLORS=HIST_HEIGHTS.map((_,i)=>{
+  const t=i/33;
+  if(t>0.85)return '#ffa94d';
+  if(t>0.6)return '#ff4d4d';
+  return '#2d4a5e';
+});
+function buildHistogram(){
+  const container=document.getElementById('hist-bars');
+  const max=Math.max(...HIST_HEIGHTS);
+  HIST_HEIGHTS.forEach((h,i)=>{
+    const bar=document.createElement('div');
+    bar.className='hist-bar';
+    bar.style.background=HIST_COLORS[i];
+    bar.style.height='0%';
+    bar.dataset.h=Math.round(h/max*100);
+    container.appendChild(bar);
+  });
+  setTimeout(()=>{
+    document.querySelectorAll('.hist-bar').forEach((b,i)=>{
+      setTimeout(()=>{b.style.height=b.dataset.h+'%';},i*25);
+    });
+  },200);
+}
+buildHistogram();
+
+// ═══════════════════════════════════════════════════════════════════
+// BASELINE CHART
+// ═══════════════════════════════════════════════════════════════════
+let baselineBuilt=false;
+function buildBaselineChart(){
+  if(baselineBuilt)return;
+  baselineBuilt=true;
+  const svg=document.getElementById('baseline-svg');
+  const W=svg.clientWidth||400,H=svg.clientHeight||140;
+  const N=90;
+  const mean=45,sigma=12;
+  const obs=Array.from({length:N},(_,i)=>mean+Math.sin(i/8)*8+(Math.random()-0.5)*10);
+  obs[89]=72; // current anomaly
+  const toX=i=>10+i*(W-20)/(N-1);
+  const toY=v=>H-10-(v/(mean+sigma*3+10))*(H-20);
+  // Sigma band
+  const bandTop=obs.map((_,i)=>({x:toX(i),y:toY(mean+2*sigma)}));
+  const bandBot=obs.map((_,i)=>({x:toX(i),y:toY(mean-2*sigma)})).reverse();
+  const bandPts=[...bandTop,...bandBot];
+  document.getElementById('sigma-band').setAttribute('d','M'+bandPts.map(p=>p.x+','+p.y).join('L')+'Z');
+  // Mean line
+  const meanPts=obs.map((_,i)=>toX(i)+','+toY(mean));
+  document.getElementById('mean-line').setAttribute('d','M'+meanPts.join('L'));
+  // Observed
+  const obsPts=obs.map((v,i)=>toX(i)+','+toY(v));
+  document.getElementById('obs-line').setAttribute('d','M'+obsPts.join('L'));
+  // Current point
+  const cx=toX(89),cy=toY(obs[89]);
+  document.getElementById('cur-point').setAttribute('cx',cx);
+  document.getElementById('cur-point').setAttribute('cy',cy);
+  document.getElementById('cur-drop').setAttribute('x1',cx);
+  document.getElementById('cur-drop').setAttribute('y1',cy);
+  document.getElementById('cur-drop').setAttribute('x2',cx);
+  document.getElementById('cur-drop').setAttribute('y2',H-10);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MODEL INTEGRITY BARS
+// ═══════════════════════════════════════════════════════════════════
+const MODEL_DATA=[
+  {label:'FIRMS conf=high',val:0.128,col:'#ef4444'},
+  {label:'FRP > 10 MW threshold',val:0.426,col:'#f59e0b'},
+  {label:'Naive spatial (coord)',val:0.627,col:'#f59e0b'},
+  {label:'Ours · coord-free',val:0.818,col:'#4ade80'},
+  {label:'Ours · causal GCC',val:0.868,col:'#22d3ee'},
+];
+let modelBuilt=false;
+function buildModelBars(){
+  if(modelBuilt)return;
+  modelBuilt=true;
+  const container=document.getElementById('model-bars');
+  MODEL_DATA.forEach((m,i)=>{
+    const row=document.createElement('div');
+    row.className='model-row';
+    row.innerHTML=`
+      <span class="model-label">${m.label}</span>
+      <div class="model-bar-track"><div class="model-bar-fill" style="background:${m.col}" data-pct="${m.val*100}"></div></div>
+      <span class="model-val" style="color:${m.col}">${m.val.toFixed(3)}</span>`;
+    container.appendChild(row);
+    setTimeout(()=>{
+      row.querySelector('.model-bar-fill').style.width=(m.val*100)+'%';
+    },200+i*90);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SELECT DETECTION
+// ═══════════════════════════════════════════════════════════════════
+function selectDetection(d,rowEl){
+  document.querySelectorAll('.alert-row').forEach(r=>r.classList.remove('selected'));
+  if(rowEl)rowEl.classList.add('selected');
+  activateChain();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SCAN STATUS BLINK
+// ═══════════════════════════════════════════════════════════════════
+let scanToggle=true;
+setInterval(()=>{
+  const el=document.getElementById('scan-status');
+  scanToggle=!scanToggle;
+  el.textContent=scanToggle?'SCANNING':'IDLE';
+  el.style.color=scanToggle?'#4ade80':'#7b8da3';
+},3000);
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+buildAlertFeed();
+buildClassDist();
+buildMap();
+</script>
+</body>
+</html>
