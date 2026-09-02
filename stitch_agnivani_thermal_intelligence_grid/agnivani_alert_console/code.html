@@ -159,7 +159,139 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <script>
-/* __AGNIVANI_JS__ */
+function tick(){const n=new Date();document.getElementById('clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');}
+setInterval(tick,1000);tick();
+
+const SEV={CRITICAL:{c:'#ef4444',bg:'rgba(239,68,68,.1)'},HIGH:{c:'#f59e0b',bg:'rgba(245,158,11,.1)'},MODERATE:{c:'#22d3ee',bg:'rgba(34,211,238,.1)'},LOW:{c:'#7b8da3',bg:'rgba(123,141,163,.1)'}};
+const CLS={GF:{c:'#ffa94d',n:'Gas Flare'},IF:{c:'#ff4d4d',n:'Industrial Fire'},CS:{c:'#f59e0b',n:'Coal Seam Fire'},WV:{c:'#4ade80',n:'Wildfire/Veg'},GL:{c:'#b197fc',n:'Gas Leak'}};
+
+const ALERTS=[
+  {id:'AGN-04832',sev:'CRITICAL',cls:'GF',fac:'Jamnagar Refinery',state:'Gujarat',temp:'1847 K',frp:'62.4 MW',sat:'NOAA-20',ts:'14:02:11',p:.943,status:'dispatched'},
+  {id:'AGN-04831',sev:'CRITICAL',cls:'IF',fac:'Bokaro Steel Plant',state:'Jharkhand',temp:'1182 K',frp:'214 MW',sat:'NOAA-21',ts:'13:58:44',p:.891,status:'acknowledged'},
+  {id:'AGN-04830',sev:'HIGH',cls:'CS',fac:'Jharia Coalfield',state:'Jharkhand',temp:'924 K',frp:'18 MW',sat:'NOAA-20',ts:'13:47:22',p:.812,status:'open'},
+  {id:'AGN-04829',sev:'HIGH',cls:'GF',fac:'Vadinar Refinery',state:'Gujarat',temp:'1793 K',frp:'44 MW',sat:'NOAA-21',ts:'13:31:09',p:.876,status:'open'},
+  {id:'AGN-04828',sev:'HIGH',cls:'IF',fac:'Bhilai Steel Plant',state:'Chhattisgarh',temp:'1104 K',frp:'178 MW',sat:'NOAA-20',ts:'13:18:55',p:.834,status:'open'},
+  {id:'AGN-04827',sev:'CRITICAL',cls:'GF',fac:'Digboi Refinery',state:'Assam',temp:'1812 K',frp:'38 MW',sat:'NOAA-21',ts:'13:02:31',p:.921,status:'open'},
+  {id:'AGN-04826',sev:'HIGH',cls:'CS',fac:'Singrauli Coalfield',state:'MP',temp:'887 K',frp:'11 MW',sat:'NOAA-20',ts:'12:49:17',p:.778,status:'open'},
+  {id:'AGN-04825',sev:'MODERATE',cls:'WV',fac:'Talcher Coalfield',state:'Odisha',temp:'842 K',frp:'7 MW',sat:'NOAA-21',ts:'12:34:02',p:.694,status:'open'},
+  {id:'AGN-04824',sev:'HIGH',cls:'GF',fac:'Hazira LNG Terminal',state:'Gujarat',temp:'1768 K',frp:'36 MW',sat:'NOAA-20',ts:'12:21:48',p:.856,status:'open'},
+  {id:'AGN-04823',sev:'MODERATE',cls:'GL',fac:'Dahej LNG Terminal',state:'Gujarat',temp:'—',frp:'0 MW',sat:'NOAA-21',ts:'12:08:33',p:.741,status:'open'},
+  {id:'AGN-04822',sev:'HIGH',cls:'IF',fac:'Rourkela Steel Plant',state:'Odisha',temp:'1138 K',frp:'142 MW',sat:'NOAA-20',ts:'11:54:19',p:.803,status:'open'},
+  {id:'AGN-04821',sev:'MODERATE',cls:'CS',fac:'Korba Thermal',state:'Chhattisgarh',temp:'912 K',frp:'9 MW',sat:'NOAA-21',ts:'11:41:05',p:.712,status:'open'},
+  {id:'AGN-04820',sev:'LOW',cls:'WV',fac:'Neyveli Lignite',state:'Tamil Nadu',temp:'764 K',frp:'4 MW',sat:'NOAA-20',ts:'11:28:51',p:.623,status:'open'},
+  {id:'AGN-04819',sev:'HIGH',cls:'GF',fac:'Mumbai High Offshore',state:'Maharashtra',temp:'1821 K',frp:'28 MW',sat:'NOAA-21',ts:'11:14:37',p:.867,status:'open'},
+];
+
+const CHAIN_DATA=[
+  {l:'INGEST',v:'NOAA-20 · VIIRS 375m · FIRMS NRT'},
+  {l:'PHYSICS',v:'T = 1847 K · A = 0.42 m² · 62.4 MW FRP'},
+  {l:'BASELINE',v:'Jamnagar 412 d · z = +3.21'},
+  {l:'FUSION',v:'S-2 SWIR + S-5P XCH4 +284 ppb'},
+  {l:'CLASSIFY',v:'gcc-xgb v4.2 · Gas Flare p = 0.943'},
+  {l:'CALIBRATE',v:'Isotonic · [0.873, 0.999] · α = 0.10'},
+];
+
+const CHECKS=[
+  {t:'Notify District Collector, Jamnagar',m:'SLA 15 min · NDMA Portal + SMS'},
+  {t:'Dispatch SDRF rapid-assessment team',m:'Nearest unit Rajkot · ETA 42 min'},
+  {t:'Request NOAA-21 SWIR capture',m:'Next pass T-07:23 · NTRO tasking'},
+  {t:'Log incident in NDMA portal',m:'Ref: AGN-04832 · auto-populated'},
+];
+
+const AUTHORITIES=[
+  {name:'District Collector, Jamnagar',role:'Primary',ch:'NDMA Portal + SMS',sla:'15 min'},
+  {name:'SDRF Gujarat HQ',role:'Response',ch:'Radio + WhatsApp',sla:'30 min'},
+  {name:'NTRO Satellite Cell',role:'Tasking',ch:'Secure email',sla:'60 min'},
+  {name:'MoEFCC Nodal Officer',role:'Regulatory',ch:'NDMA Portal',sla:'120 min'},
+];
+
+const STEPS=['RAISED','NOTIFIED','ACKNOWLEDGED','DISPATCHED','RESOLVED'];
+
+const AUDIT_ROWS=[
+  {t:'14:02:35',id:'AGN-04832',actor:'ALERT-SVC',ev:'CRITICAL alert raised',ch:'System',h:'b8d3f1…7a29'},
+  {t:'14:02:41',id:'AGN-04832',actor:'NDMA-GW',ev:'SMS dispatched to DC Jamnagar',ch:'SMS',h:'c4e2a8…3f1d'},
+  {t:'14:09:02',id:'AGN-04832',actor:'OP-R.SHARMA',ev:'Dossier opened · read-only',ch:'Web',h:'05c6ea…f13d'},
+  {t:'13:58:52',id:'AGN-04831',actor:'ALERT-SVC',ev:'CRITICAL alert raised',ch:'System',h:'7a1c3e…4b9f'},
+  {t:'14:01:14',id:'AGN-04831',actor:'OP-K.MEHTA',ev:'Alert acknowledged',ch:'Web',h:'2d8f4a…1c7e'},
+  {t:'13:47:30',id:'AGN-04830',actor:'ALERT-SVC',ev:'HIGH alert raised',ch:'System',h:'9e3b2c…5d1a'},
+  {t:'13:31:17',id:'AGN-04829',actor:'ALERT-SVC',ev:'HIGH alert raised',ch:'System',h:'4f7c8d…2e9b'},
+];
+
+let selected=null,checkedItems=new Set(),selectedRows=new Set();
+
+// Render alert list
+function renderList(){
+  const list=document.getElementById('alert-list');list.innerHTML='';
+  ALERTS.forEach((a,i)=>{
+    const s=SEV[a.sev],cl=CLS[a.cls];
+    const row=document.createElement('div');row.className='alert-row'+(selected===i?' selected':'')+(i===0?' new-row':'');
+    row.innerHTML=`<input type="checkbox" style="accent-color:var(--cyan)" ${selectedRows.has(i)?'checked':''}/><div class="cls-dot" style="background:${cl.c}"></div><div><div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span class="sev-chip" style="border-color:${s.c};color:${s.c};background:${s.bg}">${a.sev}</span><span class="mono" style="font-size:8.5px;color:var(--t3)">${a.id}</span><span class="mono" style="font-size:8px;color:${cl.c}">${a.cls}</span></div><div style="font-size:11.5px;font-weight:600;color:var(--t1)">${a.fac}</div><div class="mono" style="font-size:8.5px;color:var(--t2);margin-top:1px">${a.temp} · ${a.frp} · ${a.sat}</div></div><div class="mono" style="font-size:8px;color:var(--t3);text-align:right">${a.ts}<br><span style="color:${a.status==='dispatched'?'#4ade80':a.status==='acknowledged'?'#22d3ee':'var(--t3)'}">${a.status.toUpperCase()}</span></div>`;
+    row.querySelector('input').addEventListener('change',e=>{e.stopPropagation();if(e.target.checked)selectedRows.add(i);else selectedRows.delete(i);updateBulk();});
+    row.addEventListener('click',e=>{if(e.target.type==='checkbox')return;selected=i;renderList();showDetail(a);});
+    list.appendChild(row);
+  });
+}
+
+function updateBulk(){document.getElementById('sel-count').textContent=selectedRows.size+' selected';}
+
+function showDetail(a){
+  document.getElementById('detail-empty').style.display='none';
+  document.getElementById('detail-content').style.display='block';
+  const s=SEV[a.sev],cl=CLS[a.cls];
+  document.getElementById('verdict-panel').innerHTML=`<div style="display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;border-radius:8px;background:${cl.c}22;border:1px solid ${cl.c}44;display:flex;align-items:center;justify-content:center;font-size:18px">🔥</div><div><div style="font-size:14px;font-weight:800;color:${cl.c}">${cl.n}</div><div class="mono" style="font-size:9.5px;color:var(--t2);margin-top:2px">${a.id} · ${a.sat} · p = <span style="color:var(--cyan)">${a.p}</span></div></div><span class="sev-chip" style="margin-left:auto;border-color:${s.c};color:${s.c};background:${s.bg};font-size:9px;padding:3px 8px">${a.sev}</span></div>`;
+  const cs=document.getElementById('chain-steps');cs.innerHTML='';
+  CHAIN_DATA.forEach((c,i)=>{const d=document.createElement('div');d.className='chain-step';d.innerHTML=`<div class="chain-num" id="cn${i}">${i+1}</div><div><div class="chain-label" id="cl${i}">${c.l}</div><div class="chain-val" id="cv${i}">${c.v}</div></div>`;cs.appendChild(d);setTimeout(()=>{document.getElementById('cn'+i).classList.add('active');document.getElementById('cl'+i).classList.add('active');document.getElementById('cv'+i).classList.add('active');},i*130);});
+  const ci=document.getElementById('check-items');ci.innerHTML='';
+  CHECKS.forEach((c,i)=>{const d=document.createElement('div');d.className='action-check';d.innerHTML=`<div class="check-box ${checkedItems.has(i)?'done':''}" data-i="${i}"></div><div><div class="check-text">${c.t}</div><div class="check-meta">${c.m}</div></div>`;d.querySelector('.check-box').addEventListener('click',()=>{if(checkedItems.has(i))checkedItems.delete(i);else checkedItems.add(i);showDetail(a);});ci.appendChild(d);});
+}
+
+// Authority list
+(function(){
+  const al=document.getElementById('authority-list');
+  AUTHORITIES.forEach(a=>{const d=document.createElement('div');d.style.cssText='display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid rgba(27,39,53,.5)';d.innerHTML=`<div><div style="font-size:11px;font-weight:600;color:var(--t1)">${a.name}</div><div class="mono" style="font-size:8px;color:var(--t2);margin-top:1px">${a.ch}</div></div><div style="text-align:right"><div class="mono" style="font-size:8px;color:var(--t3)">${a.role}</div><div class="mono" style="font-size:8px;color:var(--cs)">${a.sla}</div></div>`;al.appendChild(d);});
+})();
+
+// SLA countdown
+let slaSeconds=900;
+function updateSLA(){
+  slaSeconds=Math.max(0,slaSeconds-1);
+  const m=Math.floor(slaSeconds/60),s=slaSeconds%60;
+  document.getElementById('sla-label').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} remaining`;
+  const pct=slaSeconds/900;
+  const fill=document.getElementById('sla-fill');
+  fill.style.width=(pct*100)+'%';
+  fill.style.background=pct>0.5?'#4ade80':pct>0.25?'#f59e0b':'#ef4444';
+}
+setInterval(updateSLA,1000);
+
+// Stepper
+(function(){
+  const st=document.getElementById('stepper');
+  STEPS.forEach((s,i)=>{const d=document.createElement('div');d.className='step';d.innerHTML=`<div class="step-dot ${i<2?'done':i===2?'active':''}">${i<2?'✓':i===2?'●':''}</div><div class="step-lbl">${s}</div>`;st.appendChild(d);});
+})();
+
+// Audit trail
+(function(){
+  const tb=document.getElementById('audit-tbody');
+  AUDIT_ROWS.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=`<td style="color:var(--t3)">${r.t}</td><td style="color:var(--cyan)">${r.id}</td><td style="color:#a78bfa">${r.actor}</td><td>${r.ev}</td><td style="color:var(--t2)">${r.ch}</td><td style="color:var(--t3)">${r.h}</td>`;tb.appendChild(tr);});
+})();
+
+// Filter chips toggle
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('on')));
+
+// Bulk actions
+document.getElementById('sel-all').addEventListener('change',e=>{if(e.target.checked)ALERTS.forEach((_,i)=>selectedRows.add(i));else selectedRows.clear();renderList();updateBulk();});
+document.getElementById('ack-btn').addEventListener('click',()=>{selectedRows.forEach(i=>{if(ALERTS[i].status==='open')ALERTS[i].status='acknowledged';});renderList();});
+document.getElementById('dispatch-bulk').addEventListener('click',()=>{selectedRows.forEach(i=>{ALERTS[i].status='dispatched';});renderList();});
+
+// Live new alert every 18s
+setTimeout(function push(){
+  const newA={id:'AGN-0'+(4833+Math.floor(Math.random()*10)),sev:'HIGH',cls:'GF',fac:'Panipat Refinery',state:'Haryana',temp:'1774 K',frp:'31 MW',sat:'NOAA-20',ts:new Date().toTimeString().slice(0,8),p:.841,status:'open'};
+  ALERTS.unshift(newA);document.getElementById('queue-count').textContent=ALERTS.length;
+  renderList();setTimeout(push,18000);
+},18000);
+
+renderList();
 </script>
 </body>
 </html>
