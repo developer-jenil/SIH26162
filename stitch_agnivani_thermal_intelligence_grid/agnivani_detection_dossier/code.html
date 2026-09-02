@@ -1,328 +1,319 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html class="dark" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>AGNIVANI - Detection Dossier</title>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "inverse-surface": "#e0e2ed",
-                        "on-tertiary-container": "#6e4600",
-                        "secondary-container": "#404752",
-                        "tertiary-fixed": "#ffddb5",
-                        "error-container": "#93000a",
-                        "primary-fixed-dim": "#2fd9f4",
-                        "on-secondary-fixed-variant": "#404752",
-                        "on-tertiary-fixed": "#2a1800",
-                        "secondary-fixed": "#dce3f0",
-                        "on-primary-fixed-variant": "#004e5a",
-                        "outline-variant": "#3c494c",
-                        "primary-fixed": "#a2eeff",
-                        "surface-bright": "#363941",
-                        "tertiary": "#ffd6a3",
-                        "tertiary-container": "#ffb13b",
-                        "surface-container-highest": "#31353d",
-                        "on-primary-container": "#005763",
-                        "on-background": "#e0e2ed",
-                        "surface-container-low": "#181c23",
-                        "on-secondary": "#2a313b",
-                        "outline": "#859397",
-                        "primary": "#8aebff",
-                        "inverse-primary": "#006877",
-                        "surface-container": "#1c2027",
-                        "on-secondary-container": "#afb5c2",
-                        "surface-dim": "#10131b",
-                        "on-surface-variant": "#bbc9cd",
-                        "on-primary-fixed": "#001f25",
-                        "on-tertiary": "#462b00",
-                        "on-surface": "#e0e2ed",
-                        "on-error": "#690005",
-                        "surface-tint": "#2fd9f4",
-                        "on-secondary-fixed": "#151c25",
-                        "secondary": "#c0c7d4",
-                        "on-primary": "#00363e",
-                        "surface-variant": "#31353d",
-                        "tertiary-fixed-dim": "#ffb957",
-                        "surface-container-lowest": "#0b0e15",
-                        "primary-container": "#22d3ee",
-                        "surface": "#10131b",
-                        "on-tertiary-fixed-variant": "#643f00",
-                        "on-error-container": "#ffdad6",
-                        "secondary-fixed-dim": "#c0c7d4",
-                        "inverse-on-surface": "#2d3038",
-                        "background": "#10131b",
-                        "surface-container-high": "#272a32",
-                        "error": "#ffb4ab"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "spacing": {
-                        "gutter": "18px",
-                        "base": "9px",
-                        "md": "18px",
-                        "xl": "36px",
-                        "lg": "27px",
-                        "margin": "27px",
-                        "sm": "9px",
-                        "xs": "4.5px"
-                    },
-                    "fontFamily": {
-                        "label-caps": ["JetBrains Mono"],
-                        "body-lg": ["Inter"],
-                        "headline-sm": ["Inter"],
-                        "headline-lg": ["Inter"],
-                        "data-mono": ["JetBrains Mono"],
-                        "headline-md": ["Inter"],
-                        "body-md": ["Inter"]
-                    },
-                    "fontSize": {
-                        "label-caps": ["11px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "700" }],
-                        "body-lg": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
-                        "headline-sm": ["18px", { "lineHeight": "1.4", "fontWeight": "600" }],
-                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
-                        "data-mono": ["13px", { "lineHeight": "1.2", "fontWeight": "500" }],
-                        "headline-md": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
-                        "body-md": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
-                    }
-                }
-            }
-        }
-    </script>
+<title>AGNIVANI — Detection Dossier · AGN-04832</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
-        .cyber-grid {
-            background-size: 9px 9px;
-            background-image: 
-                linear-gradient(to right, rgba(60, 73, 76, 0.1) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(60, 73, 76, 0.1) 1px, transparent 1px);
-        }
-        .critical-glow {
-            box-shadow: inset 0 0 20px rgba(255, 180, 171, 0.1);
-        }
-    </style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#060910;color:#dce7f2;font-family:'Inter',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 0% 0%,rgba(34,211,238,0.06),transparent 70%),radial-gradient(ellipse 50% 40% at 100% 100%,rgba(245,158,11,0.06),transparent 70%);pointer-events:none;z-index:0}
+:root{--cyan:#22d3ee;--gf:#ffa94d;--if:#ff4d4d;--cs:#f59e0b;--wv:#4ade80;--gl:#b197fc;--border:#1b2735;--t1:#dce7f2;--t2:#7b8da3;--t3:#4e5f74;--panel:rgba(13,20,29,0.72)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#1b2735;border-radius:2px}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+
+/* Topbar */
+#topbar{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--border);background:rgba(6,9,16,0.97);position:sticky;top:0;z-index:50}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#f59e0b,#ea580c);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.brand-mark::after{content:'';position:absolute;inset:0;border-radius:8px;border:1.5px solid rgba(245,158,11,.6);animation:haloExpand 2.4s ease-out infinite}
+@keyframes haloExpand{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.2);opacity:0}}
+.brand-mark svg{width:18px;height:18px;fill:#fff}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border:1px solid var(--border);border-radius:4px;background:rgba(13,20,29,0.8);font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--t2);white-space:nowrap}
+.pill b{color:var(--t1)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:liveBlink 1.5s ease-in-out infinite}
+@keyframes liveBlink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Page layout */
+#page{position:relative;z-index:1;padding:14px 18px 40px;max-width:1600px;margin:0 auto}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--t3);margin-bottom:12px}
+.breadcrumb a{color:var(--t2);text-decoration:none;transition:color 140ms}
+.breadcrumb a:hover{color:var(--cyan)}
+.breadcrumb span.cur{color:var(--cyan)}
+
+/* Panel */
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;transition:border-color 140ms,background 140ms}
+.panel:hover{border-color:#243447}
+.panel-title{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+
+/* Scroll reveal */
+.reveal{opacity:0;transform:translateY(12px);transition:opacity 500ms cubic-bezier(.4,0,.2,1),transform 500ms cubic-bezier(.4,0,.2,1)}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* Hero */
+#hero{display:grid;grid-template-columns:1fr 300px;gap:14px;margin-bottom:14px}
+.hero-id{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:var(--t1);letter-spacing:.02em}
+.badge-cls{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;border:1px solid}
+.sev-chip{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:3px;border:1px solid #ef4444;color:#ef4444;background:rgba(239,68,68,.1)}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+.hero-meta-item{font-family:'JetBrains Mono',monospace;font-size:9px}
+.hero-meta-item .lbl{color:var(--t3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:2px}
+.hero-meta-item .val{color:var(--t1);font-size:11px}
+.facility-card{border-left:2px solid var(--gf);padding-left:10px}
+
+/* Grid */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.grid-3{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px}
+
+/* Swipe slider */
+#swipe-wrap{position:relative;height:220px;border-radius:6px;overflow:hidden;border:1px solid var(--border);cursor:ew-resize;user-select:none}
+.swipe-layer{position:absolute;inset:0}
+.swipe-before{background:linear-gradient(135deg,#0a1520 0%,#0d1e2c 40%,#0a1a26 100%)}
+.swipe-after{background:linear-gradient(135deg,#0a1520 0%,#1a1208 40%,#0d1e2c 100%);clip-path:inset(0 0 0 50%)}
+.swipe-handle{position:absolute;top:0;bottom:0;width:2px;background:var(--cyan);left:50%;z-index:5;pointer-events:none}
+.swipe-handle::after{content:'◄ ►';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(6,9,16,0.9);border:1px solid var(--cyan);border-radius:4px;padding:3px 6px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cyan);white-space:nowrap}
+.swipe-label{position:absolute;top:8px;font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.06em;padding:2px 6px;border-radius:3px;background:rgba(6,9,16,0.85);border:1px solid var(--border);color:var(--t2);z-index:4}
+.swipe-hotspot{position:absolute;border-radius:50%;pointer-events:none}
+
+/* Spectral plot */
+#spectral-svg{width:100%;height:200px}
+
+/* Attribution bars */
+.attr-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.attr-label{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t2);width:120px;flex-shrink:0;text-align:right}
+.attr-track{flex:1;height:14px;position:relative;background:rgba(27,39,53,0.4);border-radius:2px;overflow:hidden}
+.attr-centre{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--border)}
+.attr-fill{position:absolute;top:2px;bottom:2px;border-radius:2px;width:0;transition:width 900ms cubic-bezier(.4,0,.2,1)}
+.attr-val{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;min-width:44px;font-variant-numeric:tabular-nums}
+
+/* Timeline */
+.tl-item{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.tl-item:last-child{border-bottom:none}
+.tl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:3px;border:2px solid}
+.tl-time{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t3);width:56px;flex-shrink:0;padding-top:2px}
+.tl-title{font-size:11px;font-weight:600;color:var(--t1)}
+.tl-detail{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t2);margin-top:2px}
+
+/* Action panel */
+.action-card{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)}
+.action-num{width:22px;height:22px;border-radius:4px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--cyan);flex-shrink:0}
+.action-text{font-size:11.5px;color:var(--t1);line-height:1.4}
+.action-detail{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t2);margin-top:2px}
+.dispatch-btn{width:100%;margin-top:10px;padding:10px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);border-radius:5px;color:#fca5a5;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background 140ms}
+.dispatch-btn:hover{background:rgba(239,68,68,.25)}
+
+/* Audit */
+.audit-row{display:grid;grid-template-columns:70px 90px 1fr 80px;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:8.5px}
+.audit-row:last-child{border-bottom:none}
+.audit-hash{color:var(--t3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Physics tiles */
+.phys-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.phys-tile{background:rgba(6,9,16,0.6);border:1px solid var(--border);border-radius:4px;padding:7px 9px}
+.phys-tile:first-child{border-color:rgba(34,211,238,.3)}
+.phys-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.phys-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:var(--t1);font-variant-numeric:tabular-nums}
+.phys-tile:first-child .phys-val{color:var(--cyan)}
+
+@media(prefers-reduced-motion:reduce){.brand-mark::after,.live-dot{animation:none!important}}
+</style>
 </head>
-<body class="bg-background text-on-surface font-body-md h-screen flex flex-col overflow-hidden cyber-grid">
-<!-- TopNavBar -->
-<nav class="bg-surface-container-low border-b border-outline-variant flex justify-between items-center w-full px-margin h-[54px] z-50 shrink-0">
-<div class="flex items-center gap-md">
-<span class="text-headline-md font-headline-md font-bold text-primary tracking-tighter">AGNIVANI</span>
-</div>
-<div class="flex items-center gap-md text-primary">
-<span class="material-symbols-outlined hover:bg-secondary-container/50 transition-colors p-xs cursor-pointer">sensors</span>
-<span class="material-symbols-outlined hover:bg-secondary-container/50 transition-colors p-xs cursor-pointer">videocam</span>
-<span class="material-symbols-outlined hover:bg-secondary-container/50 transition-colors p-xs cursor-pointer">precision_manufacturing</span>
-<span class="material-symbols-outlined hover:bg-secondary-container/50 transition-colors p-xs cursor-pointer">schedule</span>
-<img alt="Mission Control Operator Profile" class="w-8 h-8 rounded-full border border-outline-variant ml-sm" data-alt="A detailed headshot of a mission control operator in a futuristic dark aerospace telemetry setting, lit by cyan console lights, wearing a technical headset, serious expression, modern corporate technical aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_9A1Uch7p-chW0DL5cCND7njkDj9Galf4GY2D8OlXlx6kX1ykFh8IMZ6INfU4cQh5bjEUYmpu6UTlLqZepQVF41EsYHKlwd73AijXHQSr9FiztrWwMVtQqA-8qGHuD8Jr-v93hNfTW9EA-piE-m_e1bQUBt4yR5-arUuvaNA4vSUB9NEdrKmEwELYJHZBO-UgZ0fJv1CEi5smxYzqyEDav7P2chtftos-hGXuRQOeFds6RuF7F1w"/>
-</div>
-</nav>
-<div class="flex flex-1 overflow-hidden">
-<!-- SideNavBar -->
-<aside class="fixed left-0 top-[54px] h-[calc(100vh-54px)] w-64 bg-surface-dim/72 border-r border-outline-variant flex flex-col z-40 hidden md:flex shrink-0 backdrop-blur-sm">
-<div class="p-md border-b border-outline-variant">
-<div class="flex items-center gap-sm mb-xs">
-<img alt="System Status Indicator" class="w-6 h-6 rounded-full" data-alt="A small glowing circular abstract icon representing a system status indicator in a dark aerospace dashboard, emitting a subtle cyan glow against a deep navy background, conveying operational stability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAOfvnZsUVrmjEmBKulp7AzdITw-njnOZNIs1UAFkWwO_DYmcQbsxDnkAGCBk4MnVJJ9vJU2VvP6sOY4GCz-03X2zcHaylGudP2B-FenpF7aDtPTpdWkHpBjN7b7OXBjJeDPaCQPeZfq8DHuYYMmJTuJBbTGT_f6cgiJAz-sseHnf2QgTJXXxGk9NRxWHdErEvy9g6yM7DJcLNooYUczS_DH0vcpNEVbRvvTQHW-FmqhyWXSYYIIA"/>
-<span class="text-label-caps font-label-caps text-on-surface-variant">INTELLIGENCE GRID</span>
-</div>
-<div class="text-data-mono font-data-mono text-outline">V4.2.0-STABLE</div>
-</div>
-<div class="flex-1 overflow-y-auto py-sm">
-<!-- Active: bg-secondary-container text-primary border-r-2 border-primary -->
-<div class="flex items-center gap-sm px-md py-sm bg-secondary-container text-primary border-r-2 border-primary cursor-pointer hover:bg-surface-container-highest transition-all brightness-125">
-<span class="material-symbols-outlined text-lg">warning</span>
-<span class="text-label-caps font-label-caps">ALERTS</span>
-</div>
-<div class="flex items-center gap-sm px-md py-sm text-on-surface-variant cursor-pointer hover:bg-surface-container-highest transition-all">
-<span class="material-symbols-outlined text-lg">analytics</span>
-<span class="text-label-caps font-label-caps">TELEMETRY</span>
-</div>
-<div class="flex items-center gap-sm px-md py-sm text-on-surface-variant cursor-pointer hover:bg-surface-container-highest transition-all">
-<span class="material-symbols-outlined text-lg">settings_input_component</span>
-<span class="text-label-caps font-label-caps">SYSTEMS</span>
-</div>
-<div class="flex items-center gap-sm px-md py-sm text-on-surface-variant cursor-pointer hover:bg-surface-container-highest transition-all">
-<span class="material-symbols-outlined text-lg">terminal</span>
-<span class="text-label-caps font-label-caps">LOGS</span>
-</div>
-</div>
-<div class="p-md border-t border-outline-variant mt-auto">
-<button class="w-full bg-primary-container text-on-primary font-label-caps text-label-caps py-sm rounded mb-md hover:bg-primary transition-colors">
-                    DISPATCH ALERT
-                </button>
-<div class="space-y-sm">
-<div class="flex items-center gap-sm text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-lg">help</span>
-<span class="text-label-caps font-label-caps">SUPPORT</span>
-</div>
-<div class="flex items-center gap-sm text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-lg">build</span>
-<span class="text-label-caps font-label-caps">DIAGNOSTICS</span>
-</div>
-</div>
-</div>
-</aside>
-<!-- Main Content -->
-<main class="flex-1 md:ml-64 overflow-y-auto pb-[54px]">
-<div class="p-margin max-w-7xl mx-auto space-y-lg">
-<!-- Breadcrumb & Hero -->
-<header class="space-y-md">
-<div class="text-data-mono font-data-mono text-on-surface-variant flex items-center gap-xs">
-<span>INTELLIGENCE GRID</span>
-<span class="material-symbols-outlined text-[14px]">chevron_right</span>
-<span class="text-primary">DETECTION DOSSIER</span>
-</div>
-<div class="flex justify-between items-start border-b border-outline-variant pb-md">
-<div>
-<h1 class="text-headline-lg font-headline-lg text-primary flex items-center gap-md">
-                                ID AGN-04832
-                                <span class="bg-[#ffa94d]/15 border border-[#ffa94d] text-[#ffa94d] px-sm py-xs rounded-sm text-label-caps font-label-caps ml-sm">GAS FLARE</span>
-<span class="bg-error/15 border border-error text-error px-sm py-xs rounded-sm text-label-caps font-label-caps flex items-center gap-xs">
-<span class="material-symbols-outlined text-[12px]">warning</span> CRITICAL
-                                </span>
-</h1>
-</div>
-<div class="text-right">
-<div class="text-data-mono font-data-mono text-outline">FACILITY</div>
-<div class="text-headline-sm font-headline-sm">JAMNAGAR REFINERY</div>
-</div>
-</div>
+<body>
+<header id="topbar">
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M12 2C8 7 6 10 6 14a6 6 0 0012 0c0-4-2-7-6-12zm0 16a4 4 0 01-4-4c0-2.5 1.2-5 4-9 2.8 4 4 6.5 4 9a4 4 0 01-4 4z"/></svg></div>
+    <div>
+      <div style="font-size:16px;font-weight:800;letter-spacing:.11em">AGNIVANI</div>
+      <div class="mono" style="font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--t3);text-transform:uppercase">Industrial Thermal Anomaly Intelligence Grid</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:7px">
+    <div class="pill"><div class="live-dot"></div> LIVE · <b>STREAMING</b></div>
+    <div class="pill">SAT · <b>NOAA-20 / 21</b></div>
+    <div class="pill">MODEL <b>gcc-xgb v4.2</b></div>
+    <div class="mono" style="font-size:13px;color:var(--cyan)" id="clock">00:00:00</div>
+  </div>
 </header>
-<!-- Dossier Grid -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
-<!-- Visual Proof -->
-<div class="lg:col-span-2 bg-surface-dim/72 border border-outline-variant rounded flex flex-col critical-glow">
-<div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center">
-<span class="text-label-caps font-label-caps text-on-surface-variant">VISUAL PROOF (SWIPE)</span>
-<span class="material-symbols-outlined text-outline text-[16px]">satellite_alt</span>
+
+<div id="page">
+  <div class="breadcrumb">
+    <a href="../agnivani_mission_control/code.html">MISSION CONTROL</a><span>/</span>
+    <a href="#">DETECTIONS</a><span>/</span>
+    <span class="cur">AGN-04832</span>
+  </div>
+
+  <!-- HERO -->
+  <div id="hero">
+    <div class="panel reveal">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px">
+        <div>
+          <div class="mono" style="font-size:9px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px">Detection ID</div>
+          <div class="hero-id">AGN-04832</div>
+          <div style="display:flex;gap:7px;align-items:center;margin-top:8px">
+            <span class="badge-cls" style="color:var(--gf);border-color:var(--gf);background:rgba(255,169,77,.1)">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8 7 6 10 6 14a6 6 0 0012 0c0-4-2-7-6-12z"/></svg>GAS FLARE
+            </span>
+            <span class="sev-chip">CRITICAL</span>
+            <span class="mono" style="font-size:9.5px;color:var(--t2)">p = <b style="color:var(--cyan)">0.943</b></span>
+          </div>
+          <div class="hero-meta">
+            <div class="hero-meta-item"><span class="lbl">Coordinates</span><span class="val">22.351°N, 70.018°E</span></div>
+            <div class="hero-meta-item"><span class="lbl">Satellite</span><span class="val">NOAA-20 · VIIRS 375m</span></div>
+            <div class="hero-meta-item"><span class="lbl">Acquisition</span><span class="val">2026-09-02 14:02:11 UTC</span></div>
+            <div class="hero-meta-item"><span class="lbl">Pass</span><span class="val">Ascending · Night</span></div>
+            <div class="hero-meta-item"><span class="lbl">Confidence Band</span><span class="val">[0.873, 0.999]</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel reveal facility-card" style="transition-delay:80ms">
+      <div class="panel-title">Matched Facility</div>
+      <div style="font-size:14px;font-weight:600;color:var(--t1);margin-bottom:3px">Jamnagar Refinery</div>
+      <div class="mono" style="font-size:9.5px;color:var(--t2);margin-bottom:8px">Reliance Industries · Refinery · Gujarat</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div><div class="mono" style="font-size:8px;color:var(--t3);text-transform:uppercase">GEM ID</div><div class="mono" style="font-size:10px;color:var(--t1)">GEM-IN-R-0021</div></div>
+        <div><div class="mono" style="font-size:8px;color:var(--t3);text-transform:uppercase">Distance</div><div class="mono" style="font-size:10px;color:var(--t1)">0.34 km</div></div>
+        <div><div class="mono" style="font-size:8px;color:var(--t3);text-transform:uppercase">Persistence</div><div class="mono" style="font-size:10px;color:var(--cyan)">412 d</div></div>
+        <div><div class="mono" style="font-size:8px;color:var(--t3);text-transform:uppercase">Capacity</div><div class="mono" style="font-size:10px;color:var(--t1)">1.24 Mbpd</div></div>
+      </div>
+      <a href="../agnivani_facility_profile/code.html" class="mono" style="display:block;margin-top:10px;font-size:9px;color:var(--cyan);text-decoration:none">VIEW FACILITY PROFILE →</a>
+    </div>
+  </div>
+
+  <!-- PHYSICS TILES -->
+  <div class="panel reveal" style="margin-bottom:14px">
+    <div class="panel-title">Physics Retrieval — Planck Dual-Band Unmixing</div>
+    <div class="phys-grid">
+      <div class="phys-tile"><div class="phys-lbl">Emitter Temp</div><div class="phys-val">1847 K</div></div>
+      <div class="phys-tile"><div class="phys-lbl">Radiant Power</div><div class="phys-val">62.4 MW</div></div>
+      <div class="phys-tile"><div class="phys-lbl">Emitter Area</div><div class="phys-val">0.42 m²</div></div>
+      <div class="phys-tile"><div class="phys-lbl">CH4 Enhance</div><div class="phys-val">+284 ppb</div></div>
+      <div class="phys-tile"><div class="phys-lbl">Persistence</div><div class="phys-val">412 d</div></div>
+      <div class="phys-tile"><div class="phys-lbl">Baseline Dev</div><div class="phys-val">z +3.21</div></div>
+    </div>
+  </div>
+
+  <!-- SWIPE + SPECTRAL -->
+  <div class="grid-2">
+    <div class="panel reveal">
+      <div class="panel-title">Before / After — Sentinel-2 SWIR B12 <span class="mono" style="font-size:8.5px;color:var(--t3);text-transform:none;letter-spacing:0">Drag to compare</span></div>
+      <div id="swipe-wrap">
+        <div class="swipe-layer swipe-before">
+          <div class="swipe-hotspot" style="left:40%;top:38%;width:30px;height:30px;background:radial-gradient(circle,rgba(45,74,94,.5),transparent)"></div>
+          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.15"><defs><pattern id="g1" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0L0 0 0 20" fill="none" stroke="#2a7c96" stroke-width=".5"/></pattern></defs><rect width="100%" height="100%" fill="url(#g1)"/></svg>
+        </div>
+        <div class="swipe-layer swipe-after" id="swipe-after">
+          <div class="swipe-hotspot" style="left:40%;top:38%;width:60px;height:60px;transform:translate(-25%,-25%);background:radial-gradient(circle,rgba(255,169,77,.9) 0%,rgba(255,77,77,.5) 40%,transparent 70%)"></div>
+          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.15"><rect width="100%" height="100%" fill="url(#g1)"/></svg>
+        </div>
+        <div class="swipe-handle" id="swipe-handle"></div>
+        <span class="swipe-label" style="left:8px">BEFORE · 2026-08-28</span>
+        <span class="swipe-label" style="right:8px">AFTER · 2026-09-02</span>
+      </div>
+    </div>
+    <div class="panel reveal" style="transition-delay:80ms">
+      <div class="panel-title">Spectral Fit — VIIRS Radiance vs Planck Curve</div>
+      <svg id="spectral-svg" viewBox="0 0 400 200"></svg>
+    </div>
+  </div>
+
+  <!-- ATTRIBUTION + TIMELINE + ACTION -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 320px;gap:14px;margin-bottom:14px">
+    <div class="panel reveal">
+      <div class="panel-title">Feature Attribution — SHAP</div>
+      <div id="attr-rows"></div>
+      <div class="mono" style="font-size:8px;color:var(--t3);margin-top:8px;display:flex;justify-content:space-between"><span>← pushes away from Gas Flare</span><span>pushes toward →</span></div>
+    </div>
+    <div class="panel reveal" style="transition-delay:80ms">
+      <div class="panel-title">Incident Timeline</div>
+      <div class="tl-item"><span class="tl-time">14:02:11</span><div class="tl-dot" style="border-color:#a78bfa;background:#a78bfa"></div><div><div class="tl-title">FIRMS detection ingested</div><div class="tl-detail">NOAA-20 · 62.4 MW FRP · FIRMS conf=nominal</div></div></div>
+      <div class="tl-item"><span class="tl-time">14:02:14</span><div class="tl-dot" style="border-color:var(--cyan);background:var(--cyan)"></div><div><div class="tl-title">Physics retrieval complete</div><div class="tl-detail">T=1847 K · A=0.42 m² · dual-band converged 3 iter</div></div></div>
+      <div class="tl-item"><span class="tl-time">14:02:16</span><div class="tl-dot" style="border-color:#4ade80;background:#4ade80"></div><div><div class="tl-title">Baseline anomaly z=+3.21</div><div class="tl-detail">Jamnagar 90-d rolling window · STL residual</div></div></div>
+      <div class="tl-item"><span class="tl-time">14:02:31</span><div class="tl-dot" style="border-color:#f59e0b;background:#f59e0b"></div><div><div class="tl-title">S-5P XCH4 fused</div><div class="tl-detail">+284 ppb enhancement · Sentinel-2 SWIR tile queued</div></div></div>
+      <div class="tl-item"><span class="tl-time">14:02:33</span><div class="tl-dot" style="border-color:#fb923c;background:#fb923c"></div><div><div class="tl-title">Classified: Gas Flare p=0.943</div><div class="tl-detail">gcc-xgb v4.2 · conformal [0.873, 0.999]</div></div></div>
+      <div class="tl-item"><span class="tl-time">14:02:35</span><div class="tl-dot" style="border-color:#ef4444;background:#ef4444"></div><div><div class="tl-title">CRITICAL alert raised</div><div class="tl-detail">District Collector Jamnagar · NDMA portal</div></div></div>
+    </div>
+    <div class="panel reveal" style="transition-delay:160ms;position:sticky;top:68px;align-self:start">
+      <div class="panel-title">Recommended Action</div>
+      <div class="action-card"><div class="action-num">1</div><div><div class="action-text">Notify District Collector, Jamnagar</div><div class="action-detail">SLA 15 min · NDMA Portal + SMS</div></div></div>
+      <div class="action-card"><div class="action-num">2</div><div><div class="action-text">Dispatch SDRF rapid-assessment team</div><div class="action-detail">Nearest unit Rajkot · ETA 42 min</div></div></div>
+      <div class="action-card"><div class="action-num">3</div><div><div class="action-text">Request NOAA-21 SWIR capture</div><div class="action-detail">Next pass T-07:23 · NTRO tasking</div></div></div>
+      <button class="dispatch-btn">▶ DISPATCH ALERT → NODAL AUTHORITY</button>
+    </div>
+  </div>
+
+  <!-- AUDIT TRAIL -->
+  <div class="panel reveal">
+    <div class="panel-title">Immutable Audit Trail <span class="mono" style="font-size:8.5px;color:var(--t3);text-transform:none;letter-spacing:0">SHA-256 chained · 6 entries</span></div>
+    <div class="audit-row" style="color:var(--t3);border-bottom-color:#243447"><span>TIME</span><span>ACTOR</span><span>EVENT</span><span>HASH</span></div>
+    <div class="audit-row"><span style="color:var(--t3)">14:02:11</span><span style="color:#a78bfa">GEE-INGEST</span><span style="color:var(--t1)">Detection record created from FIRMS NRT feed</span><span class="audit-hash">3f8a2c…9e1b</span></div>
+    <div class="audit-row"><span style="color:var(--t3)">14:02:14</span><span style="color:var(--cyan)">PHYS-ENGINE</span><span style="color:var(--t1)">Planck retrieval T=1847K written</span><span class="audit-hash">7c1d4e…a02f</span></div>
+    <div class="audit-row"><span style="color:var(--t3)">14:02:16</span><span style="color:#4ade80">BASELINE</span><span style="color:var(--t1)">z-score +3.21 vs Jamnagar 90-d baseline</span><span class="audit-hash">e94b77…5dc3</span></div>
+    <div class="audit-row"><span style="color:var(--t3)">14:02:33</span><span style="color:#fb923c">MODEL</span><span style="color:var(--t1)">gcc-xgb v4.2 inference · Gas Flare p=0.943</span><span class="audit-hash">21af90…c8e4</span></div>
+    <div class="audit-row"><span style="color:var(--t3)">14:02:35</span><span style="color:#ef4444">ALERT-SVC</span><span style="color:var(--t1)">CRITICAL alert dispatched to nodal authority</span><span class="audit-hash">b8d3f1…7a29</span></div>
+    <div class="audit-row"><span style="color:var(--t3)">14:09:02</span><span style="color:var(--t2)">OP-R.SHARMA</span><span style="color:var(--t1)">Dossier opened · read-only view</span><span class="audit-hash">05c6ea…f13d</span></div>
+  </div>
 </div>
-<div class="relative h-64 w-full overflow-hidden flex-1 group">
-<div class="absolute inset-0 bg-cover bg-center" data-alt="A high-resolution satellite imagery view of a massive industrial refinery complex taken from space. The image is split showing a 'before' state on the left with normal operations, and an 'after' state on the right showing a massive, intense thermal bloom or gas flare anomaly highlighted in false-color cyan and orange. Dark aerospace telemetry aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuByValVkzElEzrOZwe0e1mP2DQnY-av6vqTaKYEqNYRp778zJ3wJExpJJILpW8BXAsrXeuZdKO9TQBrc9mKqZffG8xZoLkRPAPREdboc9jGq3dDViisyCjYK-HhM7BXu_3P-lChdn4uRDuVmG3WZ1PSNGeYET3Ul91XAAv3-L02TD4-Yw3yRPjPLej1VxT5b2IGpzeo768rj3pK_wGoxEwL9lXv45AOiojwknBB1BAWscpxDmP5Jxs')"></div>
-<div class="absolute inset-y-0 left-1/2 w-1 bg-primary cursor-ew-resize flex items-center justify-center transform -translate-x-1/2 z-10 shadow-[0_0_10px_rgba(34,211,238,0.8)]">
-<div class="bg-surface-container-low border border-primary text-primary rounded-full p-xs">
-<span class="material-symbols-outlined text-[16px]">swap_horiz</span>
-</div>
-</div>
-<div class="absolute bottom-sm left-sm bg-surface-container/80 backdrop-blur px-sm py-xs border border-outline-variant text-data-mono font-data-mono text-xs">PRE-DETECTION (T-24H)</div>
-<div class="absolute bottom-sm right-sm bg-surface-container/80 backdrop-blur px-sm py-xs border border-outline-variant text-data-mono font-data-mono text-xs">DETECTION (T-0)</div>
-</div>
-</div>
-<!-- Actions / Audit Trail -->
-<div class="bg-surface-dim/72 border border-outline-variant rounded flex flex-col">
-<div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center">
-<span class="text-label-caps font-label-caps text-on-surface-variant">ACTION &amp; AUDIT</span>
-<span class="material-symbols-outlined text-outline text-[16px]">policy</span>
-</div>
-<div class="p-md space-y-md flex-1">
-<button class="w-full bg-error-container text-on-error-container font-label-caps text-label-caps py-sm border border-error hover:bg-error hover:text-on-error transition-colors flex items-center justify-center gap-xs rounded">
-<span class="material-symbols-outlined text-[16px]">rocket_launch</span> INITIATE DISPATCH
-                            </button>
-<div class="space-y-sm mt-md relative before:absolute before:inset-y-0 before:left-3 before:w-px before:bg-outline-variant ml-xs">
-<div class="flex gap-sm relative z-10">
-<div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
-<div class="w-2 h-2 rounded-full bg-primary"></div>
-</div>
-<div>
-<div class="text-label-caps font-label-caps text-primary">ANOMALY DETECTED</div>
-<div class="text-data-mono font-data-mono text-outline text-[10px]">14:32:05 UTC</div>
-</div>
-</div>
-<div class="flex gap-sm relative z-10">
-<div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
-<div class="w-2 h-2 rounded-full bg-tertiary"></div>
-</div>
-<div>
-<div class="text-label-caps font-label-caps text-tertiary">CLASSIFICATION: GAS FLARE</div>
-<div class="text-data-mono font-data-mono text-outline text-[10px]">14:32:12 UTC</div>
-</div>
-</div>
-<div class="flex gap-sm relative z-10 opacity-50">
-<div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
-</div>
-<div>
-<div class="text-label-caps font-label-caps">AWAITING DISPATCH</div>
-<div class="text-data-mono font-data-mono text-outline text-[10px]">PENDING</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Spectral Evidence -->
-<div class="lg:col-span-2 bg-surface-dim/72 border border-outline-variant rounded flex flex-col h-64">
-<div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center">
-<span class="text-label-caps font-label-caps text-on-surface-variant">SPECTRAL EVIDENCE (PLANCK CURVE)</span>
-<span class="material-symbols-outlined text-outline text-[16px]">show_chart</span>
-</div>
-<div class="flex-1 p-md relative flex flex-col">
-<!-- Placeholder for chart -->
-<div class="flex-1 border-l border-b border-outline-variant relative">
-<div class="absolute bottom-4 left-1/4 w-2 h-2 bg-primary rounded-full"></div>
-<div class="absolute bottom-12 left-2/4 w-2 h-2 bg-primary rounded-full"></div>
-<div class="absolute top-8 right-1/3 w-2 h-2 bg-error rounded-full animate-pulse shadow-[0_0_8px_rgba(255,180,171,0.8)]"></div>
-<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none">
-<path d="M0,200 Q150,180 250,50 T500,200" fill="none" stroke="#22d3ee" stroke-dasharray="4" stroke-width="1"></path>
-</svg>
-<div class="absolute top-4 right-4 bg-surface-container-high border border-outline-variant p-sm text-data-mono font-data-mono">
-                                    T = 1847K <span class="text-error">(RETRIEVED)</span>
-</div>
-</div>
-<div class="flex justify-between text-data-mono font-data-mono text-outline text-[10px] mt-xs">
-<span>WAVELENGTH (μm)</span>
-<span>RADIANCE</span>
-</div>
-</div>
-</div>
-<!-- Feature Attribution -->
-<div class="bg-surface-dim/72 border border-outline-variant rounded flex flex-col h-64">
-<div class="bg-surface-container-high border-b border-outline-variant p-sm flex justify-between items-center">
-<span class="text-label-caps font-label-caps text-on-surface-variant">ATTRIBUTION (SHAP)</span>
-<span class="material-symbols-outlined text-outline text-[16px]">bar_chart</span>
-</div>
-<div class="flex-1 p-md space-y-sm overflow-y-auto">
-<div class="text-data-mono font-data-mono text-[10px] text-outline mb-xs border-b border-outline-variant pb-xs">CLASSIFICATION DRIVERS</div>
-<div class="flex items-center gap-sm">
-<span class="text-data-mono font-data-mono text-xs w-20 truncate">TEMP. GRAD.</span>
-<div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
-<div class="absolute left-1/2 h-full bg-error/80 border border-error w-3/4" style="transform-origin: left; transform: scaleX(0.8)"></div>
-<div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
-</div>
-</div>
-<div class="flex items-center gap-sm">
-<span class="text-data-mono font-data-mono text-xs w-20 truncate">SWIR RAD.</span>
-<div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
-<div class="absolute left-1/2 h-full bg-error/80 border border-error w-1/2" style="transform-origin: left; transform: scaleX(0.6)"></div>
-<div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
-</div>
-</div>
-<div class="flex items-center gap-sm">
-<span class="text-data-mono font-data-mono text-xs w-20 truncate">AREA SIZE</span>
-<div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
-<div class="absolute right-1/2 h-full bg-primary/80 border border-primary w-1/4" style="transform-origin: right; transform: scaleX(0.4)"></div>
-<div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
-</div>
-</div>
-<div class="flex items-center gap-sm">
-<span class="text-data-mono font-data-mono text-xs w-20 truncate">MWIR ANOM.</span>
-<div class="flex-1 h-4 bg-surface-container-lowest relative flex items-center">
-<div class="absolute left-1/2 h-full bg-error/80 border border-error w-1/3" style="transform-origin: left; transform: scaleX(0.5)"></div>
-<div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-10"></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
-</div>
-</body></html>
+
+<script>
+// Clock
+function tick(){const n=new Date();document.getElementById('clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');}
+setInterval(tick,1000);tick();
+
+// Scroll reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// Swipe slider
+const wrap=document.getElementById('swipe-wrap'),after=document.getElementById('swipe-after'),handle=document.getElementById('swipe-handle');
+let dragging=false;
+function setSwipe(x){const r=wrap.getBoundingClientRect();let p=Math.max(0,Math.min(1,(x-r.left)/r.width));after.style.clipPath=`inset(0 0 0 ${p*100}%)`;handle.style.left=(p*100)+'%';}
+wrap.addEventListener('mousedown',e=>{dragging=true;setSwipe(e.clientX);});
+window.addEventListener('mousemove',e=>{if(dragging)setSwipe(e.clientX);});
+window.addEventListener('mouseup',()=>dragging=false);
+wrap.addEventListener('touchstart',e=>{dragging=true;setSwipe(e.touches[0].clientX);},{passive:true});
+wrap.addEventListener('touchmove',e=>{if(dragging)setSwipe(e.touches[0].clientX);},{passive:true});
+wrap.addEventListener('touchend',()=>dragging=false);
+
+// Spectral plot
+(function(){
+  const svg=document.getElementById('spectral-svg');
+  const W=400,H=200,pad={l:40,r:16,t:16,b:30};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  // wavelength 0.5 -> 12 um, planck at T=1847K normalised
+  const T=1847,c2=14387.77;
+  function planck(l){return 1/(Math.pow(l,5)*(Math.exp(c2/(l*T))-1));}
+  const ls=[];for(let l=0.6;l<=12;l+=0.1)ls.push(l);
+  const vals=ls.map(planck);const mx=Math.max(...vals);
+  const X=l=>pad.l+((Math.log(l)-Math.log(0.6))/(Math.log(12)-Math.log(0.6)))*pw;
+  const Y=v=>pad.t+ph-(v/mx)*ph;
+  let s='';
+  // grid
+  [1,2,4,8].forEach(l=>{s+=`<line x1="${X(l)}" y1="${pad.t}" x2="${X(l)}" y2="${pad.t+ph}" stroke="#1b2735" stroke-width=".8"/><text x="${X(l)}" y="${H-12}" fill="#4e5f74" font-size="8" font-family="JetBrains Mono" text-anchor="middle">${l} µm</text>`;});
+  [0.25,0.5,0.75,1].forEach(f=>{s+=`<line x1="${pad.l}" y1="${Y(f*mx)}" x2="${W-pad.r}" y2="${Y(f*mx)}" stroke="#1b2735" stroke-width=".8"/>`;});
+  // curve
+  s+=`<path d="M${ls.map((l,i)=>X(l)+','+Y(vals[i])).join('L')}" fill="none" stroke="#ffa94d" stroke-width="1.6"/>`;
+  // VIIRS bands: M11 1.24, M13 4.05 (radiance points), I4 3.74, M15 10.76
+  const pts=[{l:1.24,n:'M11'},{l:1.61,n:'M10'},{l:2.25,n:'M12'},{l:3.74,n:'I4'},{l:4.05,n:'M13'},{l:10.76,n:'M15'}];
+  pts.forEach(p=>{const v=planck(p.l)*(0.92+Math.random()*0.16);s+=`<line x1="${X(p.l)}" y1="${Y(v)-6}" x2="${X(p.l)}" y2="${Y(v)+6}" stroke="#22d3ee" stroke-width="1"/><circle cx="${X(p.l)}" cy="${Y(v)}" r="3" fill="#22d3ee" stroke="#060910" stroke-width="1"/><text x="${X(p.l)}" y="${Y(v)-10}" fill="#22d3ee" font-size="7.5" font-family="JetBrains Mono" text-anchor="middle">${p.n}</text>`;});
+  // peak annotation (Wien: 2898/T)
+  const lp=2898/T;
+  s+=`<line x1="${X(lp)}" y1="${pad.t}" x2="${X(lp)}" y2="${pad.t+ph}" stroke="#ffa94d" stroke-width=".8" stroke-dasharray="3,3"/>`;
+  s+=`<rect x="${X(lp)+6}" y="${pad.t+2}" width="118" height="28" rx="3" fill="rgba(6,9,16,.9)" stroke="#1b2735"/>`;
+  s+=`<text x="${X(lp)+12}" y="${pad.t+13}" fill="#dce7f2" font-size="8.5" font-weight="700" font-family="JetBrains Mono">T_fit = 1847 K</text>`;
+  s+=`<text x="${X(lp)+12}" y="${pad.t+24}" fill="#7b8da3" font-size="7.5" font-family="JetBrains Mono">λ_peak ${lp.toFixed(2)} µm · χ² 0.012</text>`;
+  s+=`<text x="${pad.l-6}" y="${pad.t+8}" fill="#4e5f74" font-size="7.5" font-family="JetBrains Mono" text-anchor="end">Bλ</text>`;
+  svg.innerHTML=s;
+})();
+
+// Attribution
+const ATTR=[
+  {l:'Emitter temp 1847 K',v:+0.42,c:'#ffa94d'},
+  {l:'Persistence 412 d',v:+0.31,c:'#ffa94d'},
+  {l:'CH4 +284 ppb',v:+0.19,c:'#ffa94d'},
+  {l:'LULC: refinery',v:+0.14,c:'#ffa94d'},
+  {l:'Emitter area 0.42 m²',v:+0.08,c:'#ffa94d'},
+  {l:'FRP 62.4 MW',v:-0.06,c:'#ff4d4d'},
+  {l:'Night-time pass',v:-0.03,c:'#ff4d4d'},
+];
+const ar=document.getElementById('attr-rows');
+ATTR.forEach((a,i)=>{
+  const row=document.createElement('div');row.className='attr-row';
+  const pos=a.v>=0;
+  row.innerHTML=`<span class="attr-label">${a.l}</span><div class="attr-track"><div class="attr-centre"></div><div class="attr-fill" style="background:${a.c};${pos?'left:50%':'right:50%'}" data-w="${Math.abs(a.v)*100}"></div></div><span class="attr-val" style="color:${a.c}">${a.v>0?'+':''}${a.v.toFixed(2)}</span>`;
+  ar.appendChild(row);
+  setTimeout(()=>{row.querySelector('.attr-fill').style.width=(Math.abs(a.v)*100)+'%';},400+i*90);
+});
+</script>
+</body>
+</html>
