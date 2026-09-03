@@ -1,0 +1,1 @@
+"""DuckDB persistence package."""

@@ -1,0 +1,1 @@
+"""Coordinate-free feature engineering."""

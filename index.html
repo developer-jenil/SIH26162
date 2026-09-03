@@ -452,13 +452,14 @@
             </div>
 
             <!-- Derivation Notes -->
-            <div class="w-80 shrink-0">
-              <span class="font-label-caps text-[9px] text-on-surface-variant block mb-sm">DERIVATION NOTES</span>
-              <p class="font-body-md text-[11px] text-on-surface-variant leading-relaxed">
-                Dual-band retrieval indicates significant sub-pixel saturation. SWIR/MWIR ratio strongly aligns with hydrocarbon combustion signatures rather than biomass burning.
-              </p>
-              <div class="mt-sm font-data-mono text-[10px] text-primary">
-                T_sub = 1847 K &bull; Area_sub = 12.4 m²
+            <div class="w-80 shrink-0" id="model-integrity-content">
+              <span class="font-label-caps text-[9px] text-on-surface-variant block mb-sm">MODEL INTEGRITY</span>
+              <div class="space-y-sm font-data-mono text-[10px] text-on-surface-variant">
+                <div><span class="text-on-surface-variant">SCORER:</span> <span class="text-primary" id="mi-scorer">heuristic v1.0</span></div>
+                <div><span class="text-on-surface-variant">MODE:</span> <span id="mi-mode">heuristic</span></div>
+                <div><span class="text-on-surface-variant">SPATIAL-BLOCK F1:</span> <span class="text-primary" id="mi-f1">—</span></div>
+                <div><span class="text-on-surface-variant">BRIER SCORE:</span> <span id="mi-brier">—</span></div>
+                <div><span class="text-on-surface-variant">LEAKAGE-GAP:</span> <span id="mi-leakage">random — vs spatial —</span></div>
               </div>
             </div>
           </div>
@@ -681,7 +682,7 @@
               <span class="material-symbols-outlined text-[14px] text-tertiary">scatter_plot</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="font-data-mono text-[28px] text-on-surface font-bold">14,208</span>
+              <span class="font-data-mono text-[28px] text-on-surface font-bold" id="kpi-total-detections">14,208</span>
               <span class="font-data-mono text-[11px] text-primary">+12.4%</span>
             </div>
           </div>

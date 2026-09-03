@@ -2,6 +2,7 @@
  * AGNIVANI Thermal Intelligence Grid - Application Controller v5.0
  * High-Stakes Industrial & Aerospace Thermal Anomaly Telemetry
  * Enhanced with Web Audio API, Leaflet Interactive Dark Tiles, & FIRMS CSV Ingestion
+ * Live API integration with offline demo fallback.
  */
 
 // --- Global Audio Synthesizer (Web Audio API) ---
@@ -55,7 +56,7 @@ const SoundFX = {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       osc.type = 'sawtooth';
-      
+
       osc.frequency.setValueAtTime(440, now);
       osc.frequency.setValueAtTime(880, now + 0.1);
       osc.frequency.setValueAtTime(440, now + 0.2);
@@ -106,6 +107,9 @@ const SoundFX = {
   }
 };
 
+// --- Config shim (injected by FastAPI; absent in file:// demo) ---
+const AGNIVANI_API = window.AGNIVANI_API || null;
+
 // --- Global Application State ---
 const AppState = {
   activeView: 'mission-control',
@@ -116,6 +120,8 @@ const AppState = {
   mapMode: 'vector', // 'vector' | 'satellite'
   leafletMap: null,
   leafletMarkers: [],
+  liveMode: !!AGNIVANI_API,
+  detCounter: 0,
 
   // Live Anomaly Dataset (VIIRS 375m & FIRMS Persistent Sources)
   anomalies: [
@@ -271,6 +277,41 @@ const AppState = {
   ]
 };
 
+// --- Demo-mode fallback generator ---
+const DEMO_TYPES = ['GAS FLARE','INDUSTRIAL FIRE','COAL SEAM','GAS LEAK'];
+const DEMO_FACILITIES = [
+  {name:'Jamnagar Refinery',lat:22.35,lon:70.02},
+  {name:'Hazira LNG Complex',lat:21.13,lon:72.64},
+  {name:'Vadinar Marine Terminal',lat:22.56,lon:69.73},
+  {name:'Panipat Petrochem',lat:29.39,lon:76.97},
+  {name:'Dahej SEZ',lat:21.71,lon:72.58},
+];
+const DEMO_SEVS = ['CRITICAL','HIGH','MODERATE','LOW'];
+const DEMO_SEV_COLORS = {'CRITICAL':'#ff4d4d','HIGH':'#ffb13b','MODERATE':'#ffd6a3','LOW':'#859397'};
+const DEMO_TYPE_COLORS = {'GAS FLARE':'#ffa94d','INDUSTRIAL FIRE':'#ff4d4d','COAL SEAM':'#f59e0b','GAS LEAK':'#b197fc'};
+
+function generateDemoDetection() {
+  AppState.detCounter += 1;
+  const fac = DEMO_FACILITIES[Math.floor(Math.random() * DEMO_FACILITIES.length)];
+  const type = DEMO_TYPES[Math.floor(Math.random() * DEMO_TYPES.length)];
+  const sev = DEMO_SEVS[Math.floor(Math.random() * DEMO_SEVS.length)];
+  const conf = +(0.7 + Math.random() * 0.28).toFixed(3);
+  const frp = +(5 + Math.random() * 80).toFixed(1);
+  const temp = Math.round(800 + Math.random() * 1100);
+  const id = `AGN-${(10000 + AppState.detCounter).toString()}`;
+  const now = new Date();
+  return {
+    id, shortId: `D${AppState.detCounter}`, name: fac.name, facilityId: `FAC-${AppState.detCounter}`,
+    coords: { lat: fac.lat + (Math.random() - 0.5) * 0.05, lon: fac.lon + (Math.random() - 0.5) * 0.05 },
+    coordsStr: `${fac.lat.toFixed(3)}° N, ${fac.lon.toFixed(3)}° E`,
+    time: now.toISOString(), timestamp: now.toISOString().substr(11,8)+' UTC',
+    severity: sev, type, typeColor: DEMO_TYPE_COLORS[type], sevColor: DEMO_SEV_COLORS[sev],
+    confidence: conf, effTemp: `${temp} K`, tempValue: temp,
+    area: `${(frp * 0.35).toFixed(1)} m²`, frp: `${frp} MW`, frpValue: frp,
+    status: 'NEW'
+  };
+}
+
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
   SoundFX.init();
@@ -285,7 +326,226 @@ document.addEventListener('DOMContentLoaded', () => {
   initAuditTable();
   initEventListeners();
   initCSVUploader();
+  setupLiveMode();
 });
+
+// --- Live mode bootstrap ---
+async function setupLiveMode() {
+  if (!AppState.liveMode) {
+    // file:// standalone demo: keep existing animation loop
+    console.log('[AGNIVANI] DEMO MODE — running embedded fixtures');
+    startDemoSimulation();
+    return;
+  }
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch('/api/snapshot', { signal: controller.signal });
+    clearTimeout(timer);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    console.log('[AGNIVANI] Snapshot loaded:', data.stats.total_detections, 'detections');
+    hydrateFromSnapshot(data);
+    connectSSE();
+    startPipelinePolling();
+  } catch (err) {
+    console.warn('[AGNIVANI] Snapshot failed, falling back to DEMO MODE:', err.message);
+    showDemoBadge();
+    startDemoSimulation();
+  }
+}
+
+function showDemoBadge() {
+  const topbar = document.querySelector('header');
+  if (!topbar) return;
+  const badge = document.createElement('div');
+  badge.id = 'demo-mode-badge';
+  badge.className = 'hud-border bg-error-container text-on-error-container font-label-caps text-[10px] px-2 py-1 rounded flex items-center gap-xs mr-2';
+  badge.innerHTML = '<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div> DEMO MODE — synthetic feed';
+  topbar.querySelector('.flex.items-center.gap-md:last-child')?.appendChild(badge);
+}
+
+function hydrateFromSnapshot(data) {
+  // Stats -> KPIs & Model Integrity
+  if (data.stats) updateStatsPanel(data.stats);
+  // Detections -> anomaly list (newest first)
+  if (Array.isArray(data.detections)) {
+    const mapped = data.detections.map(d => apiDetectionToAnomaly(d));
+    AppState.anomalies = [...mapped, ...AppState.anomalies.slice(0, 20)];
+    initAlertFeed();
+    initMapCanvas();
+    if (AppState.mapMode === 'satellite') refreshLeafletMap();
+    if (AppState.anomalies.length > 0) selectAnomaly(AppState.anomalies[0].id);
+  }
+  // Facilities -> nothing urgent to render in current view
+}
+
+function apiDetectionToAnomaly(d) {
+  const ts = typeof d.ts === 'string' ? d.ts : new Date(d.ts).toISOString();
+  return {
+    id: d.id, shortId: d.id.slice(-4).toUpperCase(),
+    name: d.facility_name || 'Unknown Facility',
+    facilityId: d.facility_name || '',
+    coords: { lat: d.lat, lon: d.lon },
+    coordsStr: `${d.lat.toFixed(3)}° N, ${d.lon.toFixed(3)}° E`,
+    time: ts, timestamp: ts.substring(11, 19) + ' UTC',
+    severity: d.severity || 'MODERATE',
+    type: d.cls === 'FLARE' ? 'GAS FLARE' : d.cls === 'IND_FIRE' ? 'INDUSTRIAL FIRE' : d.cls === 'COAL' ? 'COAL SEAM' : d.cls === 'LEAK' ? 'GAS LEAK' : 'UNKNOWN',
+    typeColor: DETO_TYPE_COLORS[d.cls] || '#859397',
+    sevColor: DETO_SEV_COLORS[d.severity] || '#ffd6a3',
+    confidence: d.conf,
+    effTemp: d.temp_K != null ? `${Math.round(d.temp_K)} K` : '-- K',
+    tempValue: d.temp_K,
+    area: `${d.area_m2.toFixed(1)} m²`,
+    frp: `${d.frp_MW.toFixed(1)} MW`, frpValue: d.frp_MW,
+    status: 'LIVE'
+  };
+}
+
+// Mapping from cls/severity to color maps used above
+const DETO_TYPE_COLORS = {'FLARE':'#ffa94d','IND_FIRE':'#ff4d4d','COAL':'#f59e0b','WILD':'#859397','LEAK':'#b197fc'};
+const DETO_SEV_COLORS = {'CRITICAL':'#ff4d4d','HIGH':'#ffb13b','MODERATE':'#ffd6a3','LOW':'#bbc9cd'};
+
+function updateStatsPanel(stats) {
+  // Update KPI strip in analytics view
+  const totalEl = document.getElementById('kpi-total-detections');
+  if (totalEl) totalEl.textContent = stats.total_detections.toLocaleString();
+  // Update Model Integrity panel in mission control
+  const miScorer = document.getElementById('mi-scorer');
+  const miMode = document.getElementById('mi-mode');
+  const miF1 = document.getElementById('mi-f1');
+  const miBrier = document.getElementById('mi-brier');
+  const miLeakage = document.getElementById('mi-leakage');
+  if (miScorer) miScorer.textContent = `${stats.scorer?.name || 'heuristic'} v${stats.scorer?.version || ''}`;
+  if (miMode) miMode.textContent = stats.scorer?.mode || stats.scorer?.name || 'heuristic';
+  if (miF1) miF1.textContent = stats.scorer?.metrics?.spatial_f1 != null ? stats.scorer.metrics.spatial_f1.toFixed(3) : '—';
+  if (miBrier) miBrier.textContent = stats.scorer?.metrics?.brier != null ? stats.scorer.metrics.brier.toFixed(4) : '—';
+  const rf1 = stats.scorer?.metrics?.random_f1 != null ? stats.scorer.metrics.random_f1.toFixed(3) : '—';
+  const sf1 = stats.scorer?.metrics?.spatial_f1 != null ? stats.scorer.metrics.spatial_f1.toFixed(3) : '—';
+  if (miLeakage) miLeakage.textContent = `random ${rf1} vs spatial ${sf1}`;
+}
+
+// --- SSE connection ---
+let sseSource = null;
+function connectSSE() {
+  if (sseSource) { sseSource.close(); sseSource = null; }
+  try {
+    sseSource = new EventSource('/api/stream');
+    sseSource.onopen = () => console.log('[AGNIVANI] SSE connected');
+    sseSource.addEventListener('detection', (e) => {
+      try {
+        const det = JSON.parse(e.data);
+        appendAlertCard(apiDetectionToAnomaly(det));
+      } catch (err) {
+        console.error('[AGNIVANI] SSE parse error:', err);
+      }
+    });
+    sseSource.addEventListener('heartbeat', () => {});
+    sseSource.onerror = (err) => {
+      console.warn('[AGNIVANI] SSE error, reconnecting...', err);
+      // browsers auto-reconnect EventSource; just log
+    };
+  } catch (err) {
+    console.warn('[AGNIVANI] EventSource unavailable:', err);
+  }
+}
+
+// --- Pipeline log polling ---
+let pipelineTimer = null;
+function startPipelinePolling() {
+  if (pipelineTimer) clearInterval(pipelineTimer);
+  fetchPipelineLog();
+  pipelineTimer = setInterval(fetchPipelineLog, 2000);
+}
+
+async function fetchPipelineLog() {
+  if (!AppState.liveMode) return;
+  try {
+    const res = await fetch('/api/pipeline/log');
+    if (!res.ok) return;
+    const rows = await res.json();
+    renderPipelineLog(rows);
+  } catch (err) {
+    console.warn('[AGNIVANI] pipeline/log fetch failed:', err);
+  }
+}
+
+function renderPipelineLog(rows) {
+  const logContainer = document.getElementById('terminal-log');
+  if (!logContainer) return;
+  // Keep last ~20 lines, prepend new ones with typewriter-ish stagger
+  const existing = logContainer.querySelectorAll('div').length;
+  const slice = rows.slice(- (20 - existing)).reverse();
+  slice.forEach((row, i) => {
+    const div = document.createElement('div');
+    const ts = row.ts ? new Date(row.ts).toISOString().substring(11, 19) : '----:--:--';
+    const levelColor = row.level === 'ERROR' ? 'text-error' : row.level === 'WARN' ? 'text-[#ffa94d]' : 'text-primary-container';
+    div.innerHTML = `<span class="text-on-surface-variant/50">[${ts}]</span> <span class="${levelColor}">[${row.stage}]</span> ${row.message}`;
+    div.style.opacity = '0';
+    logContainer.appendChild(div);
+    // Stagger entrance
+    setTimeout(() => { div.style.transition = 'opacity 0.15s'; div.style.opacity = '1'; }, i * 60);
+  });
+  // Cap DOM nodes
+  while (logContainer.querySelectorAll('div').length > 100) {
+    logContainer.removeChild(logContainer.firstChild);
+  }
+  logContainer.scrollTop = logContainer.scrollHeight;
+}
+
+// --- Demo simulation loop (keeps the dashboard animated in file:// mode) ---
+let demoInterval = null;
+function startDemoSimulation() {
+  if (demoInterval) return;
+  demoInterval = setInterval(() => {
+    const det = generateDemoDetection();
+    appendAlertCard(det);
+  }, 4000);
+}
+
+// --- Alert Feed with cap at 200 nodes ---
+function appendAlertCard(anomaly) {
+  const alertFeedContainer = document.getElementById('alert-feed');
+  if (!alertFeedContainer) return;
+  // Cap feed at 200 nodes
+  if (alertFeedContainer.children.length >= 200) {
+    alertFeedContainer.removeChild(alertFeedContainer.firstChild);
+  }
+  const card = document.createElement('div');
+  card.className = 'hud-border p-xs rounded-sm cursor-pointer relative overflow-hidden transition-all bg-[#0d141d]/50 hover:bg-surface-container';
+  card.innerHTML = `
+    <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+    <div class="flex justify-between items-start mb-xs pl-1">
+      <div class="flex items-center gap-xs">
+        <div class="px-1 rounded-sm flex items-center h-4 border" style="background-color: ${anomaly.sevColor}22; border-color: ${anomaly.sevColor}">
+          <span class="font-label-caps text-[8px]" style="color: ${anomaly.sevColor}">${anomaly.severity}</span>
+        </div>
+        <span class="font-data-mono text-[10px] text-primary font-bold">ID:${anomaly.shortId}</span>
+      </div>
+      <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.timestamp?.split(' ')[0] || ''}</span>
+    </div>
+    <div class="pl-1">
+      <div class="font-body-md text-[12px] font-semibold text-on-surface truncate">${anomaly.name}</div>
+      <div class="flex gap-sm mt-[2px]">
+        <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.effTemp}</span>
+        <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.frp}</span>
+      </div>
+    </div>
+  `;
+  card.addEventListener('click', () => {
+    SoundFX.playBlip();
+    selectAnomaly(anomaly.id);
+  });
+  alertFeedContainer.insertBefore(card, alertFeedContainer.firstChild);
+  // Also update anomalies list (head) and map
+  AppState.anomalies.unshift(anomaly);
+  if (AppState.anomalies.length > 200) AppState.anomalies.pop();
+  initAlertFeed(); // refresh full feed to stay consistent
+  initMapCanvas();
+  if (AppState.mapMode === 'satellite') refreshLeafletMap();
+  SoundFX.playBlip();
+  appendTerminalLog(`<span class="text-primary font-bold">[DETECT]</span> New detection <span class="text-primary">${anomaly.id}</span> at ${anomaly.coordsStr} — ${anomaly.type} (${anomaly.effTemp})`);
+}
 
 // --- Mission Clock ---
 function initClock() {
@@ -332,7 +592,7 @@ function initRouting() {
 
 function switchView(viewName) {
   AppState.activeView = viewName;
-  
+
   document.querySelectorAll('.view-panel').forEach(panel => {
     panel.classList.remove('active');
   });
@@ -368,7 +628,9 @@ function initAlertFeed() {
 
   if (alertFeedContainer) {
     alertFeedContainer.innerHTML = '';
-    AppState.anomalies.forEach(anomaly => {
+    // Show up to 200 most recent
+    const items = AppState.anomalies.slice(0, 200);
+    items.forEach(anomaly => {
       const isSelected = anomaly.id === AppState.selectedAnomalyId;
       const card = document.createElement('div');
       card.className = `hud-border p-xs rounded-sm cursor-pointer relative overflow-hidden transition-all ${
@@ -383,7 +645,7 @@ function initAlertFeed() {
             </div>
             <span class="font-data-mono text-[10px] ${isSelected ? 'text-primary font-bold' : 'text-on-surface-variant'}">ID:${anomaly.shortId}</span>
           </div>
-          <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.timestamp}</span>
+          <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.timestamp?.split(' ')[0] || ''}</span>
         </div>
         <div class="${isSelected ? 'pl-1' : ''}">
           <div class="font-body-md text-[12px] font-semibold text-on-surface truncate">${anomaly.name}</div>
@@ -405,7 +667,8 @@ function initAlertFeed() {
 
   if (alertQueueContainer) {
     alertQueueContainer.innerHTML = '';
-    AppState.anomalies.forEach(anomaly => {
+    const items = AppState.anomalies.slice(0, 200);
+    items.forEach(anomaly => {
       const isSelected = anomaly.id === AppState.selectedAnomalyId;
       const item = document.createElement('div');
       item.className = `p-sm border-b border-[#1b2735] relative group cursor-pointer transition-colors ${
@@ -418,7 +681,7 @@ function initAlertFeed() {
             <input type="checkbox" ${isSelected ? 'checked' : ''} class="w-3 h-3 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0">
             <span class="text-data-mono font-data-mono text-[11px] ${isSelected ? 'text-primary font-bold' : 'text-on-surface'}">${anomaly.id}</span>
           </div>
-          <span class="text-data-mono font-data-mono text-[10px]" style="color: ${anomaly.sevColor}">${anomaly.timestamp}</span>
+          <span class="text-data-mono font-data-mono text-[10px]" style="color: ${anomaly.sevColor}">${anomaly.timestamp?.split(' ')[0] || ''}</span>
         </div>
         <div class="pl-xs flex gap-xs items-center mt-xs">
           <div class="px-xs py-[2px] rounded-[2px] text-[9px] font-label-caps flex items-center gap-[2px] border" style="background-color: ${anomaly.sevColor}22; border-color: ${anomaly.sevColor}; color: ${anomaly.sevColor}">
@@ -476,7 +739,7 @@ function selectAnomaly(id) {
   if (inspTemp) inspTemp.innerText = item.effTemp;
   if (inspArea) inspArea.innerText = item.area;
   if (inspFrp) inspFrp.innerText = item.frp;
-  if (inspCh4) inspCh4.innerText = item.ch4Est;
+  if (inspCh4) inspCh4.innerText = item.ch4Est ?? '--';
 
   // Update Incident Summary in Alert Console
   const alertSumId = document.getElementById('summary-anomaly-id');
@@ -543,8 +806,8 @@ function initMapCanvas() {
     svg.appendChild(gridLine);
   }
 
-  // Plot Hotspots from AppState.anomalies
-  AppState.anomalies.forEach((anomaly) => {
+  // Plot Hotspots from AppState.anomalies (cap at 200)
+  AppState.anomalies.slice(0, 200).forEach((anomaly) => {
     const x = 240 + (anomaly.coords.lon - 68) * 28;
     const y = 520 - (anomaly.coords.lat - 18) * 26;
 
@@ -659,8 +922,8 @@ function refreshLeafletMap() {
   AppState.leafletMarkers.forEach(m => AppState.leafletMap.removeLayer(m));
   AppState.leafletMarkers = [];
 
-  // Plot current anomalies
-  AppState.anomalies.forEach(anomaly => {
+  // Plot current anomalies (cap at 200)
+  AppState.anomalies.slice(0, 200).forEach(anomaly => {
     const customIcon = L.divIcon({
       className: 'custom-div-icon',
       html: `<div style="width: 20px; height: 20px; background-color: ${anomaly.typeColor}; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 10px ${anomaly.typeColor};" class="${anomaly.severity === 'CRITICAL' ? 'pulse-critical' : ''}"></div>`,
@@ -742,6 +1005,7 @@ function initTerminalLog() {
   const logContainer = document.getElementById('terminal-log');
   if (!logContainer) return;
 
+  // Pre-populate with some initial lines (same as before)
   const mockLogs = [
     { mod: '[GEE]', color: 'text-primary-container', msg: 'VIIRS granules ingest stream active (NOAA-20 orbit #34891)' },
     { mod: '[PHYS]', color: 'text-tertiary-container', msg: 'Spectral radiance solver computed dual-band temp: 1847.2 K' },
@@ -751,15 +1015,13 @@ function initTerminalLog() {
     { mod: '[NPS]', color: 'text-secondary', msg: 'Persistent Source Register matched: RIL-JAM-01 (100% historical persistence)' }
   ];
 
-  let logIndex = 0;
-  setInterval(() => {
-    if (AppState.terminalPaused) return;
-    const item = mockLogs[logIndex % mockLogs.length];
-    const now = new Date();
-    const ts = now.toISOString().substring(11, 19);
-    appendTerminalLog(`<span class="text-on-surface-variant/50">[${ts}]</span> <span class="${item.color}">${item.mod}</span> ${item.msg}`);
-    logIndex++;
-  }, 4000);
+  mockLogs.forEach((item, i) => {
+    setTimeout(() => {
+      const now = new Date();
+      const ts = now.toISOString().substring(11, 19);
+      appendTerminalLog(`<span class="text-on-surface-variant/50">[${ts}]</span> <span class="${item.color}">${item.mod}</span> ${item.msg}`);
+    }, i * 150);
+  });
 }
 
 function appendTerminalLog(htmlMsg) {
@@ -794,7 +1056,7 @@ function initHeatmap() {
     const curDate = new Date(startDate);
     curDate.setDate(curDate.getDate() + i);
     const dateStr = curDate.toISOString().substring(0, 10);
-    
+
     let colorIdx = 0;
     const r = Math.random();
     if (r > 0.85) colorIdx = 6;
@@ -1008,7 +1270,7 @@ function parseAndIngestCSV(csvText, filename = 'custom_firms.csv') {
   if (parsedAnomalies.length > 0) {
     AppState.anomalies = parsedAnomalies;
     AppState.selectedAnomalyId = parsedAnomalies[0].id;
-    
+
     // Update UI components
     initAlertFeed();
     initMapCanvas();
@@ -1020,7 +1282,7 @@ function parseAndIngestCSV(csvText, filename = 'custom_firms.csv') {
     // Audio & Terminal feedback
     SoundFX.playDispatch();
     appendTerminalLog(`<span class="text-primary font-bold">[INGEST]</span> Ingested ${parsedAnomalies.length} real FIRMS detections from ${filename}`);
-    
+
     const modal = document.getElementById('csv-modal');
     if (modal) modal.classList.add('hidden');
     alert(`Successfully loaded ${parsedAnomalies.length} FIRMS detections from ${filename}!`);
