@@ -238,6 +238,304 @@ def sample_negative_controls(
 
 
 # ---------------------------------------------------------------------------
+# Synthetic thermal blob generation
+# ---------------------------------------------------------------------------
+
+_WILD_FOREST_ANCHORS = [
+    (23.5, 80.8), (21.6, 86.3), (29.5, 78.9), (26.6, 93.3),
+    (11.5, 76.5), (21.9, 88.8), (24.2, 81.1), (13.8, 75.1),
+    (18.2, 82.5), (26.1, 92.5), (22.5, 82.0), (14.5, 75.5),
+]
+
+
+def generate_synthetic_blobs(
+    facilities_gdf: Optional[gpd.GeoDataFrame] = None,
+    n_per_sector: int = 40,
+    seed: int = 42,
+    data_dir: Optional[Path | str] = None,
+) -> pd.DataFrame:
+    """Synthesize physics-grounded thermal clusters matching facility sectors and landcover.
+
+    Generates synthetic thermal clusters for each of the 5 classes:
+      - FLARE/REFI_GAS : high night_frac, low frp_cv, t_fire_K 1200-1800, span_days >= 5
+      - COAL           : cool ti4, large cluster_extent_m, span_days >= 60
+      - IND_FIRE       : short span, high frp_max
+      - WILD           : forest/grassland landcover, daytime local_solar_hour, dist_facility_m > 5000
+      - LEAK           : no MIR excess (t_fire_K null) near gas sector
+
+    Parameters
+    ----------
+    facilities_gdf : gpd.GeoDataFrame, optional
+        Loaded facility registry. If None, loaded via load_facilities(data_dir).
+    n_per_sector : int, default 40
+        Number of synthetic clusters to synthesize per sector/class.
+    seed : int, default 42
+        Random seed for reproducibility.
+    data_dir : Path or str, optional
+        If provided, merges real + synthetic into data_dir/processed/labelled.parquet.
+
+    Returns
+    -------
+    pd.DataFrame
+        Synthetic clusters with all 25 raw columns, label, label_confidence,
+        origin='synthetic', and the 37 FEATURES columns from build_features.
+    """
+    from agnivani.features.build import build_features, FEATURES
+    from agnivani.models.scorer import CLASSES
+
+    rng = random.Random(seed)
+
+    if facilities_gdf is None:
+        p = Path(data_dir or "data") / "processed" / "facilities.parquet"
+        if p.exists():
+            facilities_gdf = gpd.read_parquet(p)
+        else:
+            facilities_gdf = load_facilities(data_dir or Path("data"))
+
+    def _offset(lat: float, lon: float, dist_m: float, bearing_deg: float) -> tuple[float, float]:
+        d_lat = (dist_m * math.cos(math.radians(bearing_deg))) / 111320.0
+        d_lon = (dist_m * math.sin(math.radians(bearing_deg))) / (111320.0 * math.cos(math.radians(lat)))
+        return round(lat + d_lat, 6), round(lon + d_lon, 6)
+
+    refi_facs = facilities_gdf[facilities_gdf["sector"].isin(["REFI_GAS", "FERTILIZER"])]
+    if refi_facs.empty:
+        refi_facs = facilities_gdf
+
+    coal_facs = facilities_gdf[facilities_gdf["sector"].isin(["COAL", "CEMENT"])]
+    if coal_facs.empty:
+        coal_facs = facilities_gdf
+
+    ind_facs = facilities_gdf[facilities_gdf["sector"].isin(["STEEL", "POWER", "OTHER"])]
+    if ind_facs.empty:
+        ind_facs = facilities_gdf
+
+    records: list[dict] = []
+
+    # 1. FLARE
+    for i in range(n_per_sector):
+        fac = refi_facs.iloc[i % len(refi_facs)]
+        dist_m = rng.uniform(200.0, 1200.0)
+        c_lat, c_lon = _offset(float(fac.lat), float(fac.lon), dist_m, rng.uniform(0, 360))
+        n_hits = rng.randint(20, 100)
+        night_frac = rng.uniform(0.70, 0.95)
+        n_nights = int(n_hits * night_frac)
+        n_days = rng.randint(8, 40)
+        span_days = rng.randint(max(5, n_days), 60)
+        frp_cv = rng.uniform(0.15, 0.40)
+        frp_mean = rng.uniform(10.0, 25.0)
+        frp_max = rng.uniform(15.0, 40.0)
+        frp_median = rng.uniform(9.0, 24.0)
+        ti4_median = rng.uniform(345.0, 365.0)
+        ti4_max = ti4_median + rng.uniform(5.0, 15.0)
+        ti4_std = rng.uniform(2.0, 6.0)
+        ti5_median = rng.uniform(290.0, 298.0)
+        first_seen = pd.Timestamp("2026-08-01", tz="UTC") + pd.Timedelta(days=rng.randint(0, 5))
+        last_seen = first_seen + pd.Timedelta(days=span_days)
+
+        records.append({
+            "source_id": f"SYN-FLARE-{i+1:04d}", "centroid_lat": c_lat, "centroid_lon": c_lon,
+            "n_hits": n_hits, "n_days": n_days, "n_nights": n_nights, "night_frac": night_frac,
+            "span_days": span_days, "frp_mean": frp_mean, "frp_max": frp_max, "frp_median": frp_median,
+            "frp_cv": frp_cv, "ti4_median": ti4_median, "ti4_max": ti4_max, "ti4_std": ti4_std,
+            "ti5_median": ti5_median, "dT_median": ti4_median - ti5_median,
+            "local_solar_hour": rng.choice([21.0, 22.0, 23.0, 1.0, 2.0, 3.0]),
+            "cluster_extent_m": rng.uniform(100.0, 450.0), "fill_ratio": rng.uniform(0.75, 1.0),
+            "recurrence_gap_days": rng.uniform(0.5, 2.0), "flare_score": rng.uniform(25.0, 55.0),
+            "pixel_area_m2": 375**2, "first_seen": first_seen, "last_seen": last_seen,
+            "label": "FLARE", "label_confidence": "high",
+            "t_fire_K": rng.uniform(1520.0, 1750.0), "landcover_class": "built",
+            "diurnal_shape": "FLAT_24H", "diurnal_hist": [1.0 / 24.0] * 24,
+        })
+
+    # 2. COAL
+    for i in range(n_per_sector):
+        fac = coal_facs.iloc[i % len(coal_facs)]
+        dist_m = rng.uniform(300.0, 1800.0)
+        c_lat, c_lon = _offset(float(fac.lat), float(fac.lon), dist_m, rng.uniform(0, 360))
+        n_hits = rng.randint(40, 150)
+        night_frac = rng.uniform(0.3, 0.6)
+        n_nights = int(n_hits * night_frac)
+        n_days = rng.randint(30, 80)
+        span_days = rng.randint(65, 200)
+        frp_cv = rng.uniform(0.2, 0.4)
+        frp_max = rng.uniform(1.8, 4.2)
+        frp_mean = rng.uniform(1.2, 3.0)
+        frp_median = rng.uniform(1.0, 2.8)
+        ti4_median = rng.uniform(312.0, 325.0)
+        ti4_max = ti4_median + rng.uniform(3.0, 8.0)
+        ti4_std = rng.uniform(1.5, 3.5)
+        ti5_median = rng.uniform(295.0, 302.0)
+        first_seen = pd.Timestamp("2026-05-01", tz="UTC") + pd.Timedelta(days=rng.randint(0, 15))
+        last_seen = first_seen + pd.Timedelta(days=span_days)
+
+        records.append({
+            "source_id": f"SYN-COAL-{i+1:04d}", "centroid_lat": c_lat, "centroid_lon": c_lon,
+            "n_hits": n_hits, "n_days": n_days, "n_nights": n_nights, "night_frac": night_frac,
+            "span_days": span_days, "frp_mean": frp_mean, "frp_max": frp_max, "frp_median": frp_median,
+            "frp_cv": frp_cv, "ti4_median": ti4_median, "ti4_max": ti4_max, "ti4_std": ti4_std,
+            "ti5_median": ti5_median, "dT_median": ti4_median - ti5_median,
+            "local_solar_hour": rng.uniform(12.0, 15.0),
+            "cluster_extent_m": rng.uniform(1200.0, 2600.0), "fill_ratio": rng.uniform(0.4, 0.8),
+            "recurrence_gap_days": rng.uniform(1.0, 3.0), "flare_score": rng.uniform(1.0, 6.0),
+            "pixel_area_m2": 375**2, "first_seen": first_seen, "last_seen": last_seen,
+            "label": "COAL", "label_confidence": "high",
+            "t_fire_K": rng.uniform(700.0, 920.0), "landcover_class": "built",
+            "diurnal_shape": "FLAT_24H", "diurnal_hist": [1.0 / 24.0] * 24,
+        })
+
+    # 3. IND_FIRE
+    for i in range(n_per_sector):
+        fac = ind_facs.iloc[i % len(ind_facs)]
+        dist_m = rng.uniform(200.0, 1500.0)
+        c_lat, c_lon = _offset(float(fac.lat), float(fac.lon), dist_m, rng.uniform(0, 360))
+        n_hits = rng.randint(2, 8)
+        night_frac = rng.uniform(0.2, 0.6)
+        n_nights = int(n_hits * night_frac)
+        n_days = rng.randint(1, 2)
+        span_days = rng.randint(1, 3)
+        frp_max = rng.uniform(25.0, 90.0)
+        frp_mean = rng.uniform(22.0, 75.0)
+        frp_median = rng.uniform(20.0, 70.0)
+        frp_cv = rng.uniform(0.4, 0.9)
+        ti4_median = rng.uniform(345.0, 375.0)
+        ti4_max = ti4_median + rng.uniform(10.0, 45.0)
+        ti4_std = rng.uniform(5.0, 15.0)
+        ti5_median = rng.uniform(295.0, 305.0)
+        first_seen = pd.Timestamp("2026-08-25", tz="UTC") + pd.Timedelta(days=rng.randint(0, 3))
+        last_seen = first_seen + pd.Timedelta(days=span_days)
+        h_ind = int(rng.uniform(10.0, 18.0)) % 24
+        hist_ind = [0.01] * 24
+        hist_ind[h_ind] = 0.55
+        hist_ind[(h_ind + 1) % 24] = 0.21
+        hist_ind[-1] = max(0.0, 1.0 - sum(hist_ind[:-1]))
+
+        records.append({
+            "source_id": f"SYN-INDFIRE-{i+1:04d}", "centroid_lat": c_lat, "centroid_lon": c_lon,
+            "n_hits": n_hits, "n_days": n_days, "n_nights": n_nights, "night_frac": night_frac,
+            "span_days": span_days, "frp_mean": frp_mean, "frp_max": frp_max, "frp_median": frp_median,
+            "frp_cv": frp_cv, "ti4_median": ti4_median, "ti4_max": ti4_max, "ti4_std": ti4_std,
+            "ti5_median": ti5_median, "dT_median": ti4_median - ti5_median,
+            "local_solar_hour": float(h_ind),
+            "cluster_extent_m": rng.uniform(200.0, 600.0), "fill_ratio": rng.uniform(0.7, 1.0),
+            "recurrence_gap_days": 0.0, "flare_score": rng.uniform(5.0, 14.0),
+            "pixel_area_m2": 375**2, "first_seen": first_seen, "last_seen": last_seen,
+            "label": "IND_FIRE", "label_confidence": "high",
+            "t_fire_K": rng.uniform(1100.0, 1400.0), "landcover_class": "built",
+            "diurnal_shape": "SPIKE_DECAY", "diurnal_hist": hist_ind,
+        })
+
+    # 4. WILD
+    for i in range(n_per_sector):
+        anchor_lat, anchor_lon = _WILD_FOREST_ANCHORS[i % len(_WILD_FOREST_ANCHORS)]
+        c_lat, c_lon = _offset(anchor_lat, anchor_lon, rng.uniform(1000.0, 5000.0), rng.uniform(0, 360))
+        n_hits = rng.randint(3, 15)
+        night_frac = rng.uniform(0.0, 0.15)
+        n_nights = int(n_hits * night_frac)
+        n_days = rng.randint(1, 4)
+        span_days = rng.randint(2, 8)
+        frp_mean = rng.uniform(15.0, 45.0)
+        frp_max = rng.uniform(20.0, 70.0)
+        frp_median = rng.uniform(12.0, 40.0)
+        frp_cv = rng.uniform(0.25, 0.55)
+        ti4_median = rng.uniform(335.0, 355.0)
+        ti4_max = ti4_median + rng.uniform(10.0, 20.0)
+        ti4_std = rng.uniform(2.5, 6.0)
+        ti5_median = rng.uniform(296.0, 305.0)
+        first_seen = pd.Timestamp("2026-08-20", tz="UTC") + pd.Timedelta(days=rng.randint(0, 5))
+        last_seen = first_seen + pd.Timedelta(days=span_days)
+        h_wild = rng.uniform(11.0, 15.0)
+        hist_wild = [0.005] * 24
+        for hw in range(10, 17):
+            hist_wild[hw] = 0.12
+        hist_wild[-1] = max(0.0, 1.0 - sum(hist_wild[:-1]))
+
+        records.append({
+            "source_id": f"SYN-WILD-{i+1:04d}", "centroid_lat": c_lat, "centroid_lon": c_lon,
+            "n_hits": n_hits, "n_days": n_days, "n_nights": n_nights, "night_frac": night_frac,
+            "span_days": span_days, "frp_mean": frp_mean, "frp_max": frp_max, "frp_median": frp_median,
+            "frp_cv": frp_cv, "ti4_median": ti4_median, "ti4_max": ti4_max, "ti4_std": ti4_std,
+            "ti5_median": ti5_median, "dT_median": ti4_median - ti5_median,
+            "local_solar_hour": h_wild,
+            "cluster_extent_m": rng.uniform(400.0, 1200.0), "fill_ratio": rng.uniform(0.5, 0.85),
+            "recurrence_gap_days": rng.uniform(0.0, 1.0), "flare_score": rng.uniform(2.0, 8.0),
+            "pixel_area_m2": 375**2, "first_seen": first_seen, "last_seen": last_seen,
+            "label": "WILD", "label_confidence": "high",
+            "t_fire_K": rng.uniform(850.0, 1150.0), "landcover_class": "forest",
+            "diurnal_shape": "DAYTIME_ONLY", "diurnal_hist": hist_wild,
+        })
+
+    # 5. LEAK
+    for i in range(n_per_sector):
+        fac = refi_facs.iloc[i % len(refi_facs)]
+        dist_m = rng.uniform(200.0, 1200.0)
+        c_lat, c_lon = _offset(float(fac.lat), float(fac.lon), dist_m, rng.uniform(0, 360))
+        n_hits = rng.randint(8, 35)
+        night_frac = rng.uniform(0.65, 0.90)
+        n_nights = int(n_hits * night_frac)
+        n_days = rng.randint(5, 25)
+        span_days = rng.randint(10, 45)
+        frp_cv = rng.uniform(0.15, 0.40)
+        frp_mean = rng.uniform(0.4, 1.5)
+        frp_max = rng.uniform(0.8, 2.5)
+        frp_median = rng.uniform(0.3, 1.4)
+        ti4_median = rng.uniform(298.0, 302.0)
+        ti4_max = ti4_median + rng.uniform(1.0, 3.0)
+        ti4_std = rng.uniform(0.5, 1.5)
+        ti5_median = rng.uniform(297.0, 301.0)
+        first_seen = pd.Timestamp("2026-08-01", tz="UTC") + pd.Timedelta(days=rng.randint(0, 10))
+        last_seen = first_seen + pd.Timedelta(days=span_days)
+
+        records.append({
+            "source_id": f"SYN-LEAK-{i+1:04d}", "centroid_lat": c_lat, "centroid_lon": c_lon,
+            "n_hits": n_hits, "n_days": n_days, "n_nights": n_nights, "night_frac": night_frac,
+            "span_days": span_days, "frp_mean": frp_mean, "frp_max": frp_max, "frp_median": frp_median,
+            "frp_cv": frp_cv, "ti4_median": ti4_median, "ti4_max": ti4_max, "ti4_std": ti4_std,
+            "ti5_median": ti5_median, "dT_median": ti4_median - ti5_median,
+            "local_solar_hour": rng.choice([21.0, 22.0, 23.0, 1.0, 2.0]),
+            "cluster_extent_m": rng.uniform(100.0, 350.0), "fill_ratio": rng.uniform(0.8, 1.0),
+            "recurrence_gap_days": rng.uniform(0.5, 2.0), "flare_score": rng.uniform(0.5, 3.0),
+            "pixel_area_m2": 375**2, "first_seen": first_seen, "last_seen": last_seen,
+            "label": "LEAK", "label_confidence": "high",
+            "t_fire_K": np.nan, "landcover_class": "built",
+            "diurnal_shape": "FLAT_24H", "diurnal_hist": [1.0 / 24.0] * 24,
+        })
+
+    synth_raw = pd.DataFrame(records)
+
+    # Compute exact 37 FEATURES via build_features to guarantee zero drift
+    feats = build_features(synth_raw, facilities_gdf)
+    for col in feats.columns:
+        synth_raw[col] = feats[col].values
+    synth_raw["origin"] = "synthetic"
+
+    if data_dir is not None:
+        lab_path = Path(data_dir) / "processed" / "labelled.parquet"
+        if lab_path.exists():
+            existing = pd.read_parquet(lab_path)
+            if "origin" not in existing.columns:
+                existing["origin"] = "real"
+            missing_in_existing = set(FEATURES) - set(existing.columns)
+            if missing_in_existing:
+                ex_feats = build_features(existing, facilities_gdf)
+                for col in ex_feats.columns:
+                    existing[col] = ex_feats[col].values
+            if (existing["label"] == "UNLABELLED").any():
+                lc_col = existing["landcover_class"] if "landcover_class" in existing.columns else None
+                relab = label_sources(existing, facilities_gdf, landcover=lc_col)
+                existing["label"] = relab["label"].values
+                existing["label_confidence"] = relab["label_confidence"].values
+            real_subset = existing[existing["origin"] != "synthetic"]
+            merged = pd.concat([real_subset, synth_raw], ignore_index=True)
+        else:
+            merged = synth_raw
+        lab_path.parent.mkdir(parents=True, exist_ok=True)
+        merged.to_parquet(lab_path, index=False)
+        print(f"[ok] merged {len(merged)} labelled rows (real + synthetic) -> {lab_path}")
+
+    return synth_raw
+
+
+# ---------------------------------------------------------------------------
 # QA report & save helper
 # ---------------------------------------------------------------------------
 

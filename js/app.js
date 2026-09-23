@@ -147,6 +147,9 @@ const AppState = {
       swirRad: '14.8 W/m²/sr/μm',
       mwirRad: '8.2 W/m²/sr/μm',
       ch4Est: '0.42 kg/s',
+      co2e_rate_tph: 122.96,
+      black_carbon_rate_kgph: 145.31,
+      co2e_total_t: 14755.2,
       status: 'DISPATCHED',
       dispatchTime: '14:02Z',
       receivedTime: '14:05Z',
@@ -175,6 +178,9 @@ const AppState = {
       swirRad: '11.2 W/m²/sr/μm',
       mwirRad: '6.4 W/m²/sr/μm',
       ch4Est: '0.28 kg/s',
+      co2e_rate_tph: 82.17,
+      black_carbon_rate_kgph: 97.11,
+      co2e_total_t: 7888.3,
       status: 'RECEIVED',
       dispatchTime: '13:59Z',
       receivedTime: '14:01Z',
@@ -203,6 +209,9 @@ const AppState = {
       swirRad: '7.8 W/m²/sr/μm',
       mwirRad: '5.9 W/m²/sr/μm',
       ch4Est: '--',
+      co2e_rate_tph: 129.96,
+      black_carbon_rate_kgph: 116.28,
+      co2e_total_t: 3119.0,
       status: 'RESPONDED',
       dispatchTime: '13:46Z',
       receivedTime: '13:48Z',
@@ -231,6 +240,9 @@ const AppState = {
       swirRad: '3.1 W/m²/sr/μm',
       mwirRad: '3.8 W/m²/sr/μm',
       ch4Est: '--',
+      co2e_rate_tph: 72.86,
+      black_carbon_rate_kgph: 26.50,
+      co2e_total_t: 8743.7,
       status: 'RESPONDED',
       dispatchTime: '13:14Z',
       receivedTime: '13:18Z',
@@ -259,6 +271,9 @@ const AppState = {
       swirRad: '9.4 W/m²/sr/μm',
       mwirRad: '6.1 W/m²/sr/μm',
       ch4Est: '1.15 kg/s',
+      co2e_rate_tph: 133.65,
+      black_carbon_rate_kgph: 0.0,
+      co2e_total_t: 3207.6,
       status: 'DISPATCHED',
       dispatchTime: '12:50Z',
       receivedTime: '12:52Z',
@@ -300,6 +315,20 @@ function generateDemoDetection() {
   const temp = Math.round(800 + Math.random() * 1100);
   const id = `AGN-${(10000 + AppState.detCounter).toString()}`;
   const now = new Date();
+  const dShape = type === 'GAS FLARE' ? 'FLAT_24H' : (type === 'INDUSTRIAL FIRE' ? 'SPIKE_DECAY' : (type === 'COAL SEAM' ? 'FLAT_24H' : 'DAYTIME_ONLY'));
+  let dHist = Array(24).fill(1 / 24);
+  if (dShape === 'DAYTIME_ONLY') {
+    dHist = Array(24).fill(0.005);
+    for (let h = 10; h <= 16; h++) dHist[h] = 0.13;
+  } else if (dShape === 'SPIKE_DECAY') {
+    dHist = Array(24).fill(0.01);
+    const uh = now.getUTCHours() % 24;
+    dHist[uh] = 0.55; dHist[(uh + 1) % 24] = 0.20;
+  }
+  const co2eFactor = type === 'GAS FLARE' ? 1.98 : (type === 'COAL SEAM' ? 3.96 : (type === 'INDUSTRIAL FIRE' ? 3.42 : 2.97));
+  const bcFactor = type === 'GAS FLARE' ? 2.34 : (type === 'INDUSTRIAL FIRE' ? 3.06 : (type === 'COAL SEAM' ? 1.44 : 1.08));
+  const co2eRate = +(frp * co2eFactor / 3.6 * 3.6 / 1.0).toFixed(2);
+  const bcRate = +(frp * bcFactor / 3.6 * 3.6 / 1.0).toFixed(2);
   return {
     id, shortId: `D${AppState.detCounter}`, name: fac.name, facilityId: `FAC-${AppState.detCounter}`,
     coords: { lat: fac.lat + (Math.random() - 0.5) * 0.05, lon: fac.lon + (Math.random() - 0.5) * 0.05 },
@@ -308,7 +337,12 @@ function generateDemoDetection() {
     severity: sev, type, typeColor: DEMO_TYPE_COLORS[type], sevColor: DEMO_SEV_COLORS[sev],
     confidence: conf, effTemp: `${temp} K`, tempValue: temp,
     area: `${(frp * 0.35).toFixed(1)} m²`, frp: `${frp} MW`, frpValue: frp,
-    status: 'NEW'
+    status: 'NEW',
+    diurnal_shape: dShape,
+    diurnal_hist: dHist,
+    co2e_rate_tph: co2eRate,
+    black_carbon_rate_kgph: bcRate,
+    co2e_total_t: +(co2eRate * 24 * 2).toFixed(1)
   };
 }
 
@@ -319,6 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initRouting();
   initAlertFeed();
   initMapCanvas();
+  if (AppState.anomalies.length > 0) selectAnomaly(AppState.anomalies[0].id);
+  updateStatsPanel(null);
   initSwipeSlider();
   initTerminalLog();
   initHeatmap();
@@ -390,38 +426,129 @@ function apiDetectionToAnomaly(d) {
     coordsStr: `${d.lat.toFixed(3)}° N, ${d.lon.toFixed(3)}° E`,
     time: ts, timestamp: ts.substring(11, 19) + ' UTC',
     severity: d.severity || 'MODERATE',
-    type: d.cls === 'FLARE' ? 'GAS FLARE' : d.cls === 'IND_FIRE' ? 'INDUSTRIAL FIRE' : d.cls === 'COAL' ? 'COAL SEAM' : d.cls === 'LEAK' ? 'GAS LEAK' : 'UNKNOWN',
+    type: d.cls === 'FLARE' ? 'GAS FLARE' : d.cls === 'IND_FIRE' ? 'INDUSTRIAL FIRE' : d.cls === 'COAL' ? 'COAL SEAM' : d.cls === 'LEAK' ? 'GAS LEAK' : (d.cls === 'WILD' ? 'WILDFIRE / AGRI' : 'UNKNOWN'),
     typeColor: DETO_TYPE_COLORS[d.cls] || '#859397',
     sevColor: DETO_SEV_COLORS[d.severity] || '#ffd6a3',
     confidence: d.conf,
     effTemp: d.temp_K != null ? `${Math.round(d.temp_K)} K` : '-- K',
     tempValue: d.temp_K,
-    area: `${d.area_m2.toFixed(1)} m²`,
-    frp: `${d.frp_MW.toFixed(1)} MW`, frpValue: d.frp_MW,
-    status: 'LIVE'
+    area: d.area_m2 != null ? `${Math.round(d.area_m2)} m²` : '-- m²',
+    frp: d.frp_MW != null ? `${Number(d.frp_MW).toFixed(1)} MW` : (d.frp_max_MW != null ? `${Number(d.frp_max_MW).toFixed(1)} MW` : '-- MW'),
+    frpValue: d.frp_MW != null ? Number(d.frp_MW) : (d.frp_max_MW != null ? Number(d.frp_max_MW) : 0),
+    status: 'LIVE',
+    offshore_suppressed: !!d.offshore_suppressed,
+    reason: d.reason || '',
+    reason_template: d.reason_template || '',
+    cited_rule: d.cited_rule || '',
+    top_features: Array.isArray(d.top_features) ? d.top_features : [],
+    diurnal_hist: Array.isArray(d.diurnal_hist) ? d.diurnal_hist : null,
+    diurnal_shape: d.diurnal_shape || null,
+    co2e_rate_tph: d.co2e_rate_tph != null ? Number(d.co2e_rate_tph) : null,
+    black_carbon_rate_kgph: d.black_carbon_rate_kgph != null ? Number(d.black_carbon_rate_kgph) : null,
+    co2e_total_t: d.co2e_total_t != null ? Number(d.co2e_total_t) : null
   };
+}
+
+function renderDiurnalSparkline(container, hist, shape) {
+  if (!container) return;
+  container.innerHTML = '';
+  let data = hist;
+  if (!Array.isArray(data) || data.length !== 24) {
+    if (shape === 'DAYTIME_ONLY') {
+      data = Array(24).fill(0.005);
+      for (let h = 10; h <= 16; h++) data[h] = 0.13;
+    } else if (shape === 'EVENING_BURST') {
+      data = Array(24).fill(0.005);
+      for (let h = 16; h <= 20; h++) data[h] = 0.18;
+    } else if (shape === 'SPIKE_DECAY') {
+      data = Array(24).fill(0.01);
+      data[14] = 0.55; data[15] = 0.22;
+    } else {
+      data = Array(24).fill(1 / 24);
+    }
+  }
+
+  const maxVal = Math.max(...data, 0.001);
+  const containerHeight = 24; // px
+
+  data.forEach((val, h) => {
+    const bar = document.createElement('div');
+    const heightPx = Math.max(2, Math.round((val / maxVal) * containerHeight));
+    let color = '#60a5fa';
+    if (h >= 10 && h <= 16) {
+      color = '#f59e0b'; // daytime amber
+    } else if (h >= 16 && h <= 20) {
+      color = '#ff6b6b'; // evening orange
+    } else if (h >= 21 || h <= 5) {
+      color = '#00d2d3'; // night cyan
+    }
+
+    bar.style.height = `${heightPx}px`;
+    bar.style.flex = '1';
+    bar.style.backgroundColor = color;
+    bar.style.borderRadius = '1px 1px 0 0';
+    bar.style.opacity = val > 0.005 ? '0.9' : '0.25';
+    bar.style.transition = 'all 0.15s';
+    bar.title = `${String(h).padStart(2, '0')}:00 local — ${(val * 100).toFixed(1)}%`;
+
+    bar.addEventListener('mouseenter', () => {
+      bar.style.opacity = '1.0';
+      bar.style.filter = 'brightness(1.3)';
+    });
+    bar.addEventListener('mouseleave', () => {
+      bar.style.opacity = val > 0.005 ? '0.9' : '0.25';
+      bar.style.filter = 'none';
+    });
+
+    container.appendChild(bar);
+  });
 }
 
 // Mapping from cls/severity to color maps used above
 const DETO_TYPE_COLORS = {'FLARE':'#ffa94d','IND_FIRE':'#ff4d4d','COAL':'#f59e0b','WILD':'#859397','LEAK':'#b197fc'};
 const DETO_SEV_COLORS = {'CRITICAL':'#ff4d4d','HIGH':'#ffb13b','MODERATE':'#ffd6a3','LOW':'#bbc9cd'};
 
+function generateS2NarratorInput(item) {
+  if (!item) return '';
+  const emLine = item.offshore_suppressed
+    ? 'ESTIMATED EMISSIONS: NULL / SUPPRESSED (offshore marine cluster — zero terrestrial emissions credited)'
+    : `ESTIMATED EMISSIONS: CO2e Rate = ${item.co2e_rate_tph != null ? Number(item.co2e_rate_tph).toFixed(2) : '0.00'} t/h | Black Carbon = ${item.black_carbon_rate_kgph != null ? Number(item.black_carbon_rate_kgph).toFixed(1) : '0.0'} kg/h | Cumulative CO2e = ${item.co2e_total_t != null ? Number(item.co2e_total_t).toFixed(1) : '0.0'} t`;
+  return `[SENTINEL-2 (S2) NARRATOR TELEMETRY INPUT]
+ANOMALY_ID: ${item.id} (${item.name})
+CENTROID: ${item.coordsStr || (item.coords ? `${item.coords.lat}° N, ${item.coords.lon}° E` : '--')}
+CLASSIFICATION: ${item.type} (confidence p=${(item.confidence ?? 0).toFixed(3)})
+THERMAL: T_eff=${item.effTemp || '--'} | FRP=${item.frp || '--'}
+DIURNAL_SIGNATURE: ${item.diurnal_shape || 'UNKNOWN'}
+${emLine}
+TASKING: Trigger Sentinel-2 MSI Band 11 (1.610 um) & Band 12 (2.190 um) SWIR imagery for 20m high-resolution flame footprint verification.`;
+}
+
 function updateStatsPanel(stats) {
   // Update KPI strip in analytics view
   const totalEl = document.getElementById('kpi-total-detections');
-  if (totalEl) totalEl.textContent = stats.total_detections.toLocaleString();
+  if (totalEl && stats?.total_detections != null) totalEl.textContent = stats.total_detections.toLocaleString();
+
+  // Update Estimated Emissions KPI tile
+  const validAnomalies = (AppState.anomalies || []).filter(a => !a.offshore_suppressed && a.co2e_rate_tph != null);
+  const totalRate = validAnomalies.reduce((acc, a) => acc + (Number(a.co2e_rate_tph) || 0), 0);
+  const totalCumulative = validAnomalies.reduce((acc, a) => acc + (Number(a.co2e_total_t) || 0), 0);
+  const kpiEmissions = document.getElementById('kpi-emissions');
+  const kpiEmissionsTotal = document.getElementById('kpi-emissions-total');
+  if (kpiEmissions) kpiEmissions.textContent = `${totalRate.toFixed(2)} t/h`;
+  if (kpiEmissionsTotal) kpiEmissionsTotal.textContent = `${totalCumulative.toFixed(1)} t total`;
+
   // Update Model Integrity panel in mission control
   const miScorer = document.getElementById('mi-scorer');
   const miMode = document.getElementById('mi-mode');
   const miF1 = document.getElementById('mi-f1');
   const miBrier = document.getElementById('mi-brier');
   const miLeakage = document.getElementById('mi-leakage');
-  if (miScorer) miScorer.textContent = `${stats.scorer?.name || 'heuristic'} v${stats.scorer?.version || ''}`;
-  if (miMode) miMode.textContent = stats.scorer?.mode || stats.scorer?.name || 'heuristic';
-  if (miF1) miF1.textContent = stats.scorer?.metrics?.spatial_f1 != null ? stats.scorer.metrics.spatial_f1.toFixed(3) : '—';
-  if (miBrier) miBrier.textContent = stats.scorer?.metrics?.brier != null ? stats.scorer.metrics.brier.toFixed(4) : '—';
-  const rf1 = stats.scorer?.metrics?.random_f1 != null ? stats.scorer.metrics.random_f1.toFixed(3) : '—';
-  const sf1 = stats.scorer?.metrics?.spatial_f1 != null ? stats.scorer.metrics.spatial_f1.toFixed(3) : '—';
+  if (miScorer) miScorer.textContent = `${stats?.scorer?.name || 'heuristic'} v${stats?.scorer?.version || ''}`;
+  if (miMode) miMode.textContent = stats?.scorer?.mode || stats?.scorer?.name || 'heuristic';
+  if (miF1) miF1.textContent = stats?.scorer?.metrics?.spatial_f1 != null ? stats.scorer.metrics.spatial_f1.toFixed(3) : '—';
+  if (miBrier) miBrier.textContent = stats?.scorer?.metrics?.brier != null ? stats.scorer.metrics.brier.toFixed(4) : '—';
+  const rf1 = stats?.scorer?.metrics?.random_f1 != null ? stats.scorer.metrics.random_f1.toFixed(3) : '—';
+  const sf1 = stats?.scorer?.metrics?.spatial_f1 != null ? stats.scorer.metrics.spatial_f1.toFixed(3) : '—';
   if (miLeakage) miLeakage.textContent = `random ${rf1} vs spatial ${sf1}`;
 }
 
@@ -511,15 +638,24 @@ function appendAlertCard(anomaly) {
   if (alertFeedContainer.children.length >= 200) {
     alertFeedContainer.removeChild(alertFeedContainer.firstChild);
   }
+  const isSuppressed = !!anomaly.offshore_suppressed;
+  const emLine = isSuppressed
+    ? '<div class="font-data-mono text-[9px] text-outline/60 mt-[2px] truncate">CO2e: -- (offshore suppressed)</div>'
+    : (anomaly.co2e_rate_tph != null
+        ? `<div class="font-data-mono text-[9px] text-tertiary mt-[2px] truncate flex justify-between"><span>CO2e: ${Number(anomaly.co2e_rate_tph).toFixed(2)} t/h</span><span>BC: ${(Number(anomaly.black_carbon_rate_kgph) || 0).toFixed(1)} kg/h</span></div>`
+        : '');
   const card = document.createElement('div');
-  card.className = 'hud-border p-xs rounded-sm cursor-pointer relative overflow-hidden transition-all bg-[#0d141d]/50 hover:bg-surface-container';
+  card.className = `hud-border p-xs rounded-sm cursor-pointer relative overflow-hidden transition-all ${
+    isSuppressed ? 'opacity-40 grayscale hover:opacity-100 border-dashed border-outline/40 bg-[#0d141d]/30' : 'bg-[#0d141d]/50 hover:bg-surface-container'
+  }`;
   card.innerHTML = `
-    <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+    <div class="absolute left-0 top-0 bottom-0 w-1 ${isSuppressed ? 'bg-outline' : 'bg-primary'}"></div>
     <div class="flex justify-between items-start mb-xs pl-1">
       <div class="flex items-center gap-xs">
         <div class="px-1 rounded-sm flex items-center h-4 border" style="background-color: ${anomaly.sevColor}22; border-color: ${anomaly.sevColor}">
           <span class="font-label-caps text-[8px]" style="color: ${anomaly.sevColor}">${anomaly.severity}</span>
         </div>
+        ${isSuppressed ? '<span class="font-label-caps text-[7px] px-1 rounded-sm bg-surface-container-high text-outline border border-outline/30">SUPPRESSED</span>' : ''}
         <span class="font-data-mono text-[10px] text-primary font-bold">ID:${anomaly.shortId}</span>
       </div>
       <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.timestamp?.split(' ')[0] || ''}</span>
@@ -530,6 +666,7 @@ function appendAlertCard(anomaly) {
         <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.effTemp}</span>
         <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.frp}</span>
       </div>
+      ${emLine}
     </div>
   `;
   card.addEventListener('click', () => {
@@ -632,8 +769,16 @@ function initAlertFeed() {
     const items = AppState.anomalies.slice(0, 200);
     items.forEach(anomaly => {
       const isSelected = anomaly.id === AppState.selectedAnomalyId;
+      const isSuppressed = !!anomaly.offshore_suppressed;
+      const emLine = isSuppressed
+        ? '<div class="font-data-mono text-[9px] text-outline/60 mt-[2px] truncate">CO2e: -- (offshore suppressed)</div>'
+        : (anomaly.co2e_rate_tph != null
+            ? `<div class="font-data-mono text-[9px] text-tertiary mt-[2px] truncate flex justify-between"><span>CO2e: ${Number(anomaly.co2e_rate_tph).toFixed(2)} t/h</span><span>BC: ${(Number(anomaly.black_carbon_rate_kgph) || 0).toFixed(1)} kg/h</span></div>`
+            : '');
       const card = document.createElement('div');
       card.className = `hud-border p-xs rounded-sm cursor-pointer relative overflow-hidden transition-all ${
+        isSuppressed ? 'opacity-40 grayscale hover:opacity-100 border-dashed border-outline/40 ' : ''
+      }${
         isSelected ? 'bg-surface-container border-primary/50' : 'bg-[#0d141d]/50 hover:bg-surface-container'
       }`;
       card.innerHTML = `
@@ -643,6 +788,7 @@ function initAlertFeed() {
             <div class="px-1 rounded-sm flex items-center h-4 border" style="background-color: ${anomaly.sevColor}22; border-color: ${anomaly.sevColor}">
               <span class="font-label-caps text-[8px]" style="color: ${anomaly.sevColor}">${anomaly.severity}</span>
             </div>
+            ${isSuppressed ? '<span class="font-label-caps text-[7px] px-1 rounded-sm bg-surface-container-high text-outline border border-outline/30">SUPPRESSED</span>' : ''}
             <span class="font-data-mono text-[10px] ${isSelected ? 'text-primary font-bold' : 'text-on-surface-variant'}">ID:${anomaly.shortId}</span>
           </div>
           <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.timestamp?.split(' ')[0] || ''}</span>
@@ -653,6 +799,7 @@ function initAlertFeed() {
             <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.effTemp}</span>
             <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.frp}</span>
           </div>
+          ${emLine}
         </div>
       `;
 
@@ -670,8 +817,11 @@ function initAlertFeed() {
     const items = AppState.anomalies.slice(0, 200);
     items.forEach(anomaly => {
       const isSelected = anomaly.id === AppState.selectedAnomalyId;
+      const isSuppressed = !!anomaly.offshore_suppressed;
       const item = document.createElement('div');
       item.className = `p-sm border-b border-[#1b2735] relative group cursor-pointer transition-colors ${
+        isSuppressed ? 'opacity-40 grayscale hover:opacity-100 ' : ''
+      }${
         isSelected ? 'bg-secondary-container/30' : 'hover:bg-surface-container-highest'
       }`;
       item.innerHTML = `
@@ -740,6 +890,73 @@ function selectAnomaly(id) {
   if (inspArea) inspArea.innerText = item.area;
   if (inspFrp) inspFrp.innerText = item.frp;
   if (inspCh4) inspCh4.innerText = item.ch4Est ?? '--';
+  const inspCo2e = document.getElementById('insp-co2e');
+  const inspBc = document.getElementById('insp-bc');
+  if (inspCo2e) {
+    inspCo2e.innerText = item.offshore_suppressed ? '-- t/h' : (item.co2e_rate_tph != null ? `${Number(item.co2e_rate_tph).toFixed(2)} t/h` : '-- t/h');
+  }
+  if (inspBc) {
+    inspBc.innerText = item.offshore_suppressed ? '-- kg/h' : (item.black_carbon_rate_kgph != null ? `${Number(item.black_carbon_rate_kgph).toFixed(1)} kg/h` : '-- kg/h');
+  }
+
+  // Update Sentinel-2 (S2) Narrator Telemetry Input
+  const s2NarratorEl = document.getElementById('s2-narrator-input');
+  if (s2NarratorEl) {
+    s2NarratorEl.value = generateS2NarratorInput(item);
+  }
+
+  // Update Diurnal Signature & Sparkline in Inspector
+  const inspDiurnalShape = document.getElementById('insp-diurnal-shape');
+  const inspDiurnalSparkline = document.getElementById('insp-diurnal-sparkline');
+  if (inspDiurnalShape) {
+    const shape = item.diurnal_shape || 'SPARSE';
+    inspDiurnalShape.innerText = shape;
+    if (shape === 'FLAT_24H') {
+      inspDiurnalShape.className = 'font-data-mono text-[9px] font-bold px-1.5 py-0.5 rounded bg-cyan-950/60 text-cyan-400 border border-cyan-800';
+    } else if (shape === 'DAYTIME_ONLY') {
+      inspDiurnalShape.className = 'font-data-mono text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-950/60 text-amber-400 border border-amber-800';
+    } else if (shape === 'EVENING_BURST') {
+      inspDiurnalShape.className = 'font-data-mono text-[9px] font-bold px-1.5 py-0.5 rounded bg-orange-950/60 text-orange-400 border border-orange-800';
+    } else if (shape === 'SPIKE_DECAY') {
+      inspDiurnalShape.className = 'font-data-mono text-[9px] font-bold px-1.5 py-0.5 rounded bg-red-950/60 text-red-400 border border-red-800';
+    } else {
+      inspDiurnalShape.className = 'font-data-mono text-[9px] font-bold px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant border border-outline-variant';
+    }
+  }
+  if (inspDiurnalSparkline) {
+    renderDiurnalSparkline(inspDiurnalSparkline, item.diurnal_hist, item.diurnal_shape);
+  }
+
+  // Update Decision Narrative, Statutory Tag, and "Why" Driver Chips
+  const inspReason = document.getElementById('insp-reason');
+  const inspCitedRule = document.getElementById('insp-cited-rule');
+  const inspWhyChips = document.getElementById('insp-why-chips');
+  if (inspReason) {
+    inspReason.innerText = item.reason || item.reason_template || 'Grounded narrative analysis pending orbital pass.';
+  }
+  if (inspCitedRule) {
+    inspCitedRule.innerText = item.cited_rule || (item.offshore_suppressed ? 'OFFSHORE-SUPPRESSED' : 'GENERAL-ENVIRONMENTAL');
+  }
+  if (inspWhyChips) {
+    inspWhyChips.innerHTML = '';
+    const drivers = Array.isArray(item.top_features) && item.top_features.length > 0
+      ? item.top_features
+      : (item.effTemp && item.effTemp !== '-- K' ? [{name: 't_fire_K', value: item.tempValue}, {name: 'frp', value: item.frpValue}] : []);
+
+    if (drivers.length === 0) {
+      inspWhyChips.innerHTML = '<span class="font-data-mono text-[9px] text-on-surface-variant/60 italic">No feature drivers</span>';
+    } else {
+      drivers.slice(0, 5).forEach(feat => {
+        const chip = document.createElement('span');
+        chip.className = 'font-data-mono text-[8px] px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-on-surface-variant flex items-center gap-1 shadow-sm';
+        const formattedVal = typeof feat.value === 'number'
+          ? (Number.isInteger(feat.value) ? feat.value : feat.value.toFixed(2))
+          : feat.value;
+        chip.innerHTML = `<span class="text-primary font-bold">${feat.name}:</span> ${formattedVal}`;
+        inspWhyChips.appendChild(chip);
+      });
+    }
+  }
 
   // Update Incident Summary in Alert Console
   const alertSumId = document.getElementById('summary-anomaly-id');
@@ -808,26 +1025,31 @@ function initMapCanvas() {
 
   // Plot Hotspots from AppState.anomalies (cap at 200)
   AppState.anomalies.slice(0, 200).forEach((anomaly) => {
+    const isSuppressed = !!anomaly.offshore_suppressed;
     const x = 240 + (anomaly.coords.lon - 68) * 28;
     const y = 520 - (anomaly.coords.lat - 18) * 26;
 
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     g.setAttribute('class', 'cursor-pointer group');
     g.setAttribute('transform', `translate(${x}, ${y})`);
+    if (isSuppressed) {
+      g.setAttribute('opacity', '0.35');
+    }
 
+    const ringColor = isSuppressed ? '#859397' : anomaly.typeColor;
     const circleRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     circleRing.setAttribute('r', '16');
     circleRing.setAttribute('fill', 'none');
-    circleRing.setAttribute('stroke', anomaly.typeColor);
+    circleRing.setAttribute('stroke', ringColor);
     circleRing.setAttribute('stroke-width', '0.75');
     circleRing.setAttribute('stroke-dasharray', '3,3');
-    circleRing.setAttribute('opacity', '0.6');
+    circleRing.setAttribute('opacity', isSuppressed ? '0.3' : '0.6');
     g.appendChild(circleRing);
 
     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     circle.setAttribute('r', '6');
-    circle.setAttribute('fill', anomaly.typeColor);
-    circle.setAttribute('class', anomaly.severity === 'CRITICAL' ? 'pulse-critical' : '');
+    circle.setAttribute('fill', ringColor);
+    circle.setAttribute('class', anomaly.severity === 'CRITICAL' && !isSuppressed ? 'pulse-critical' : '');
     g.appendChild(circle);
 
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -924,9 +1146,12 @@ function refreshLeafletMap() {
 
   // Plot current anomalies (cap at 200)
   AppState.anomalies.slice(0, 200).forEach(anomaly => {
+    const isSuppressed = !!anomaly.offshore_suppressed;
+    const markerColor = isSuppressed ? '#859397' : anomaly.typeColor;
+    const opacity = isSuppressed ? '0.4' : '1.0';
     const customIcon = L.divIcon({
       className: 'custom-div-icon',
-      html: `<div style="width: 20px; height: 20px; background-color: ${anomaly.typeColor}; border: 2px solid #ffffff; border-radius: 50%; box-shadow: 0 0 10px ${anomaly.typeColor};" class="${anomaly.severity === 'CRITICAL' ? 'pulse-critical' : ''}"></div>`,
+      html: `<div style="width: 20px; height: 20px; opacity: ${opacity}; background-color: ${markerColor}; border: 2px solid ${isSuppressed ? '#859397' : '#ffffff'}; border-radius: 50%; box-shadow: 0 0 10px ${markerColor}; filter: ${isSuppressed ? 'grayscale(1)' : 'none'};" class="${anomaly.severity === 'CRITICAL' && !isSuppressed ? 'pulse-critical' : ''}"></div>`,
       iconSize: [20, 20],
       iconAnchor: [10, 10]
     });
@@ -935,7 +1160,7 @@ function refreshLeafletMap() {
 
     marker.bindPopup(`
       <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px;">
-        <strong style="color: ${anomaly.typeColor}">${anomaly.name}</strong><br/>
+        <strong style="color: ${markerColor}">${anomaly.name}</strong> ${isSuppressed ? '<span style=\"color:#859397;\">[OFFSHORE SUPPRESSED]</span>' : ''}<br/>
         ID: <span style="color: #22d3ee">${anomaly.id}</span><br/>
         Type: ${anomaly.type}<br/>
         Temp: <span style="color: #ff4d4d">${anomaly.effTemp}</span> | FRP: ${anomaly.frp}<br/>
@@ -1257,6 +1482,9 @@ function parseAndIngestCSV(csvText, filename = 'custom_firms.csv') {
       swirRad: `${(frp * 0.24).toFixed(1)} W/m²/sr/μm`,
       mwirRad: `${(frp * 0.15).toFixed(1)} W/m²/sr/μm`,
       ch4Est: `${(frp * 0.008).toFixed(2)} kg/s`,
+      co2e_rate_tph: +(frp * (type === 'GAS FLARE' ? 1.98 : (type === 'COAL SEAM' ? 3.96 : 3.42))).toFixed(2),
+      black_carbon_rate_kgph: +(frp * (type === 'GAS FLARE' ? 2.34 : (type === 'COAL SEAM' ? 1.44 : 3.06))).toFixed(2),
+      co2e_total_t: +(frp * (type === 'GAS FLARE' ? 1.98 : 3.42) * 24 * 2).toFixed(1),
       status: 'DISPATCHED',
       dispatchTime: 'NOW',
       receivedTime: 'PENDING',

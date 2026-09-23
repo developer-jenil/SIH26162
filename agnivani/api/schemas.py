@@ -13,7 +13,9 @@ class DetectionOut(BaseModel):
     temp_K:float|None; bg_K:float; frac:float|None; frp_MW:float; frp_max_MW:float; area_m2:float; ts:datetime
     n_hits:int; n_days:int; night_frac:float; facility_name:str|None=None; facility_sector:str|None=None
     dist_facility_m:float|None=None; state:str|None=None; district:str|None=None
-    severity:Literal["CRITICAL","HIGH","MODERATE","LOW"]; reason:str; evidence:list[EvidenceStage]; top_features:list[FeatureContrib]
+    severity:Literal["CRITICAL","HIGH","MODERATE","LOW"]; reason:str; reason_template:str|None=None; cited_rule:str|None=None; offshore_suppressed:bool=False; evidence:list[EvidenceStage]; top_features:list[FeatureContrib]
+    diurnal_hist:list[float]|None=None; diurnal_shape:str|None=None
+    co2e_rate_tph:float|None=None; black_carbon_rate_kgph:float|None=None; co2e_total_t:float|None=None
 class StatsOut(BaseModel):
     total_detections:int; total_sources:int; by_class:dict[str,int]; by_severity:dict[str,int]; last_ingest_utc:datetime|None; scorer:dict; coverage_pct:float|None=None
 class DispatchRequest(BaseModel): detection_id:str; authority:str; channel:Literal["sms","email","api","mock"]; note:str|None=None

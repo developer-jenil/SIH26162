@@ -17,4 +17,6 @@ data/processed/*
 data/models/*
 !data/models/.gitkeep
 *.duckdb
+*.duckdb.wal
+*.wal
 *.db

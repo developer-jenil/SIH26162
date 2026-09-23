@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     data_dir: Path = Path("data")
     log_level: str = "INFO"
     offline_mode: bool = False
+    llm_provider: Literal["auto", "ollama", "openai", "anthropic", "template"] = "auto"
+    ollama_url: str = "http://localhost:11434"
+    ollama_model: str = "llama3.2:1b"
+    openai_api_key: str = ""
+    anthropic_api_key: str = ""
 
     @field_validator("firms_sources")
     @classmethod
