@@ -39,11 +39,19 @@ import geopandas as gpd
 class Facility:
     facility_id: str; name: str; lat: float; lon: float; sector: str
     district: str = ""; state: str = ""; source_of_truth: str = "MANUAL"
+    match_radius_m: float | None = None
 
 
+# Geocode correction & match radius justification:
+# - Hazira LNG/Steel: Old coordinates (21.13, 72.64) were located at an administrative gate/office node,
+#   ~2.7 km north of the actual industrial flare stacks and thermal operations.
+#   Updated to (21.1055, 72.6405), the empirical centroid of the continuous thermal cluster
+#   observed across VIIRS NOAA-20, NOAA-21, and Suomi-NPP passes (21.099–21.114 N, 72.632–72.653 E).
+#   Assigned an explicit match_radius_m of 3500 m to cover the contiguous industrial complex
+#   spanning AM/NS Steel, Reliance Hazira, Shell LNG, and ONGC gas processing plants.
 _NAMES = [
 ("Jamnagar Refinery",22.35,70.02,"REFI_GAS"),("Vadinar Refinery",22.56,69.73,"REFI_GAS"),("Kandla Port",23.,70.22,"OTHER"),
-("Hazira LNG/Steel",21.13,72.64,"REFI_GAS"),("Dahej LNG",21.71,72.58,"REFI_GAS"),("Mumbai High/Uran",18.88,72.95,"REFI_GAS"),
+("Hazira LNG/Steel",21.1055,72.6405,"REFI_GAS",3500.0),("Dahej LNG",21.71,72.58,"REFI_GAS"),("Mumbai High/Uran",18.88,72.95,"REFI_GAS"),
 ("Panipat Refinery",29.39,76.97,"REFI_GAS"),("Mathura Refinery",27.59,77.68,"REFI_GAS"),("Bathinda Refinery",30.21,75.,"REFI_GAS"),
 ("Barauni Refinery",25.44,86.05,"REFI_GAS"),("Bongaigaon Refinery",26.48,90.56,"REFI_GAS"),("Numaligarh Refinery",26.60,93.78,"REFI_GAS"),
 ("Guwahati Refinery",26.18,91.75,"REFI_GAS"),("Digboi Oil Field",27.39,95.62,"REFI_GAS"),("Duliajan Oil Field",27.36,95.32,"REFI_GAS"),
@@ -55,7 +63,13 @@ _NAMES = [
 ("Cauvery Basin",10.77,79.84,"REFI_GAS"),("Mangalore Refinery",12.96,74.80,"REFI_GAS"),("Kochi Refinery",10.,76.28,"REFI_GAS"),
 ("Tuticorin Thermal",8.76,78.13,"POWER"),("Durgapur Steel",23.52,87.31,"STEEL"),("IISCO Burnpur",23.67,86.94,"STEEL"),
 ("Ankleshwar Ind.",21.63,72.98,"OTHER"),("Vapi Ind.",20.37,72.90,"OTHER")]
-SEED_FACILITIES = [Facility(f"FAC-{i:03d}", *row) for i,row in enumerate(_NAMES,1)]
+
+SEED_FACILITIES = []
+for i, row in enumerate(_NAMES, 1):
+    fac_id = f"FAC-{i:03d}"
+    name, lat, lon, sector = row[0], row[1], row[2], row[3]
+    radius = float(row[4]) if len(row) > 4 and row[4] is not None else None
+    SEED_FACILITIES.append(Facility(fac_id, name, lat, lon, sector, match_radius_m=radius))
 
 
 def load_facilities(data_dir: Path | str) -> gpd.GeoDataFrame:
@@ -66,16 +80,25 @@ def load_facilities(data_dir: Path | str) -> gpd.GeoDataFrame:
     return gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.lon, df.lat), crs="EPSG:4326")
 
 
-def nearest_facility(gdf: gpd.GeoDataFrame, lat: float, lon: float):
+def nearest_facility(gdf: gpd.GeoDataFrame, lat: float, lon: float, max_dist_m: float | None = None):
     if gdf is None or gdf.empty: return None, math.inf
     projected = gdf.to_crs("EPSG:7755")
     point = gpd.GeoSeries(gpd.points_from_xy([lon],[lat]), crs="EPSG:4326").to_crs("EPSG:7755").iloc[0]
     distances = projected.geometry.distance(point)
     idx = distances.idxmin(); distance = float(distances.loc[idx])
-    if distance > 10_000: return None, distance
     row = gdf.loc[idx]
-    return Facility(str(row.facility_id), str(row["name"]), float(row.lat), float(row.lon), str(row.sector),
-                    str(row.get("district", "")), str(row.get("state", "")), str(row.get("source_of_truth", "MANUAL"))), distance
+    
+    from agnivani.config import get_settings
+    default_radius = float(get_settings().facility_match_radius_m)
+    row_radius = row.get("match_radius_m")
+    fac_radius = float(row_radius) if (row_radius is not None and pd.notna(row_radius)) else (max_dist_m if max_dist_m is not None else default_radius)
+    if distance > fac_radius: return None, distance
+
+    return Facility(
+        str(row.facility_id), str(row["name"]), float(row.lat), float(row.lon), str(row.sector),
+        str(row.get("district", "")), str(row.get("state", "")), str(row.get("source_of_truth", "MANUAL")),
+        match_radius_m=float(row_radius) if (row_radius is not None and pd.notna(row_radius)) else None
+    ), distance
 
 
 # ---------------------------------------------------------------------------
@@ -131,7 +154,8 @@ def label_sources(
         lat, lon = float(s.centroid_lat), float(s.centroid_lon)
         facility, dist_m = nearest_facility(facilities_gdf, lat, lon)
 
-        if facility is not None and dist_m <= max_dist_m:
+        eff_max = (facility.match_radius_m if (facility and facility.match_radius_m is not None) else max_dist_m)
+        if facility is not None and dist_m <= eff_max:
             sector = str(facility.sector).upper()
             if sector in _SECTOR_LABEL:
                 label, conf = _SECTOR_LABEL[sector]

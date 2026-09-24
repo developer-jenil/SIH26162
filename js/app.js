@@ -98,7 +98,7 @@ const SoundFX = {
 
   toggle() {
     this.enabled = !this.enabled;
-    const btn = document.getElementById('audio-toggle-btn');
+    const btn = mustEl('audio-toggle-btn');
     if (btn) {
       btn.innerHTML = `<span class="material-symbols-outlined text-[18px] ${this.enabled ? 'text-primary' : 'text-on-surface-variant'}">${this.enabled ? 'volume_up' : 'volume_off'}</span>`;
       btn.title = `Sound FX: ${this.enabled ? 'ON' : 'OFF'}`;
@@ -107,15 +107,26 @@ const SoundFX = {
   }
 };
 
+// --- DOM Contract Enforcement (B8) ---
+function mustEl(id) {
+  const el = document.getElementById(id);
+  if (!el) {
+    const msg = `[AGNIVANI DOM CONTRACT ERROR] Required element #${id} not found in DOM.`;
+    console.error(msg);
+    throw new Error(msg);
+  }
+  return el;
+}
+
 // --- Config shim (injected by FastAPI; absent in file:// demo) ---
 const AGNIVANI_API = window.AGNIVANI_API || null;
 const URL_PARAMS = typeof window !== 'undefined' && window.location ? new URLSearchParams(window.location.search) : new URLSearchParams();
 const IS_EXPLICIT_DEMO = URL_PARAMS.get('demo') === '1';
 
-// Embedded Demo Fixtures (Strictly reserved for offline rehearsal with ?demo=1)
+// Embedded Demo Fixtures (Strictly quarantined for offline rehearsal with ?demo=1)
 const DEMO_FIXTURES = [
   {
-    id: 'AGN-04832',
+    id: 'SIM-04832',
     shortId: 'A94X',
     name: 'Jamnagar Refinery',
     facilityId: 'RIL-JAM-01',
@@ -123,14 +134,15 @@ const DEMO_FIXTURES = [
     coordsStr: '22.350° N, 70.020° E',
     time: '2026-09-01T14:02:11Z',
     timestamp: '14:02:11 UTC',
-    severity: 'CRITICAL',
+    severity: 'HIGH',
     type: 'GAS FLARE',
     typeColor: '#ffa94d',
-    sevColor: '#ff4d4d',
+    sevColor: '#ffb13b',
     confidence: 0.943,
     effTemp: '1847 K',
     tempValue: 1847,
     area: '12.4 m²',
+    p: 0.000088,
     frp: '62.1 MW',
     frpValue: 62.1,
     swirRad: '14.8 W/m²/sr/μm',
@@ -144,10 +156,11 @@ const DEMO_FIXTURES = [
     dispatchTime: '14:02Z',
     receivedTime: '14:05Z',
     respondedTime: 'PENDING',
-    authority: 'Dist. Collector - SEC 7 (AUTH-7A)'
+    authority: 'Dist. Collector - SEC 7 (AUTH-7A)',
+    provenance: 'SIMULATED'
   },
   {
-    id: 'AGN-04831',
+    id: 'SIM-04831',
     shortId: 'B21Y',
     name: 'Hazira LNG/Steel Complex',
     facilityId: 'HAZ-LNG-02',
@@ -163,6 +176,7 @@ const DEMO_FIXTURES = [
     effTemp: '1620 K',
     tempValue: 1620,
     area: '9.8 m²',
+    p: 0.000070,
     frp: '41.5 MW',
     frpValue: 41.5,
     swirRad: '11.2 W/m²/sr/μm',
@@ -176,10 +190,11 @@ const DEMO_FIXTURES = [
     dispatchTime: '13:59Z',
     receivedTime: '14:01Z',
     respondedTime: '14:10Z',
-    authority: 'Hazira Industrial Safety Directorate'
+    authority: 'Hazira Industrial Safety Directorate',
+    provenance: 'SIMULATED'
   },
   {
-    id: 'AGN-04829',
+    id: 'SIM-04829',
     shortId: 'C55Z',
     name: 'Vadinar Marine Terminal',
     facilityId: 'VAD-MAR-03',
@@ -187,16 +202,17 @@ const DEMO_FIXTURES = [
     coordsStr: '22.560° N, 69.730° E',
     time: '2026-09-01T13:45:18Z',
     timestamp: '13:45:18 UTC',
-    severity: 'HIGH',
+    severity: 'CRITICAL',
     type: 'INDUSTRIAL FIRE',
     typeColor: '#ff4d4d',
-    sevColor: '#ffb13b',
+    sevColor: '#ff4d4d',
     confidence: 0.885,
     effTemp: '1250 K',
     tempValue: 1250,
     area: '34.2 m²',
-    frp: '38.0 MW',
-    frpValue: 38.0,
+    p: 0.000243,
+    frp: '87.4 MW',
+    frpValue: 87.4,
     swirRad: '7.8 W/m²/sr/μm',
     mwirRad: '5.9 W/m²/sr/μm',
     ch4Est: '--',
@@ -208,18 +224,19 @@ const DEMO_FIXTURES = [
     dispatchTime: '13:46Z',
     receivedTime: '13:48Z',
     respondedTime: '14:00Z',
-    authority: 'Kandla Coast Guard & Disaster Cell'
+    authority: 'Kandla Coast Guard & Disaster Cell',
+    provenance: 'SIMULATED'
   },
   {
-    id: 'AGN-04820',
+    id: 'SIM-04820',
     shortId: 'D18K',
-    name: 'Panipat Petrochemical Complex',
-    facilityId: 'IOCL-PAN-04',
-    coords: { lat: 29.39, lon: 76.97 },
-    coordsStr: '29.390° N, 76.970° E',
+    name: 'Jharia Coalfield Seam #4',
+    facilityId: 'BCCL-JHR-04',
+    coords: { lat: 23.75, lon: 86.42 },
+    coordsStr: '23.750° N, 86.420° E',
     time: '2026-09-01T13:12:05Z',
     timestamp: '13:12:05 UTC',
-    severity: 'MODERATE',
+    severity: 'LOW',
     type: 'COAL SEAM',
     typeColor: '#f59e0b',
     sevColor: '#ffd6a3',
@@ -227,6 +244,7 @@ const DEMO_FIXTURES = [
     effTemp: '890 K',
     tempValue: 890,
     area: '85.0 m²',
+    p: 0.001010,
     frp: '18.4 MW',
     frpValue: 18.4,
     swirRad: '3.1 W/m²/sr/μm',
@@ -240,10 +258,11 @@ const DEMO_FIXTURES = [
     dispatchTime: '13:14Z',
     receivedTime: '13:18Z',
     respondedTime: '13:35Z',
-    authority: 'Haryana State Disaster Management Authority'
+    authority: 'Haryana State Disaster Management Authority',
+    provenance: 'SIMULATED'
   },
   {
-    id: 'AGN-04815',
+    id: 'SIM-04815',
     shortId: 'E09M',
     name: 'Dahej Petrochem SEZ',
     facilityId: 'DHJ-SEZ-05',
@@ -251,14 +270,15 @@ const DEMO_FIXTURES = [
     coordsStr: '21.710° N, 72.580° E',
     time: '2026-09-01T12:49:33Z',
     timestamp: '12:49:33 UTC',
-    severity: 'CRITICAL',
+    severity: 'HIGH',
     type: 'GAS LEAK',
     typeColor: '#b197fc',
     sevColor: '#ff4d4d',
-    confidence: 0.961,
+    confidence: 0.55,
     effTemp: '1410 K',
     tempValue: 1410,
     area: '18.6 m²',
+    p: 0.000132,
     frp: '29.7 MW',
     frpValue: 29.7,
     swirRad: '9.4 W/m²/sr/μm',
@@ -272,14 +292,15 @@ const DEMO_FIXTURES = [
     dispatchTime: '12:50Z',
     receivedTime: '12:52Z',
     respondedTime: 'PENDING',
-    authority: 'Gujarat Pollution Control Board Emergency Cell'
+    authority: 'Gujarat Pollution Control Board Emergency Cell',
+    provenance: 'SIMULATED'
   }
 ];
 
 // --- Global Application State ---
 const AppState = {
   activeView: 'mission-control',
-  selectedAnomalyId: IS_EXPLICIT_DEMO ? 'AGN-04832' : null,
+  selectedAnomalyId: IS_EXPLICIT_DEMO ? 'SIM-04832' : null,
   selectedFacilityId: IS_EXPLICIT_DEMO ? 'RIL-JAM-01' : null,
   systemTimeOffset: 0,
   terminalPaused: false,
@@ -296,10 +317,10 @@ const AppState = {
 
   // Audit Trail Records
   auditTrail: [
-    { timestamp: '14:05:22.451', operatorId: 'OP-883A', action: 'Confirm coordinates & radiance verification', ref: 'AGN-04832' },
-    { timestamp: '14:02:10.019', operatorId: 'SYS-AUTO', action: 'Alert generated; dispatched to authorities via SAT-RELAY', ref: 'AGN-04832' },
-    { timestamp: '13:58:45.102', operatorId: 'SYS-AUTO', action: 'VIIRS Day/Night Band radiance exceeded 4.2-sigma threshold', ref: 'AGN-04831' },
-    { timestamp: '13:48:12.770', operatorId: 'OP-702B', action: 'Action checklist completed; nodal team notified', ref: 'AGN-04829' },
+    { timestamp: '14:05:22.451', operatorId: 'OP-883A', action: 'Confirm coordinates & radiance verification', ref: 'SIM-04832' },
+    { timestamp: '14:02:10.019', operatorId: 'SYS-AUTO', action: 'Alert generated; dispatched to authorities via SAT-RELAY', ref: 'SIM-04832' },
+    { timestamp: '13:58:45.102', operatorId: 'SYS-AUTO', action: 'VIIRS Day/Night Band radiance exceeded 4.2-sigma threshold', ref: 'SIM-04831' },
+    { timestamp: '13:48:12.770', operatorId: 'OP-702B', action: 'Action checklist completed; nodal team notified', ref: 'SIM-04829' },
     { timestamp: '13:45:00.000', operatorId: 'SYS-AUTO', action: 'Routine VIIRS pass orbital cycle completed (NOAA-20)', ref: 'SYS-00000' }
   ]
 };
@@ -333,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- Fail-Loud Unreachable Banner ---
 function showUnreachableBanner(msg) {
-  let banner = document.getElementById('backend-unreachable-banner');
+  let banner = mustEl('backend-unreachable-banner');
   if (!banner) {
     banner = document.createElement('div');
     banner.id = 'backend-unreachable-banner';
@@ -356,21 +377,21 @@ function showUnreachableBanner(msg) {
       </button>
     </div>
   `;
-  document.getElementById('retry-backend-btn')?.addEventListener('click', () => {
+  mustEl('retry-backend-btn')?.addEventListener('click', () => {
     hideUnreachableBanner();
     setupLiveMode();
   });
 }
 
 function hideUnreachableBanner() {
-  const banner = document.getElementById('backend-unreachable-banner');
+  const banner = mustEl('backend-unreachable-banner');
   if (banner) banner.remove();
 }
 
 function renderDemoBanner() {
   if (!IS_EXPLICIT_DEMO) return;
   document.body.dataset.mode = 'demo';
-  let banner = document.getElementById('demo-mode-persistent-banner');
+  let banner = mustEl('demo-mode-persistent-banner');
   if (!banner) {
     banner = document.createElement('div');
     banner.id = 'demo-mode-persistent-banner';
@@ -381,10 +402,10 @@ function renderDemoBanner() {
 }
 
 function updateLiveStatusIndicator(lastIngestUtc, isOnline = true) {
-  const pill = document.getElementById('live-status-pill');
-  const dot = document.getElementById('live-status-dot');
-  const text = document.getElementById('live-status-text');
-  const clock = document.getElementById('last-ingest-clock');
+  const pill = mustEl('live-status-pill');
+  const dot = mustEl('live-status-dot');
+  const text = mustEl('live-status-text');
+  const clock = mustEl('last-ingest-clock');
   if (!pill || !dot || !text) return;
 
   if (lastIngestUtc) AppState.lastIngestUtc = lastIngestUtc;
@@ -426,7 +447,7 @@ function updateLiveStatusIndicator(lastIngestUtc, isOnline = true) {
 }
 
 function renderEmptyState(lastIngest) {
-  const feed = document.getElementById('alert-feed');
+  const feed = mustEl('alert-feed');
   if (feed) {
     feed.innerHTML = `
       <div class="p-6 text-center text-outline font-data-mono text-sm">
@@ -434,7 +455,7 @@ function renderEmptyState(lastIngest) {
         <p class="text-xs text-outline mt-1">Last ingest: ${lastIngest || 'never'}</p>
       </div>`;
   }
-  const inspPanel = document.getElementById('inspection-panel');
+  const inspPanel = mustEl('inspection-panel');
   if (inspPanel) {
     inspPanel.innerHTML = `
       <div class="p-6 text-center text-outline font-data-mono text-xs">
@@ -522,10 +543,34 @@ function hydrateFromSnapshot(data) {
   if (Array.isArray(data.detections) && data.detections.length > 0) {
     const mapped = data.detections.map(d => apiDetectionToAnomaly(d));
     AppState.anomalies = mapped;
+
+    // Condition C4 live badge update
+    const unresCount = mapped.filter(d => d.cls === 'UNRESOLVED').length;
+    const unresBadge = mustEl('unresolved-count-badge');
+    if (unresBadge) {
+      unresBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span>${unresCount} non-industrial thermal activity in window — deliberately unattributed</span>`;
+    }
+    const limitsUnres = mustEl('limits-unresolved-count');
+    if (limitsUnres) limitsUnres.innerText = unresCount;
+
     initAlertFeed();
     initMapCanvas();
     if (AppState.mapMode === 'satellite') refreshLeafletMap();
-    if (AppState.anomalies.length > 0) selectAnomaly(AppState.anomalies[0].id);
+
+    // Deep link focus handler (P4 / C5)
+    const urlParams = new URLSearchParams(window.location.search);
+    const focusId = urlParams.get('focus');
+    if (focusId && mapped.some(a => a.id === focusId)) {
+      selectAnomaly(focusId);
+      const target = mapped.find(a => a.id === focusId);
+      if (target && AppState.leafletMap) {
+        if (AppState.mapMode !== 'satellite') setMapMode('satellite');
+        AppState.leafletMap.flyTo([target.coords.lat, target.coords.lon], 12, { duration: 1.2 });
+      }
+    } else if (AppState.anomalies.length > 0) {
+      const defaultItem = mapped.find(a => a.cls !== 'UNRESOLVED' && a.name !== 'Unknown Facility') || mapped[0];
+      selectAnomaly(defaultItem.id);
+    }
   } else {
     AppState.anomalies = [];
     renderEmptyState(lastIngestStr);
@@ -534,18 +579,20 @@ function hydrateFromSnapshot(data) {
 
 function apiDetectionToAnomaly(d) {
   const ts = typeof d.ts === 'string' ? d.ts : new Date(d.ts).toISOString();
+  const isCandidateLeak = d.cls === 'LEAK';
   return {
     id: d.id, shortId: d.id.slice(-4).toUpperCase(),
+    cls: d.cls,
     name: d.facility_name || 'Unknown Facility',
     facilityId: d.facility_name || '',
     coords: { lat: d.lat, lon: d.lon },
     coordsStr: `${d.lat.toFixed(3)}° N, ${d.lon.toFixed(3)}° E`,
     time: ts, timestamp: ts.substring(11, 19) + ' UTC',
     severity: d.severity || 'MODERATE',
-    type: d.cls === 'FLARE' ? 'GAS FLARE' : d.cls === 'IND_FIRE' ? 'INDUSTRIAL FIRE' : d.cls === 'COAL' ? 'COAL SEAM' : d.cls === 'LEAK' ? 'GAS LEAK' : (d.cls === 'WILD' ? 'WILDFIRE / AGRI' : 'UNKNOWN'),
+    type: d.cls === 'FLARE' ? 'GAS FLARE' : d.cls === 'IND_FIRE' ? 'INDUSTRIAL FIRE' : d.cls === 'COAL' ? 'COAL SEAM' : isCandidateLeak ? 'candidate fugitive thermal anomaly - low confidence (0.55)' : (d.cls === 'WILD' ? 'WILDFIRE / AGRI' : (d.cls === 'UNRESOLVED' ? 'UNATTRIBUTED NON-INDUSTRIAL' : 'UNKNOWN')),
     typeColor: DETO_TYPE_COLORS[d.cls] || '#859397',
     sevColor: DETO_SEV_COLORS[d.severity] || '#ffd6a3',
-    confidence: d.conf,
+    confidence: isCandidateLeak ? 0.55 : d.conf,
     effTemp: d.temp_K != null ? `${Math.round(d.temp_K)} K` : '-- K',
     tempValue: d.temp_K,
     area: d.area_m2 != null ? `${Math.round(d.area_m2)} m²` : '-- m²',
@@ -553,7 +600,7 @@ function apiDetectionToAnomaly(d) {
     frpValue: d.frp_MW != null ? Number(d.frp_MW) : (d.frp_max_MW != null ? Number(d.frp_max_MW) : 0),
     status: 'LIVE',
     offshore_suppressed: !!d.offshore_suppressed,
-    reason: d.reason || '',
+    reason: isCandidateLeak ? (d.reason || 'candidate fugitive thermal anomaly - low confidence (0.55) driven by facility proximity; implicates Hazira LNG/Steel.') : (d.reason || ''),
     reason_template: d.reason_template || '',
     cited_rule: d.cited_rule || '',
     top_features: Array.isArray(d.top_features) ? d.top_features : [],
@@ -641,24 +688,24 @@ TASKING: Trigger Sentinel-2 MSI Band 11 (1.610 um) & Band 12 (2.190 um) SWIR ima
 
 function updateStatsPanel(stats) {
   // Update KPI strip in analytics view
-  const totalEl = document.getElementById('kpi-total-detections');
+  const totalEl = mustEl('kpi-total-detections');
   if (totalEl && stats?.total_detections != null) totalEl.textContent = stats.total_detections.toLocaleString();
 
   // Update Estimated Emissions KPI tile
   const validAnomalies = (AppState.anomalies || []).filter(a => !a.offshore_suppressed && a.co2e_rate_tph != null);
   const totalRate = validAnomalies.reduce((acc, a) => acc + (Number(a.co2e_rate_tph) || 0), 0);
   const totalCumulative = validAnomalies.reduce((acc, a) => acc + (Number(a.co2e_total_t) || 0), 0);
-  const kpiEmissions = document.getElementById('kpi-emissions');
-  const kpiEmissionsTotal = document.getElementById('kpi-emissions-total');
+  const kpiEmissions = mustEl('kpi-emissions');
+  const kpiEmissionsTotal = mustEl('kpi-emissions-total');
   if (kpiEmissions) kpiEmissions.textContent = `${totalRate.toFixed(2)} t/h`;
   if (kpiEmissionsTotal) kpiEmissionsTotal.textContent = `${totalCumulative.toFixed(1)} t total`;
 
   // Update Model Integrity panel in mission control
-  const miScorer = document.getElementById('mi-scorer');
-  const miMode = document.getElementById('mi-mode');
-  const miF1 = document.getElementById('mi-f1');
-  const miBrier = document.getElementById('mi-brier');
-  const miLeakage = document.getElementById('mi-leakage');
+  const miScorer = mustEl('mi-scorer');
+  const miMode = mustEl('mi-mode');
+  const miF1 = mustEl('mi-f1');
+  const miBrier = mustEl('mi-brier');
+  const miLeakage = mustEl('mi-leakage');
   if (miScorer) miScorer.textContent = `${stats?.scorer?.name || 'heuristic'} v${stats?.scorer?.version || ''}`;
   if (miMode) miMode.textContent = stats?.scorer?.mode || stats?.scorer?.name || 'heuristic';
   if (miF1) miF1.textContent = stats?.scorer?.metrics?.spatial_f1 != null ? stats.scorer.metrics.spatial_f1.toFixed(3) : '—';
@@ -716,7 +763,7 @@ async function fetchPipelineLog() {
 }
 
 function renderPipelineLog(rows) {
-  const logContainer = document.getElementById('terminal-log');
+  const logContainer = mustEl('terminal-log');
   if (!logContainer) return;
   // Keep last ~20 lines, prepend new ones with typewriter-ish stagger
   const existing = logContainer.querySelectorAll('div').length;
@@ -754,7 +801,7 @@ function startDemoSimulation() {
 
 // --- Alert Feed with cap at 200 nodes ---
 function appendAlertCard(anomaly) {
-  const alertFeedContainer = document.getElementById('alert-feed');
+  const alertFeedContainer = mustEl('alert-feed');
   if (!alertFeedContainer) return;
   // Cap feed at 200 nodes
   if (alertFeedContainer.children.length >= 200) {
@@ -808,7 +855,7 @@ function appendAlertCard(anomaly) {
 
 // --- Mission Clock ---
 function initClock() {
-  const clockEl = document.getElementById('system-clock');
+  const clockEl = mustEl('system-clock');
   function update() {
     const now = new Date();
     const timeStr = now.toISOString().substring(11, 19);
@@ -882,14 +929,18 @@ function switchView(viewName) {
 
 // --- Live Alert Feed & Inspector Engine ---
 function initAlertFeed() {
-  const alertFeedContainer = document.getElementById('alert-feed');
-  const alertQueueContainer = document.getElementById('queue-alert-list');
+  const alertFeedContainer = mustEl('alert-feed');
+  const alertQueueContainer = mustEl('queue-alert-list');
 
   if (alertFeedContainer) {
     alertFeedContainer.innerHTML = '';
+    const filterMode = AppState.filterMode || 'corridor';
+    let items = AppState.anomalies;
+    if (filterMode === 'corridor') {
+      items = items.filter(a => a.cls !== 'UNRESOLVED' && a.name !== 'Unknown Facility');
+    }
     // Show up to 200 most recent
-    const items = AppState.anomalies.slice(0, 200);
-    items.forEach(anomaly => {
+    items.slice(0, 200).forEach(anomaly => {
       const isSelected = anomaly.id === AppState.selectedAnomalyId;
       const isSuppressed = !!anomaly.offshore_suppressed;
       const emLine = isSuppressed
@@ -992,14 +1043,14 @@ function selectAnomaly(id) {
   }
 
   // Update Inspector in Mission Control
-  const inspSelectedId = document.getElementById('insp-selected-id');
-  const inspName = document.getElementById('insp-name');
-  const inspType = document.getElementById('insp-type');
-  const inspConf = document.getElementById('insp-conf');
-  const inspTemp = document.getElementById('insp-temp');
-  const inspArea = document.getElementById('insp-area');
-  const inspFrp = document.getElementById('insp-frp');
-  const inspCh4 = document.getElementById('insp-ch4');
+  const inspSelectedId = mustEl('insp-selected-id');
+  const inspName = mustEl('insp-name');
+  const inspType = mustEl('insp-type');
+  const inspConf = mustEl('insp-conf');
+  const inspTemp = mustEl('insp-temp');
+  const inspArea = mustEl('insp-area');
+  const inspFrp = mustEl('insp-frp');
+  const inspCh4 = mustEl('insp-ch4');
 
   if (inspSelectedId) inspSelectedId.innerText = `ID: ${item.shortId}`;
   if (inspName) inspName.innerText = item.name;
@@ -1012,8 +1063,8 @@ function selectAnomaly(id) {
   if (inspArea) inspArea.innerText = item.area;
   if (inspFrp) inspFrp.innerText = item.frp;
   if (inspCh4) inspCh4.innerText = item.ch4Est ?? '--';
-  const inspCo2e = document.getElementById('insp-co2e');
-  const inspBc = document.getElementById('insp-bc');
+  const inspCo2e = mustEl('insp-co2e');
+  const inspBc = mustEl('insp-bc');
   if (inspCo2e) {
     inspCo2e.innerText = item.offshore_suppressed ? '-- t/h' : (item.co2e_rate_tph != null ? `${Number(item.co2e_rate_tph).toFixed(2)} t/h` : '-- t/h');
   }
@@ -1022,14 +1073,14 @@ function selectAnomaly(id) {
   }
 
   // Update Sentinel-2 (S2) Narrator Telemetry Input
-  const s2NarratorEl = document.getElementById('s2-narrator-input');
+  const s2NarratorEl = mustEl('s2-narrator-input');
   if (s2NarratorEl) {
     s2NarratorEl.value = generateS2NarratorInput(item);
   }
 
   // Update Diurnal Signature & Sparkline in Inspector
-  const inspDiurnalShape = document.getElementById('insp-diurnal-shape');
-  const inspDiurnalSparkline = document.getElementById('insp-diurnal-sparkline');
+  const inspDiurnalShape = mustEl('insp-diurnal-shape');
+  const inspDiurnalSparkline = mustEl('insp-diurnal-sparkline');
   if (inspDiurnalShape) {
     const shape = item.diurnal_shape || 'SPARSE';
     inspDiurnalShape.innerText = shape;
@@ -1050,9 +1101,9 @@ function selectAnomaly(id) {
   }
 
   // Update Decision Narrative, Statutory Tag, and "Why" Driver Chips
-  const inspReason = document.getElementById('insp-reason');
-  const inspCitedRule = document.getElementById('insp-cited-rule');
-  const inspWhyChips = document.getElementById('insp-why-chips');
+  const inspReason = mustEl('insp-reason');
+  const inspCitedRule = mustEl('insp-cited-rule');
+  const inspWhyChips = mustEl('insp-why-chips');
   if (inspReason) {
     inspReason.innerText = item.reason || item.reason_template || 'Grounded narrative analysis pending orbital pass.';
   }
@@ -1081,9 +1132,9 @@ function selectAnomaly(id) {
   }
 
   // Update Incident Summary in Alert Console
-  const alertSumId = document.getElementById('summary-anomaly-id');
-  const alertSumSev = document.getElementById('summary-severity-badge');
-  const alertSumCoords = document.getElementById('summary-coords');
+  const alertSumId = mustEl('summary-anomaly-id');
+  const alertSumSev = mustEl('summary-severity-badge');
+  const alertSumCoords = mustEl('summary-coords');
   if (alertSumId) alertSumId.innerText = item.id;
   if (alertSumSev) {
     alertSumSev.innerHTML = `<span class="material-symbols-outlined text-[16px]">warning</span> ${item.severity}`;
@@ -1092,10 +1143,10 @@ function selectAnomaly(id) {
   if (alertSumCoords) alertSumCoords.innerText = `${item.name}: ${item.coordsStr}`;
 
   // Update Dossier Info
-  const dossierId = document.getElementById('dossier-id');
-  const dossierType = document.getElementById('dossier-type');
-  const dossierSev = document.getElementById('dossier-severity');
-  const dossierFacility = document.getElementById('dossier-facility');
+  const dossierId = mustEl('dossier-id');
+  const dossierType = mustEl('dossier-type');
+  const dossierSev = mustEl('dossier-severity');
+  const dossierFacility = mustEl('dossier-facility');
   if (dossierId) dossierId.innerText = `ID ${item.id}`;
   if (dossierType) {
     dossierType.innerText = item.type;
@@ -1114,7 +1165,7 @@ function selectAnomaly(id) {
 
 // --- Interactive Map HUD Engine (Vector & Leaflet Satellite Mode) ---
 function initMapCanvas() {
-  const mapContainer = document.getElementById('mission-map-svg');
+  const mapContainer = mustEl('mission-map-svg');
   if (!mapContainer) return;
 
   mapContainer.innerHTML = '';
@@ -1146,7 +1197,12 @@ function initMapCanvas() {
   }
 
   // Plot Hotspots from AppState.anomalies (cap at 200)
-  AppState.anomalies.slice(0, 200).forEach((anomaly) => {
+  const filterMode = AppState.filterMode || 'corridor';
+  let items = AppState.anomalies;
+  if (filterMode === 'corridor') {
+    items = items.filter(a => a.cls !== 'UNRESOLVED' && a.name !== 'Unknown Facility');
+  }
+  items.slice(0, 200).forEach((anomaly) => {
     const isSuppressed = !!anomaly.offshore_suppressed;
     const x = 240 + (anomaly.coords.lon - 68) * 28;
     const y = 520 - (anomaly.coords.lat - 18) * 26;
@@ -1198,11 +1254,11 @@ function initMapCanvas() {
 // --- Real Leaflet Dark Matter Satellite Engine ---
 function setMapMode(mode) {
   AppState.mapMode = mode;
-  const vectorContainer = document.getElementById('mission-map-svg');
-  const leafletContainer = document.getElementById('leaflet-map-container');
-  const radarSweep = document.getElementById('map-radar-sweep');
-  const btnVector = document.getElementById('btn-map-vector');
-  const btnSat = document.getElementById('btn-map-satellite');
+  const vectorContainer = mustEl('mission-map-svg');
+  const leafletContainer = mustEl('leaflet-map-container');
+  const radarSweep = mustEl('map-radar-sweep');
+  const btnVector = mustEl('btn-map-vector');
+  const btnSat = mustEl('btn-map-satellite');
 
   SoundFX.playBlip();
 
@@ -1234,13 +1290,13 @@ function setMapMode(mode) {
 
 function initLeafletMap() {
   if (typeof L === 'undefined') return;
-  const container = document.getElementById('leaflet-map-container');
+  const container = mustEl('leaflet-map-container');
   if (!container) return;
 
   if (!AppState.leafletMap) {
     AppState.leafletMap = L.map('leaflet-map-container', {
-      center: [22.8, 72.5],
-      zoom: 6,
+      center: [21.8, 71.5],
+      zoom: 8,
       zoomControl: false,
       attributionControl: false
     });
@@ -1266,8 +1322,15 @@ function refreshLeafletMap() {
   AppState.leafletMarkers.forEach(m => AppState.leafletMap.removeLayer(m));
   AppState.leafletMarkers = [];
 
+  // Filter based on corridor view mode (Condition C4)
+  const filterMode = AppState.filterMode || 'corridor';
+  let items = AppState.anomalies;
+  if (filterMode === 'corridor') {
+    items = items.filter(a => a.cls !== 'UNRESOLVED' && a.name !== 'Unknown Facility');
+  }
+
   // Plot current anomalies (cap at 200)
-  AppState.anomalies.slice(0, 200).forEach(anomaly => {
+  items.slice(0, 200).forEach(anomaly => {
     const isSuppressed = !!anomaly.offshore_suppressed;
     const markerColor = isSuppressed ? '#859397' : anomaly.typeColor;
     const opacity = isSuppressed ? '0.4' : '1.0';
@@ -1301,9 +1364,9 @@ function refreshLeafletMap() {
 
 // --- Visual Proof Before/After Swipe Slider Engine ---
 function initSwipeSlider() {
-  const container = document.getElementById('swipe-container');
-  const handle = document.getElementById('swipe-handle');
-  const afterImg = document.getElementById('swipe-after');
+  const container = mustEl('swipe-container');
+  const handle = mustEl('swipe-handle');
+  const afterImg = mustEl('swipe-after');
 
   if (!container || !handle || !afterImg) return;
 
@@ -1349,7 +1412,7 @@ function initSwipeSlider() {
 
 // --- Live Terminal Stream Simulator ---
 function initTerminalLog() {
-  const logContainer = document.getElementById('terminal-log');
+  const logContainer = mustEl('terminal-log');
   if (!logContainer) return;
 
   // Pre-populate with some initial lines (same as before)
@@ -1372,7 +1435,7 @@ function initTerminalLog() {
 }
 
 function appendTerminalLog(htmlMsg) {
-  const logContainer = document.getElementById('terminal-log');
+  const logContainer = mustEl('terminal-log');
   if (!logContainer) return;
   const div = document.createElement('div');
   div.innerHTML = htmlMsg;
@@ -1382,7 +1445,7 @@ function appendTerminalLog(htmlMsg) {
 
 // --- 365-Day Activity Heatmap Grid ---
 function initHeatmap() {
-  const container = document.getElementById('facility-heatmap-grid');
+  const container = mustEl('facility-heatmap-grid');
   if (!container) return;
 
   container.innerHTML = '';
@@ -1430,7 +1493,7 @@ function initHeatmap() {
 
 // --- Planck Radiation Curve Renderer ---
 function initPlanckCurve() {
-  const curveSvg = document.getElementById('planck-svg-curve');
+  const curveSvg = mustEl('planck-svg-curve');
   if (!curveSvg) return;
 
   const T = 1847;
@@ -1449,7 +1512,7 @@ function initPlanckCurve() {
 
 // --- Immutable Audit Table Engine ---
 function initAuditTable() {
-  const tbody = document.getElementById('audit-table-body');
+  const tbody = mustEl('audit-table-body');
   if (!tbody) return;
 
   tbody.innerHTML = '';
@@ -1468,12 +1531,12 @@ function initAuditTable() {
 
 // --- CSV Drag-and-Drop & File Ingestion Engine ---
 function initCSVUploader() {
-  const modal = document.getElementById('csv-modal');
-  const openBtn = document.getElementById('open-csv-btn');
-  const closeBtn = document.getElementById('close-csv-btn');
-  const dropzone = document.getElementById('csv-dropzone');
-  const fileInput = document.getElementById('csv-file-input');
-  const sampleBtn = document.getElementById('load-sample-csv-btn');
+  const modal = mustEl('csv-modal');
+  const openBtn = mustEl('open-csv-btn');
+  const closeBtn = mustEl('close-csv-btn');
+  const dropzone = mustEl('csv-dropzone');
+  const fileInput = mustEl('csv-file-input');
+  const sampleBtn = mustEl('load-sample-csv-btn');
 
   if (openBtn && modal) {
     openBtn.addEventListener('click', () => {
@@ -1531,143 +1594,110 @@ function handleCSVFile(file) {
   reader.readAsText(file);
 }
 
-function parseAndIngestCSV(csvText, filename = 'custom_firms.csv') {
-  const lines = csvText.trim().split(/\r?\n/);
-  if (lines.length < 2) {
-    alert('Invalid CSV file: missing rows.');
-    return;
-  }
-
-  const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-  const latIdx = headers.indexOf('latitude');
-  const lonIdx = headers.indexOf('longitude');
-  const frpIdx = headers.indexOf('frp');
-  const ti4Idx = headers.indexOf('bright_ti4');
-  const facilityIdx = headers.indexOf('nearest_facility');
-
-  if (latIdx === -1 || lonIdx === -1) {
-    alert('CSV missing required "latitude" and "longitude" columns.');
-    return;
-  }
-
-  const parsedAnomalies = [];
-  for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split(',').map(c => c.trim());
-    if (cols.length <= latIdx || cols.length <= lonIdx) continue;
-
-    const lat = parseFloat(cols[latIdx]);
-    const lon = parseFloat(cols[lonIdx]);
-    if (isNaN(lat) || isNaN(lon)) continue;
-
-    const frp = frpIdx !== -1 ? parseFloat(cols[frpIdx]) || 15.0 : 25.0;
-    const ti4 = ti4Idx !== -1 ? parseFloat(cols[ti4Idx]) || 340.0 : 350.0;
-    const facility = facilityIdx !== -1 && cols[facilityIdx] ? cols[facilityIdx] : `Cell (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
-
-    // Heuristic Classification
-    let type = 'GAS FLARE';
-    let typeColor = '#ffa94d';
-    let severity = 'HIGH';
-    let sevColor = '#ffb13b';
-
-    if (ti4 > 360 || frp > 50) {
-      severity = 'CRITICAL';
-      sevColor = '#ff4d4d';
-    } else if (frp < 10) {
-      severity = 'WARNING';
-      sevColor = '#ffd6a3';
-    }
-
-    if (facility.toLowerCase().includes('refinery') || facility.toLowerCase().includes('lng') || facility.toLowerCase().includes('port')) {
-      type = 'GAS FLARE';
-      typeColor = '#ffa94d';
-    } else if (facility.toLowerCase().includes('coal') || facility.toLowerCase().includes('thermal')) {
-      type = 'COAL SEAM';
-      typeColor = '#f59e0b';
-    } else {
-      type = 'INDUSTRIAL FIRE';
-      typeColor = '#ff4d4d';
-    }
-
-    parsedAnomalies.push({
-      id: `AGN-${10000 + i}`,
-      shortId: `F${i.toString(16).toUpperCase()}`,
-      name: facility,
-      facilityId: `FAC-${100 + i}`,
-      coords: { lat, lon },
-      coordsStr: `${lat.toFixed(3)}° N, ${lon.toFixed(3)}° E`,
-      time: 'LIVE ORBITAL PASS',
-      timestamp: 'LIVE',
-      severity,
-      type,
-      typeColor,
-      sevColor,
-      confidence: Number((0.85 + Math.min(0.12, (frp / 100.0) * 0.10)).toFixed(3)),
-      effTemp: `${Math.round(ti4 * 4.2)} K`,
-      tempValue: Math.round(ti4 * 4.2),
-      area: `${(frp * 0.35).toFixed(1)} m²`,
-      frp: `${frp.toFixed(1)} MW`,
-      frpValue: frp,
-      swirRad: `${(frp * 0.24).toFixed(1)} W/m²/sr/μm`,
-      mwirRad: `${(frp * 0.15).toFixed(1)} W/m²/sr/μm`,
-      ch4Est: `${(frp * 0.008).toFixed(2)} kg/s`,
-      co2e_rate_tph: +(frp * (type === 'GAS FLARE' ? 1.98 : (type === 'COAL SEAM' ? 3.96 : 3.42))).toFixed(2),
-      black_carbon_rate_kgph: +(frp * (type === 'GAS FLARE' ? 2.34 : (type === 'COAL SEAM' ? 1.44 : 3.06))).toFixed(2),
-      co2e_total_t: +(frp * (type === 'GAS FLARE' ? 1.98 : 3.42) * 24 * 2).toFixed(1),
-      status: 'DISPATCHED',
-      dispatchTime: 'NOW',
-      receivedTime: 'PENDING',
-      respondedTime: 'PENDING',
-      authority: 'District Emergency Command Cell'
-    });
-
-    if (parsedAnomalies.length >= 25) break; // Keep UI dense and clean
-  }
-
-  if (parsedAnomalies.length > 0) {
-    AppState.anomalies = parsedAnomalies;
-    AppState.selectedAnomalyId = parsedAnomalies[0].id;
-
-    // Update UI components
-    initAlertFeed();
-    initMapCanvas();
-    if (AppState.mapMode === 'satellite') {
-      refreshLeafletMap();
-    }
-    selectAnomaly(parsedAnomalies[0].id);
-
-    // Audio & Terminal feedback
-    SoundFX.playDispatch();
-    appendTerminalLog(`<span class="text-primary font-bold">[INGEST]</span> Ingested ${parsedAnomalies.length} real FIRMS detections from ${filename}`);
-
-    const modal = document.getElementById('csv-modal');
-    if (modal) modal.classList.add('hidden');
-    alert(`Successfully loaded ${parsedAnomalies.length} FIRMS detections from ${filename}!`);
-  }
+function handleCSVFile(file) {
+  executeBackendPipeline(file, file.name);
 }
 
 function loadSampleFirmsCSV() {
-  fetch('firms_india_persistent.csv')
-    .then(res => res.text())
-    .then(text => {
-      parseAndIngestCSV(text, 'firms_india_persistent.csv');
-    })
-    .catch(() => {
-      // Fallback inline sample
-      const sample = `latitude,longitude,hits,days,night_hits,median_ti4,median_ti5,max_frp,mean_frp,nearest_facility
-21.1,72.64,12,3,7,332.62,292.92,9.54,5.02,Hazira LNG/Steel
-22.35,70.02,18,4,9,368.12,305.4,62.1,45.2,Jamnagar Refinery
-26.88,73.52,4,3,4,306.56,293.0,2.78,1.66,Bathinda Refinery
-23.26,70.26,2,2,2,301.96,285.99,1.26,0.91,Kandla Port
-15.18,76.66,6,2,5,321.95,286.77,7.11,3.63,Mangalore Refinery
-29.46,76.88,5,2,5,307.39,284.39,5.21,2.91,Panipat Refinery`;
-      parseAndIngestCSV(sample, 'firms_india_persistent.csv');
+  executeBackendPipeline(null, '5-day Gujarat Corridor Feed');
+}
+
+async function executeBackendPipeline(fileOrNull, filename = 'corridor_feed.csv') {
+  const liveProgress = mustEl('pipeline-live-progress');
+  const spinner = mustEl('pipeline-spinner');
+  const totalTimeEl = mustEl('pipeline-total-time');
+  const summaryEl = mustEl('pipeline-run-summary');
+
+  if (liveProgress) liveProgress.classList.remove('hidden');
+  if (summaryEl) summaryEl.classList.add('hidden');
+  if (spinner) spinner.classList.add('animate-spin');
+  if (totalTimeEl) totalTimeEl.innerText = 'RUNNING...';
+
+  // Reset stage indicators
+  const stages = ['ingest', 'landcover', 'cluster', 'dozier', 'score', 'dispatch'];
+  stages.forEach(st => {
+    const statusEl = mustEl(`stage-${st}-status`);
+    const msEl = mustEl(`stage-${st}-ms`);
+    if (statusEl) {
+      statusEl.innerText = '⏳';
+      statusEl.className = 'w-4 h-4 rounded-full flex items-center justify-center text-[10px] bg-amber-900 text-amber-300 font-bold';
+    }
+    if (msEl) msEl.innerText = '-- ms';
+  });
+
+  appendTerminalLog(`<span class="text-cyan-400 font-bold">[PIPELINE]</span> Initiating 6-stage telemetry run on ${filename}...`);
+
+  try {
+    let response;
+    if (fileOrNull) {
+      const formData = new FormData();
+      formData.append('file', fileOrNull);
+      response = await fetch('/api/pipeline/run', {
+        method: 'POST',
+        body: formData
+      });
+    } else {
+      response = await fetch('/api/pipeline/run', {
+        method: 'POST'
+      });
+    }
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ detail: 'Pipeline execution failed' }));
+      alert(`Pipeline error: ${err.detail || response.statusText}`);
+      if (totalTimeEl) totalTimeEl.innerText = 'ERROR';
+      if (spinner) spinner.classList.remove('animate-spin');
+      return;
+    }
+
+    const runData = await response.json();
+    if (totalTimeEl) totalTimeEl.innerText = `${runData.total_ms.toFixed(1)} ms`;
+    if (spinner) spinner.classList.remove('animate-spin');
+
+    // Update stages with measured wall-clock millisecond durations
+    const durations = runData.stage_durations || {};
+    stages.forEach(st => {
+      const statusEl = mustEl(`stage-${st}-status`);
+      const msEl = mustEl(`stage-${st}-ms`);
+      const dur = durations[st] != null ? Number(durations[st]).toFixed(1) : '1.0';
+      if (statusEl) {
+        statusEl.innerText = '✓';
+        statusEl.className = 'w-4 h-4 rounded-full flex items-center justify-center text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-600 font-bold';
+      }
+      if (msEl) msEl.innerText = `${dur} ms`;
     });
+
+    if (summaryEl) {
+      summaryEl.classList.remove('hidden');
+      summaryEl.innerHTML = `
+        <div class="font-bold text-cyan-300">✓ RUN ${runData.run_id} COMPLETE (${runData.total_ms.toFixed(1)} ms)</div>
+        <div class="grid grid-cols-2 gap-1 text-[9px] pt-1">
+          <div>Raw records: <span class="text-white font-bold">${runData.raw_records}</span></div>
+          <div>Clusters formed: <span class="text-white font-bold">${runData.clusters_formed}</span></div>
+          <div>Dozier converged: <span class="text-white font-bold">${runData.dozier_converged}</span></div>
+          <div>Facilities matched: <span class="text-white font-bold">${runData.facilities_matched}</span></div>
+          <div>Alerts dispatched: <span class="text-white font-bold">${runData.alerts_dispatched}</span></div>
+          <div>Non-industrial: <span class="text-amber-400 font-bold">${runData.unresolved_count}</span></div>
+        </div>
+      `;
+    }
+
+    appendTerminalLog(`<span class="text-emerald-400 font-bold">[PIPELINE]</span> Run ${runData.run_id} finished in ${runData.total_ms.toFixed(1)} ms. ${runData.facilities_matched} facility matches, ${runData.dozier_converged} Dozier inversions.`);
+
+    // Refresh live detections from backend
+    await setupLiveMode();
+    SoundFX.playDispatch();
+  } catch (exc) {
+    console.error('Pipeline execution exception:', exc);
+    if (totalTimeEl) totalTimeEl.innerText = 'FAILED';
+    if (spinner) spinner.classList.remove('animate-spin');
+  }
 }
 
 // --- Interactive Modal & Event Listeners ---
 function initEventListeners() {
   // Audio toggle listener
-  const audioBtn = document.getElementById('audio-toggle-btn');
+  const audioBtn = mustEl('audio-toggle-btn');
   if (audioBtn) {
     audioBtn.addEventListener('click', () => {
       SoundFX.toggle();
@@ -1675,8 +1705,8 @@ function initEventListeners() {
   }
 
   // Map Switcher buttons
-  const btnVector = document.getElementById('btn-map-vector');
-  const btnSat = document.getElementById('btn-map-satellite');
+  const btnVector = mustEl('btn-map-vector');
+  const btnSat = mustEl('btn-map-satellite');
   if (btnVector) {
     btnVector.addEventListener('click', () => setMapMode('vector'));
   }
@@ -1684,11 +1714,97 @@ function initEventListeners() {
     btnSat.addEventListener('click', () => setMapMode('satellite'));
   }
 
+  // Corridor Filter Mode buttons (Condition C4)
+  const filterCorridorBtn = mustEl('filter-corridor-btn');
+  const filterAllBtn = mustEl('filter-all-btn');
+  if (filterCorridorBtn && filterAllBtn) {
+    filterCorridorBtn.addEventListener('click', () => {
+      SoundFX.playBlip();
+      AppState.filterMode = 'corridor';
+      filterCorridorBtn.className = 'px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-primary text-black font-bold transition-all';
+      filterAllBtn.className = 'px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-surface-container text-on-surface-variant hover:text-primary transition-all';
+      initAlertFeed();
+      initMapCanvas();
+      if (AppState.mapMode === 'satellite') refreshLeafletMap();
+    });
+
+    filterAllBtn.addEventListener('click', () => {
+      SoundFX.playBlip();
+      AppState.filterMode = 'all';
+      filterAllBtn.className = 'px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-primary text-black font-bold transition-all';
+      filterCorridorBtn.className = 'px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-surface-container text-on-surface-variant hover:text-primary transition-all';
+      initAlertFeed();
+      initMapCanvas();
+      if (AppState.mapMode === 'satellite') refreshLeafletMap();
+    });
+  }
+
+  // Hero Quick-Focus Deep-Link buttons (Condition C5)
+  function focusHero(heroId) {
+    SoundFX.playBlip();
+    if (AppState.filterMode !== 'corridor') {
+      AppState.filterMode = 'corridor';
+      if (filterCorridorBtn) filterCorridorBtn.className = 'px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-primary text-black font-bold transition-all';
+      if (filterAllBtn) filterAllBtn.className = 'px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-surface-container text-on-surface-variant hover:text-primary transition-all';
+      initAlertFeed();
+      initMapCanvas();
+    }
+    selectAnomaly(heroId);
+    const item = AppState.anomalies.find(a => a.id === heroId);
+    if (item && AppState.leafletMap) {
+      if (AppState.mapMode !== 'satellite') setMapMode('satellite');
+      AppState.leafletMap.flyTo([item.coords.lat, item.coords.lon], 12, { duration: 1.2 });
+    }
+  }
+
+  const heroF1 = mustEl('hero-flare-1-btn');
+  const heroF2 = mustEl('hero-flare-2-btn');
+  const heroLk = mustEl('hero-leak-btn');
+  if (heroF1) heroF1.addEventListener('click', () => focusHero('AV-0B12A4B9'));
+  if (heroF2) heroF2.addEventListener('click', () => focusHero('AV-95BA9779'));
+  if (heroLk) heroLk.addEventListener('click', () => focusHero('AV-07D8247D'));
+
+  // Pipeline modal actions
+  const runCorridorBtn = mustEl('run-corridor-btn');
+  if (runCorridorBtn) {
+    runCorridorBtn.addEventListener('click', () => {
+      SoundFX.playBlip();
+      executeBackendPipeline(null, '5-day Gujarat Corridor Feed');
+    });
+  }
+
+  const viewMapBtn = mustEl('pipeline-view-map-btn');
+  const csvModal = mustEl('csv-modal');
+  if (viewMapBtn && csvModal) {
+    viewMapBtn.addEventListener('click', () => {
+      csvModal.classList.add('hidden');
+      switchView('mission-control');
+      if (AppState.mapMode !== 'satellite') setMapMode('satellite');
+    });
+  }
+
+  // Provenance Chip listener (P5)
+  const provChip = mustEl('provenance-chip');
+  if (provChip) {
+    provChip.addEventListener('click', async () => {
+      SoundFX.playBlip();
+      try {
+        const res = await fetch('/api/provenance');
+        if (res.ok) {
+          const prov = await res.json();
+          alert(`PROVENANCE INFORMATION:\n• Dataset: ${prov.dataset_name}\n• Sensor: ${prov.sensor}\n• Window: ${prov.temporal_window}\n• Total Clusters: ${prov.total_detections}\n• Facilities Matched: ${prov.facilities_matched}\n• Dozier Converged: ${prov.dozier_converged}\n• Non-industrial Unattributed: ${prov.unresolved_count}\n• Disclosure: ${prov.threshold_disclosure}`);
+        }
+      } catch (e) {
+        console.warn('Could not fetch provenance:', e);
+      }
+    });
+  }
+
   // Dispatch Modal Open
   const dispatchButtons = document.querySelectorAll('[data-action="open-dispatch"]');
-  const modal = document.getElementById('dispatch-modal');
-  const closeModalBtn = document.getElementById('close-dispatch-modal');
-  const confirmDispatchBtn = document.getElementById('confirm-dispatch-btn');
+  const modal = mustEl('dispatch-modal');
+  const closeModalBtn = mustEl('close-dispatch-modal');
+  const confirmDispatchBtn = mustEl('confirm-dispatch-btn');
 
   dispatchButtons.forEach(btn => {
     btn.addEventListener('click', () => {

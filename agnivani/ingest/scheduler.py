@@ -174,47 +174,90 @@ def build_records(raw,sources,features,scores,settings=None,stage_ms:dict[str,in
           "landcover_class":lc_class,"landcover_status":(f.get("landcover_status") if hasattr(f, "get") else None) or (s.get("landcover_status") if hasattr(s, "get") else None) or "unavailable"})
     return records
 
-async def process_once(app,fetch_days=1,fetch=True):
+import uuid
+
+async def process_once(app, fetch_days=1, fetch=True, raw_df=None, filename="corridor_feed.csv"):
     tracer = StageTracer()
-    settings=app.state.settings; store=app.state.store
+    settings = app.state.settings; store = app.state.store
 
     with tracer.stage("VIIRS INGEST"):
-        if fetch: await FirmsClient(settings).fetch_range(fetch_days)
-        raw=await asyncio.to_thread(load_all,settings.data_dir)
-    store.log("VIIRS INGEST",f"normalised {len(raw)} mainland detections",elapsed_ms=tracer.get_ms("VIIRS INGEST"))
+        if raw_df is not None:
+            raw = raw_df
+        else:
+            if fetch: await FirmsClient(settings).fetch_range(fetch_days)
+            raw = await asyncio.to_thread(load_all, settings.data_dir)
+    ms1 = tracer.get_ms("VIIRS INGEST")
+    store.log("VIIRS INGEST", f"normalised {len(raw)} mainland detections", elapsed_ms=ms1)
+    await app.state.broker.publish("pipeline_stage", {"stage": "VIIRS INGEST", "status": "completed", "ms": ms1, "detail": f"normalised {len(raw)} mainland detections"})
 
-    if raw.empty:return []
+    if raw.empty:
+        run_id = f"RUN-{uuid.uuid4().hex[:8].upper()}"
+        store.record_pipeline_run(run_id, filename, 0, 0, {"VIIRS INGEST": ms1}, "EMPTY", ms1)
+        return []
 
     with tracer.stage("INDIA FILTER"):
         from agnivani.geo.india import point_in_india
         if "latitude" in raw.columns and "longitude" in raw.columns:
             _ = [point_in_india(float(lon), float(lat)) for lat, lon in zip(raw["latitude"][:10], raw["longitude"][:10])]
-    store.log("INDIA FILTER","filtered to Indian mainland and islands",elapsed_ms=tracer.get_ms("INDIA FILTER"))
+    ms2 = tracer.get_ms("INDIA FILTER")
+    store.log("INDIA FILTER", "filtered to Indian mainland and islands", elapsed_ms=ms2)
+    await app.state.broker.publish("pipeline_stage", {"stage": "INDIA FILTER", "status": "completed", "ms": ms2, "detail": "filtered to Indian mainland and islands"})
 
     with tracer.stage("SOURCE CLUSTER"):
-        sources=await asyncio.to_thread(cluster_sources,raw,settings.cluster_cell_deg)
-    store.log("SOURCE CLUSTER",f"clustered into {len(sources)} spatial sources",elapsed_ms=tracer.get_ms("SOURCE CLUSTER"))
+        sources = await asyncio.to_thread(cluster_sources, raw, settings.cluster_cell_deg)
+    ms3 = tracer.get_ms("SOURCE CLUSTER")
+    store.log("SOURCE CLUSTER", f"clustered into {len(sources)} spatial sources", elapsed_ms=ms3)
+    await app.state.broker.publish("pipeline_stage", {"stage": "SOURCE CLUSTER", "status": "completed", "ms": ms3, "detail": f"clustered into {len(sources)} spatial sources"})
 
-    facilities=await asyncio.to_thread(load_facilities,settings.data_dir)
+    facilities = await asyncio.to_thread(load_facilities, settings.data_dir)
     from agnivani.geo.landcover import resolve_landcover_batch
-    lc_dict=await asyncio.to_thread(resolve_landcover_batch,sources,settings.data_dir)
+    lc_dict = await asyncio.to_thread(resolve_landcover_batch, sources, settings.data_dir)
 
     with tracer.stage("PLANCK RETRIEVAL"):
-        features=await asyncio.to_thread(build_features,sources,facilities,lc_dict)
-    store.log("PLANCK RETRIEVAL","executed Dozier/Planck sub-pixel dual-band temperature retrieval",elapsed_ms=tracer.get_ms("PLANCK RETRIEVAL"))
+        features = await asyncio.to_thread(build_features, sources, facilities, lc_dict)
+    ms4 = tracer.get_ms("PLANCK RETRIEVAL")
+    store.log("PLANCK RETRIEVAL", "executed Dozier/Planck sub-pixel dual-band temperature retrieval", elapsed_ms=ms4)
+    await app.state.broker.publish("pipeline_stage", {"stage": "PLANCK RETRIEVAL", "status": "completed", "ms": ms4, "detail": "executed Dozier/Planck sub-pixel dual-band temperature retrieval"})
 
     with tracer.stage("REGISTRY JOIN"):
         canonical_feats = canonical_frame(features)
-    store.log("REGISTRY JOIN","joined with GEM and OSM industrial facility registries",elapsed_ms=tracer.get_ms("REGISTRY JOIN"))
+    ms5 = tracer.get_ms("REGISTRY JOIN")
+    store.log("REGISTRY JOIN", "joined with GEM and OSM industrial facility registries", elapsed_ms=ms5)
+    await app.state.broker.publish("pipeline_stage", {"stage": "REGISTRY JOIN", "status": "completed", "ms": ms5, "detail": "joined with GEM and OSM industrial facility registries"})
 
     with tracer.stage("CLASSIFY"):
-        scores=await asyncio.to_thread(app.state.scorer.score,canonical_feats)
-    store.log("CLASSIFY",f"scored and stored {len(sources)} sources",elapsed_ms=tracer.get_ms("CLASSIFY"))
+        scores = await asyncio.to_thread(app.state.scorer.score, canonical_feats)
+    ms6 = tracer.get_ms("CLASSIFY")
+    store.log("CLASSIFY", f"scored and stored {len(sources)} sources", elapsed_ms=ms6)
+    await app.state.broker.publish("pipeline_stage", {"stage": "CLASSIFY", "status": "completed", "ms": ms6, "detail": f"scored and stored {len(sources)} sources"})
 
-    records=build_records(raw,sources,features,scores,settings=settings,tracer=tracer)
-    for item in records:store.upsert_detection(item)
-    for item in records:await app.state.broker.publish("detection",item)
-    await app.state.broker.publish("ingest",{"detections":len(raw),"sources":len(records),"at":datetime.now(timezone.utc).isoformat()})
+    records = build_records(raw, sources, features, scores, settings=settings, tracer=tracer)
+    for item in records: store.upsert_detection(item)
+    for item in records: await app.state.broker.publish("detection", item)
+    await app.state.broker.publish("ingest", {"detections": len(raw), "sources": len(records), "at": datetime.now(timezone.utc).isoformat()})
+
+    stages_dict = {
+        "VIIRS INGEST": ms1,
+        "INDIA FILTER": ms2,
+        "SOURCE CLUSTER": ms3,
+        "PLANCK RETRIEVAL": ms4,
+        "REGISTRY JOIN": ms5,
+        "CLASSIFY": ms6
+    }
+    total_ms = sum(stages_dict.values())
+    run_id = f"RUN-{uuid.uuid4().hex[:8].upper()}"
+    store.record_pipeline_run(run_id, filename, len(raw), len(records), stages_dict, "SUCCESS", total_ms)
+    app.state.last_run = {
+        "run_id": run_id,
+        "ts": datetime.now(timezone.utc),
+        "filename": filename,
+        "num_raw": len(raw),
+        "num_sources": len(records),
+        "stages": stages_dict,
+        "status": "SUCCESS",
+        "total_ms": total_ms
+    }
+    await app.state.broker.publish("pipeline_run_completed", app.state.last_run)
     return records
 
 async def scheduler_loop(app):

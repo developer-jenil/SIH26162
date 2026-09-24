@@ -23,3 +23,13 @@ class DispatchRequest(BaseModel): detection_id:str; authority:str; channel:Liter
 class DispatchOut(BaseModel): dispatch_id:str; status:Literal["queued","sent","failed"]; receipt:str|None=None; dispatched_at:datetime
 class FacilityOut(BaseModel): facility_id:str; name:str; lat:float; lon:float; sector:str; district:str|None=None; state:str|None=None; source_of_truth:str
 class PipelineLogOut(BaseModel): id:int; ts:datetime; stage:str; level:str; message:str; elapsed_ms:int|None=None
+class PipelineRunOut(BaseModel):
+    run_id: str
+    ts: datetime
+    filename: str
+    num_raw: int
+    num_sources: int
+    stages: dict[str, int] | list[dict] | None = None
+    status: str
+    total_ms: int
+

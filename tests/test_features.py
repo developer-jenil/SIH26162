@@ -15,8 +15,9 @@ def test_coordinate_free_and_registry_gap(tmp_path):
 
 def test_landcover_cropland_and_water(tmp_path):
     from agnivani.geo.landcover import resolve_landcover
-    assert resolve_landcover(30.3, 75.8, tmp_path) == "cropland"
-    assert resolve_landcover(8.34184, 77.54288, tmp_path) == "water"
+    # When offline without rasters, no coarse fallback is fabricated
+    assert resolve_landcover(30.3, 75.8, tmp_path) == "unknown"
+    assert resolve_landcover(8.34184, 77.54288, tmp_path) == "unknown"
 
     cropland_cluster = pd.DataFrame([{
         "source_id": "CROP_1", "centroid_lat": 30.3, "centroid_lon": 75.8,
@@ -37,13 +38,19 @@ def test_landcover_cropland_and_water(tmp_path):
         "recurrence_gap_days": 0.0, "flare_score": 5.0
     }])
     facs = load_facilities(tmp_path)
-    feat_crop = build_features(cropland_cluster, facs)
+    # When resolved landcover dictionary is provided:
+    feat_crop = build_features(cropland_cluster, facs, lc_dict={"CROP_1": "cropland"})
     assert feat_crop.iloc[0]["landcover_cropland"] == 1.0
     assert feat_crop.iloc[0]["landcover_water"] == 0.0
 
-    feat_sea = build_features(sea_cluster, facs)
+    feat_sea = build_features(sea_cluster, facs, lc_dict={"SEA_1": "water"})
     assert feat_sea.iloc[0]["landcover_water"] == 1.0
     assert feat_sea.iloc[0]["landcover_cropland"] == 0.0
+
+    # Offline without lc_dict defaults honestly to unknown
+    feat_offline = build_features(cropland_cluster, facs)
+    assert feat_offline.iloc[0]["landcover_unknown"] == 1.0
+    assert feat_offline.iloc[0]["landcover_status"] == "unavailable"
 
 def test_reproduce_av_8a95cffe_offshore_suppression(tmp_path):
     from agnivani.models.scorer import HeuristicScorer, CLASSES
@@ -58,7 +65,7 @@ def test_reproduce_av_8a95cffe_offshore_suppression(tmp_path):
         "recurrence_gap_days": 0.0, "flare_score": 5.0
     }])
     facs = load_facilities(tmp_path)
-    feats = build_features(av_cluster, facs)
+    feats = build_features(av_cluster, facs, lc_dict={"AV-8A95CFFE": "water"})
     assert feats.iloc[0]["landcover_water"] == 1.0
 
     scorer = HeuristicScorer()
@@ -254,7 +261,7 @@ def test_emission_proxy_offshore_suppressed_emits_null(tmp_path):
         "recurrence_gap_days": 0.0, "flare_score": 5.0, "frp_derived_MW": 45.0
     }])
     facs = load_facilities(tmp_path)
-    feats = build_features(sea_cluster, facs)
+    feats = build_features(sea_cluster, facs, lc_dict={"SEA_EMIT_1": "water"})
     assert feats.iloc[0]["landcover_water"] == 1.0
 
     scorer = HeuristicScorer()

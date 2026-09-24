@@ -87,10 +87,12 @@ class HeuristicScorer(BaseScorer):
 
             if is_offshore:
                 cls, conf, why = "UNRESOLVED", 0.10, "unverified/offshore-suppressed"
-            elif pd.isna(t) and dist < 3000 and sector in {"REFI_GAS", "FERTILIZER"} and r.night_frac > 0.5:
-                cls, conf, why = "LEAK", 0.55, "no MIR excess near gas-sector facility"
-            elif pd.notna(t) and t >= 1500 and r.night_frac >= 0.5 and r.n_days >= 5 and r.frp_cv < 0.9 and dist < 5000:
+            elif pd.notna(t) and t >= 450.0 and r.night_frac >= 0.5 and r.n_days >= 3 and r.frp_cv < 1.5 and dist < 5000:
                 cls, conf, why = "FLARE", 0.90, "hot, persistent nighttime source near industrial facility"
+            elif (pd.isna(t) or t is None) and frp_max >= 25.0 and r.night_frac >= 0.70 and dist <= 3500 and sector in {"REFI_GAS", "POWER", "STEEL"}:
+                cls, conf, why = "FLARE", 0.60, "Dozier unresolved (background_unavailable); classified on radiative power + nocturnal persistence + facility proximity"
+            elif pd.isna(t) and dist < 3000 and sector in {"REFI_GAS", "FERTILIZER"} and r.night_frac > 0.5:
+                cls, conf, why = "LEAK", 0.55, "candidate fugitive thermal anomaly - low confidence"
             elif pd.notna(t) and t < 1000 and r.span_days >= 60 and np.expm1(r.log1p_frp_max) < 5 and r.cluster_extent_m > 1000:
                 cls, conf, why = "COAL", 0.82, "cool, spatially extended long-duration source"
             elif is_cropland and (shape == "EVENING_BURST" or (16 <= hour <= 20 and dist > 2000)):

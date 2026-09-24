@@ -84,7 +84,7 @@ def cluster_sources(df: pd.DataFrame, cell_deg: float = 0.02) -> pd.DataFrame:
     columns = ["source_id","n_hits","n_days","n_nights","night_frac","first_seen","last_seen","span_days",
                "frp_mean","frp_max","frp_median","frp_cv","ti4_median","ti4_max","ti5_median","dT_median",
                "ti4_std","local_solar_hour","pixel_area_m2","cluster_extent_m","fill_ratio","recurrence_gap_days",
-               "centroid_lat","centroid_lon","flare_score","diurnal_hist","diurnal_shape"]
+               "centroid_lat","centroid_lon","flare_score","diurnal_hist","diurnal_shape","t_bg_K","t_bg_method"]
     if df.empty:
         empty_res = pd.DataFrame(columns=columns)
         empty_res["landcover_class"] = pd.Series(dtype=object)
@@ -94,6 +94,19 @@ def cluster_sources(df: pd.DataFrame, cell_deg: float = 0.02) -> pd.DataFrame:
     work["lat_cell"] = np.floor(work.latitude / cell_deg).astype(int)
     work["lon_cell"] = np.floor(work.longitude / cell_deg).astype(int)
     work["dT"] = work.bright_ti4 - work.bright_ti5
+
+    # Regional ambient background estimation across the dataset (priority b)
+    ambient_ti5 = None
+    if "bright_ti5" in work.columns:
+        if "frp" in work.columns:
+            low_frp = work.loc[(work["frp"] < 5.0) & work["bright_ti5"].notna(), "bright_ti5"]
+            if len(low_frp) > 0:
+                ambient_ti5 = float(low_frp.median())
+        if ambient_ti5 is None:
+            valid_ti5 = work["bright_ti5"].dropna()
+            if len(valid_ti5) > 0:
+                ambient_ti5 = float(valid_ti5.median())
+
     records = []
     for (la, lo), g in work.groupby(["lat_cell", "lon_cell"], sort=True):
         first, last = pd.to_datetime(g.acq_utc).min(), pd.to_datetime(g.acq_utc).max()
@@ -133,6 +146,18 @@ def cluster_sources(df: pd.DataFrame, cell_deg: float = 0.02) -> pd.DataFrame:
 
         lsh = float(g.local_solar_hour.median()) if "local_solar_hour" in g.columns and g.local_solar_hour.notna().any() else float(np.median(hours))
 
+        # Independent background estimation (Option D priority order):
+        valid_g_ti5 = g["bright_ti5"].dropna() if "bright_ti5" in g.columns else pd.Series(dtype=float)
+        if len(valid_g_ti5) >= 3:
+            t_bg_val = float(np.percentile(valid_g_ti5, 5))
+            t_bg_meth = "cluster_5th_percentile"
+        elif ambient_ti5 is not None:
+            t_bg_val = float(ambient_ti5)
+            t_bg_meth = "regional_ambient"
+        else:
+            t_bg_val = None
+            t_bg_meth = "background_unavailable"
+
         row = {"source_id": _source_id(la, lo), "n_hits": len(g), "n_days": int(pd.to_datetime(g.acq_date).nunique()),
                "n_nights": n_nights, "first_seen": first, "last_seen": last,
                "span_days": int((last.normalize() - first.normalize()).days) + 1, "frp_mean": mean,
@@ -142,7 +167,8 @@ def cluster_sources(df: pd.DataFrame, cell_deg: float = 0.02) -> pd.DataFrame:
                "ti4_std": float(g.bright_ti4.std(ddof=0)), "local_solar_hour": lsh,
                "pixel_area_m2": float(g.pixel_area_m2.median()), "cluster_extent_m": _extent(g), "fill_ratio": 1.0,
                "recurrence_gap_days": _recurrence(g), "centroid_lat": float(g.latitude.mean()), "centroid_lon": float(g.longitude.mean()),
-               "night_frac": night_frac, "diurnal_hist": hist, "diurnal_shape": shape}
+               "night_frac": night_frac, "diurnal_hist": hist, "diurnal_shape": shape,
+               "t_bg_K": t_bg_val, "t_bg_method": t_bg_meth}
         row["flare_score"] = flare_score(row)
         records.append(row)
     res = pd.DataFrame(records, columns=columns)

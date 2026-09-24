@@ -45,13 +45,16 @@ def spatial_block_id(lat: float, lon: float, size_deg: float = 2.0) -> str:
     return f"{math.floor(lat/size_deg)}_{math.floor(lon/size_deg)}"
 
 
-def build_features(sources_df: pd.DataFrame, facilities_gdf, landcover=None) -> pd.DataFrame:
+def build_features(sources_df: pd.DataFrame, facilities_gdf, landcover=None, lc_dict=None) -> pd.DataFrame:
+    if landcover is None and lc_dict is not None:
+        landcover = lc_dict
     from agnivani.geo.landcover import resolve_landcover
     from agnivani.geo.cluster import compute_diurnal_shape
     rows=[]
     for _, s in sources_df.iterrows():
         facility, distance = nearest_facility(facilities_gdf, s.centroid_lat, s.centroid_lon)
-        retrieval = dozier(float(s.ti4_median), float(s.ti5_median), float(s.get("pixel_area_m2",375**2)))
+        t_bg_val = s.get("t_bg_K") if pd.notna(s.get("t_bg_K")) else None
+        retrieval = dozier(float(s.ti4_median), float(s.ti5_median), float(s.get("pixel_area_m2",375**2)), t_bg_K=t_bg_val)
         sector = facility.sector if facility else "UNKNOWN"
         raw_lc = s.get("landcover_class")
         if (raw_lc is None or pd.isna(raw_lc) or str(raw_lc).lower().strip() in ("unknown", "nan", "none", "")) and landcover is not None:

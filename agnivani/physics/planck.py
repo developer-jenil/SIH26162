@@ -96,14 +96,27 @@ class Retrieval:
     flags: list[str] = field(default_factory=list)
 
 
-def dozier(bt_mir_K: float, bt_tir_K: float, pixel_area_m2: float) -> Retrieval:
+def dozier(bt_mir_K: float, bt_tir_K: float, pixel_area_m2: float, t_bg_K: float | None = None) -> Retrieval:
     if pixel_area_m2 <= 0:
         raise ValueError("pixel_area_m2 must be positive")
+    
+    # Priority c / Self-background fallback:
+    if t_bg_K is None or float(t_bg_K) >= float(bt_tir_K):
+        t_bg = float(bt_tir_K)
+        L4 = planck_radiance(LAM_MIR, bt_mir_K)
+        B4b = planck_radiance(LAM_MIR, t_bg)
+        if L4 <= B4b * 1.0001:
+            return Retrieval(None, t_bg, 0.0, None, False, ["NO_MIR_EXCESS"])
+        flag = "NO_ROOT" if t_bg_K is None else "BACKGROUND_UNAVAILABLE"
+        return Retrieval(None, t_bg, 0.0, None, False, [flag])
+
+    t_bg = float(t_bg_K)
     L4, L5 = planck_radiance(LAM_MIR, bt_mir_K), planck_radiance(LAM_TIR, bt_tir_K)
-    t_bg = float(bt_tir_K)
     B4b, B5b = planck_radiance(LAM_MIR, t_bg), planck_radiance(LAM_TIR, t_bg)
     if L4 <= B4b * 1.0001:
         return Retrieval(None, t_bg, 0.0, None, False, ["NO_MIR_EXCESS"])
+    if L5 <= B5b:
+        return Retrieval(None, t_bg, 0.0, None, False, ["NO_TIR_EXCESS"])
 
     def g(temp: float) -> float:
         return (L4 - B4b) * (planck_radiance(LAM_TIR, temp) - B5b) - (L5 - B5b) * (planck_radiance(LAM_MIR, temp) - B4b)
@@ -125,3 +138,4 @@ def dozier(bt_mir_K: float, bt_tir_K: float, pixel_area_m2: float) -> Retrieval:
     flags = ["P_CLIPPED"] if frac != raw_frac else []
     frp = frac * pixel_area_m2 * SIGMA * root ** 4 / 1e6
     return Retrieval(float(root), t_bg, frac, float(frp), True, flags)
+

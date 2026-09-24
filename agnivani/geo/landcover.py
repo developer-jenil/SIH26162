@@ -360,15 +360,15 @@ def _coarse_landcover(lat: float, lon: float) -> str:
 
 
 def resolve_landcover(lat: float, lon: float, data_dir: Path | str = Path("data")) -> str:
-    """Backward-compatible point resolver returning class_name."""
+    """Point resolver returning class_name. Returns 'unknown' if not resolved."""
     cls_name, status = landcover_majority(lat, lon, window_px=3)
     if status == "resolved" and cls_name != "unknown":
         return cls_name
-    return _coarse_landcover(lat, lon)
+    return "unknown"
 
 
 def resolve_landcover_batch(sources_df: pd.DataFrame, data_dir: Path | str = Path("data")) -> dict[str, str]:
-    """Backward-compatible batch resolver returning {source_id: class_name}."""
+    """Batch resolver returning {source_id: class_name}. Never fabricates coarse fallback."""
     annotated = annotate_landcover(sources_df)
     res = {}
     for _, row in annotated.iterrows():
@@ -376,8 +376,6 @@ def resolve_landcover_batch(sources_df: pd.DataFrame, data_dir: Path | str = Pat
         lc = str(row.get("landcover_class", "unknown"))
         lat = row.get("centroid_lat")
         lon = row.get("centroid_lon")
-        if (lc == "unknown" or not lc) and lat is not None and lon is not None and pd.notna(lat) and pd.notna(lon):
-            lc = _coarse_landcover(float(lat), float(lon))
         if sid:
             res[sid] = lc
         if lat is not None and lon is not None and pd.notna(lat) and pd.notna(lon):

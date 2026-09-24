@@ -422,10 +422,39 @@ uvicorn agnivani.main:app --reload --host 0.0.0.0 --port 8000
 
 ## 🛠️ Operational Workflows & CLI Commands
 
+### Automated Operational Preflight Verification (P7)
+Run the 6-stage operational preflight script to verify dependencies, trained models, geospatial datasets, Planck solver, land-cover engine, and DuckDB hero anomalies:
+```powershell
+python scripts/preflight.py
+# Or via Makefile:
+make preflight
+```
+You can also inspect the live preflight health matrix in the browser at: [http://localhost:8000/preflight.html](http://localhost:8000/preflight.html)
+
+### Execute End-to-End Ingestion Pipeline (P3)
+Execute the 6-stage thermal intelligence pipeline against the 5-day Gujarat corridor FIRMS VIIRS dataset with real measured stage timings:
+```powershell
+python scripts/run_pipeline.py
+# Or via Makefile:
+make run-pipeline
+```
+
+### Makefile Targets
+| Target | Command | Description |
+| :--- | :--- | :--- |
+| `make install` | `pip install -e .` | Install Python dependencies |
+| `make serve` | `uvicorn agnivani.api.server:create_app --factory ...` | Launch FastAPI backend server |
+| `make test` | `pytest -v` | Execute full test suite |
+| `make lint` | `python -m compileall agnivani scripts tests` | Verify syntax across codebase |
+| `make preflight` | `python scripts/preflight.py` | Run 6-step operational preflight checks |
+| `make run-pipeline` | `python scripts/run_pipeline.py` | Run 6-stage thermal attribution pipeline |
+| `make demo` | `browser open http://localhost:8000?focus=AV-0B12A4B9` | Launch tactical grid focused on Hero Flare |
+| `make record` | `preflight + run-pipeline` | Preflight check followed by pipeline execution for video recording |
+
 ### Run the Test Suite
 Verify that the physics engine, geospatial boundaries, feature pipeline, and API contracts are fully passing:
 ```powershell
-.venv\Scripts\python.exe -m pytest -q
+.venv\Scripts\python.exe -m pytest -v
 ```
 
 ### Test Spatial-Block Model Training (Dry-Run)
@@ -464,13 +493,18 @@ AGNIVANI exposes an OpenAPI-compliant REST API and real-time Server-Sent Events 
 | Method | Endpoint | Description | Query / Body Parameters |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/` | Web tactical dashboard with injected live API configuration shim. | None |
+| `GET` | `/preflight.html` | Visual operational preflight verification matrix dashboard. | None |
 | `GET` | `/api/health` | Healthcheck returning backend status, active scorer metadata, and ingest age. | None |
+| `GET` | `/api/preflight` | Automated 6-check operational verification diagnostics (P7). | None |
+| `GET` | `/api/provenance` | Telemetry provenance, sensor, window, and scientific disclosures (P5). | None |
+| `POST` | `/api/pipeline/run` | Execute end-to-end 6-stage pipeline with real measured timings (P3). | CSV file upload or default corridor feed |
+| `GET` | `/api/pipeline/runs` | Historical pipeline execution audit records and stage metrics. | None |
 | `GET` | `/api/snapshot` | **Single-call dashboard hydration** returning stats, detections, and facilities in one atomic payload with offline cache compatibility. | None |
 | `GET` | `/api/detections` | Query filtered detections. | `bbox` (minx,miny,maxx,maxy), `hours` (default: 24), `cls` (repeatable), `min_conf` (0–1), `limit` (default: 500) |
 | `GET` | `/api/detections/{id}` | Detailed forensic record for a specific anomaly ID. | `detection_id` (path parameter) |
 | `GET` | `/api/stats` | High-level system statistics (counts by class, severity breakdown, scorer metadata). | None |
 | `GET` | `/api/facilities` | List registered industrial facilities with spatial coordinates. | `sector` (`REFI_GAS`, `STEEL`, `COAL`, `POWER`, `CEMENT`, `FERTILIZER`) |
-| `GET` | `/api/stream` | **Server-Sent Events (SSE)** stream delivering live `detection` and `ingest` events with 15s heartbeat. | None |
+| `GET` | `/api/stream` | **Server-Sent Events (SSE)** stream delivering live `detection`, `pipeline_stage`, and `ingest` events with 15s heartbeat. | None |
 | `POST` | `/api/dispatch` | Dispatch alert to emergency authorities (stores receipt locally in JSONL and alerts table). | `{"detection_id": "...", "authority": "...", "channel": "sms"\|"email"\|"api"\|"mock", "note": "..."}` |
 | `GET` | `/api/pipeline/log` | Operator-visible execution log showing 6-stage verification timing deltas in real milliseconds. | None |
 
@@ -554,6 +588,26 @@ A common error in satellite-based machine learning is training models on random 
 - Rather than treating satellite brightness temperature as a black-box machine learning input, AGNIVANI relies on the fundamental physics of the **Planck Blackbody Function**:
   $$B(\lambda, T) = \frac{C_1}{\lambda^5 \left(\exp\left(\frac{C_2}{\lambda T}\right) - 1\right)}$$
 - The Dozier inversion computes the true sub-pixel fire temperature ($T_{\text{fire}} \approx 800\text{–}2000\,\text{K}$) and fractional pixel area ($p \approx 10^{-4}\text{–}10^{-2}$), accounting for the fact that hot sub-pixel targets dominate the MIR spectrum without significantly warming the bulk pixel.
+
+### 3. Operational Threshold Disclosure (Condition C2)
+> [!IMPORTANT]
+> **FLARE Retrieval Threshold Disclosure**: The $T_{\text{fire}} \ge 450\text{ K}$ threshold is **empirically derived from a 5-day corridor sample (n=29); to be re-derived as more data arrives.**
+> It is an operational discrimination boundary suited for sub-pixel mixed signatures against ambient tropical backgrounds, **never to be presented as a universal physical constant**.
+
+### 4. Candidate Fugitive Anomaly Protocol (Condition C3)
+Detections `AV-07D8247D` and `AV-EF7A2C35` are categorized as `LEAK` with confidence **`0.55`** and null $T_{\text{fire}}$. In all reports, API responses, and UI elements:
+- The anomaly type is explicitly labelled: **`"candidate fugitive thermal anomaly - low confidence"`** with the `0.55` confidence score prominently displayed.
+- **Strict Prohibition**: No slide, report, or narration may describe these as confirmed gas leaks. Ground optical gas imaging (OGI) or high-resolution hyperspectral satellite confirmation is strictly required prior to dispatch.
+
+### 5. Deliberately Unattributed Non-Industrial Framing (Condition C4)
+- Non-industrial thermal activity inside the geographical window (e.g. seasonal stubble burning, agricultural crop clearance, or small open-air biomass fires) is **deliberately unattributed** to industrial facilities.
+- Rather than forcing arbitrary misattribution or hiding these points, they are preserved as `UNRESOLVED` and surfaced live on the mission control grid with the label: **`"non-industrial thermal activity in window — deliberately unattributed"`**.
+
+### 6. Gujarat Corridor Verified Demo Heroes (Condition C5)
+Three real, physics-grounded anomalies from the 5-day VIIRS corridor observation window are verified for live demonstration (no mock fixtures):
+1. **`AV-0B12A4B9`** (Hazira LNG/Steel Flare #1): Real `FLARE`, conf `0.90`, $T_{\text{fire}} = 486.1\text{ K}$, $FRP = 9.23\text{ MW}$, distance $492.4\text{ m}$. Deep link: `?focus=AV-0B12A4B9`
+2. **`AV-95BA9779`** (Hazira LNG/Steel Flare #2): Real `FLARE`, conf `0.90`, $T_{\text{fire}} = 506.1\text{ K}$, $FRP = 10.37\text{ MW}$, distance $535.4\text{ m}$. Deep link: `?focus=AV-95BA9779`
+3. **`AV-07D8247D`** (Hazira Candidate Leak): Real `LEAK`, conf `0.55` (candidate), $T_{\text{fire}} = \text{null}$, $FRP = 2.11\text{ MW}$, distance $825.6\text{ m}$. Deep link: `?focus=AV-07D8247D`
 
 ---
 

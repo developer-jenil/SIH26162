@@ -235,11 +235,18 @@ def generate_template_reason(evidence: dict[str, Any]) -> tuple[str, str]:
         ev1 = "satellite radiative retrieval"
         ev2 = "regional thermal anomaly signature"
 
-    narrative = (
-        f"{cls} alert confirmed with {conf:.2f} confidence [{lo:.2f}-{hi:.2f}] "
-        f"driven by {ev1} and {ev2}; "
-        f"implicates {reg_desc}; {action}."
-    )
+    if cls == "LEAK":
+        narrative = (
+            f"candidate fugitive thermal anomaly - low confidence ({conf:.2f}) [{lo:.2f}-{hi:.2f}] "
+            f"driven by {ev1} and {ev2}; "
+            f"implicates {reg_desc}; {action}."
+        )
+    else:
+        narrative = (
+            f"{cls} alert confirmed with {conf:.2f} confidence [{lo:.2f}-{hi:.2f}] "
+            f"driven by {ev1} and {ev2}; "
+            f"implicates {reg_desc}; {action}."
+        )
     return narrative, cited_rule
 
 

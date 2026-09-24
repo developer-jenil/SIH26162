@@ -122,3 +122,31 @@ def test_annotate_landcover_dataframe(tmp_path):
     assert len(annotated) == 2
     assert annotated.iloc[1]["landcover_class"] == "unknown"
     assert annotated.iloc[1]["landcover_status"] == "unavailable"
+
+
+def test_no_non_unknown_class_paired_with_unavailable_status(tmp_path, monkeypatch):
+    """Invariant test: Any detection whose landcover_status != 'resolved' MUST have landcover_class == 'unknown'."""
+    monkeypatch.setenv("OFFLINE_MODE", "true")
+    from agnivani.geo.landcover import resolve_landcover, resolve_landcover_batch
+    
+    test_points = [
+        {"source_id": "P1", "centroid_lat": 28.6139, "centroid_lon": 77.2090}, # Delhi
+        {"source_id": "P2", "centroid_lat": 21.1055, "centroid_lon": 72.6405}, # Hazira
+        {"source_id": "P3", "centroid_lat": 8.3400, "centroid_lon": 77.5400},  # Offshore
+        {"source_id": "P4", "centroid_lat": 22.3500, "centroid_lon": 70.0200}, # Jamnagar
+    ]
+    df = pd.DataFrame(test_points)
+    annotated = annotate_landcover(df, cache_dir=tmp_path)
+    
+    for _, row in annotated.iterrows():
+        if row["landcover_status"] != "resolved":
+            assert row["landcover_class"] == "unknown", (
+                f"Fabrication violation: class '{row['landcover_class']}' paired with status '{row['landcover_status']}'"
+            )
+
+    # Batch and point resolvers must also return 'unknown'
+    batch = resolve_landcover_batch(df)
+    for p in test_points:
+        assert batch[p["source_id"]] == "unknown"
+        assert resolve_landcover(p["centroid_lat"], p["centroid_lon"]) == "unknown"
+

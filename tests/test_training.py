@@ -22,11 +22,14 @@ def test_materialise_column_contract():
     assert (df["cls"] != "UNLABELLED").all()
 
 
-def test_train_writes_four_artifacts():
-    data_dir = Path("data")
-    train(data_dir=data_dir, dry_run=False)
+def test_train_writes_four_artifacts(tmp_path: Path):
+    import shutil
+    proc_dir = tmp_path / "processed"
+    proc_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy("data/processed/labelled.parquet", proc_dir / "labelled.parquet")
+    train(data_dir=tmp_path, dry_run=False)
 
-    models_dir = data_dir / "models"
+    models_dir = tmp_path / "models"
     assert (models_dir / "model.joblib").exists()
     assert (models_dir / "calibrator.joblib").exists()
     assert (models_dir / "conformal.json").exists()

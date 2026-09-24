@@ -2,6 +2,67 @@
 
 All notable changes to the AGNIVANI project will be documented in this file.
 
+## [Phase 2] - Demo-Readiness Execution (P1–P8) (2026-09-25)
+
+### Added
+- **P7: Automated Operational Preflight & Makefile**:
+  - Created standalone Python verification script `scripts/preflight.py` verifying 6 core subsystems: Python dependencies, model artifacts, geospatial registries, Planck/Dozier solver convergence, ESA WorldCover engine, and DuckDB hero detections.
+  - Implemented `GET /api/preflight` diagnostic endpoint in `agnivani/api/pipeline.py`.
+  - Created high-contrast, mission-grade `preflight.html` status matrix dashboard with live auto-refresh.
+  - Created root `Makefile` implementing standardized operational targets: `install`, `serve`, `test`, `lint`, `preflight`, `run-pipeline`, `demo`, `record`.
+- **P8: Containerization & Deployment Readiness**:
+  - Created multi-stage `Dockerfile` (Python 3.11-slim) with non-root security user `agnivani` (UID 1001), runtime GDAL/libgomp dependencies, container healthcheck against `/api/preflight`, and entrypoint running Uvicorn.
+  - Created `.dockerignore` excluding `.git`, `.venv`, cache files, and development artifacts.
+  - Implemented read-only database mode in `agnivani/store/duck.py` via `AGNIVANI_READONLY_DB=1` environment variable, opening DuckDB in read-only mode and guarding mutating methods against unauthorized write attempts.
+- **P5: Provenance Transparency (B7)**:
+  - Implemented `GET /api/provenance` returning active FIRMS dataset metadata, sensor constellation, temporal window, cluster counts, Dozier convergence rate, and regulatory disclosures.
+  - Added clickable provenance chip `#provenance-chip` and `#provenance-bundle-name` in application header.
+  - Added dedicated "Data & limits" card (`#data-limits-card`) displaying Condition C2 empirical threshold disclosure, Condition C3 candidate leak framing, and Condition C4 deliberately unattributed count.
+  - Created regression suite in `tests/test_corridor_hero.py`.
+- **P3: End-to-End Real Ingestion Pipeline (B5)**:
+  - Added `POST /api/pipeline/run` and `GET /api/pipeline/runs` in `agnivani/api/pipeline.py` with multi-stage wall-clock performance tracking across all 6 pipeline stages.
+  - Broadcasted live `pipeline_stage` SSE events with real millisecond timings.
+  - Integrated execution visualizer `#pipeline-live-progress` in `#csv-modal` showing live checkmarks and measured durations.
+  - Created `scripts/run_pipeline.py` CLI runner for automated pipeline testing and video recording.
+  - Added tests in `tests/test_pipeline_runner.py`.
+
+### Changed & Fixed
+- **P1: Decoupled Land-Cover Resolution & B3 Fix**:
+  - Completely decoupled `_coarse_landcover` heuristic fallback from `resolve_landcover` in `agnivani/geo/landcover.py`. Offline fallback returns `("unknown", "unavailable")` honestly; never returns fabricated cropland or urban classes.
+  - Added invariant tests in `tests/test_landcover.py` verifying that no non-unknown land-cover class is ever paired with `"unavailable"` status.
+- **P2: Repaired DOM Contract (B2, B8, B10)**:
+  - Added `#inspection-panel`, `#unreachable-banner`, `#demo-banner`, and `#pipeline-live-progress` to `index.html`.
+  - Implemented strict `mustEl(id)` DOM contract lookup function in `js/app.js` that logs errors and fails fast if any required element is missing.
+  - Quarantined all mock demo fixtures to `js/fixtures/SIMULATED_demo_detections.json`, ensuring zero mock data is present in production bundles.
+  - Created `tests/test_dom_contract.py` verifying DOM element IDs, inspection panel presence, and quarantined fixtures.
+- **P4: Gujarat Corridor Map & Hero Detections (B6)**:
+  - Re-anchored Leaflet satellite map center to Gujarat corridor `[21.8, 71.5]` at zoom 8.
+  - Added `?focus=<detection_id>` deep-link URL parameter support with automatic selection and smooth `flyTo` camera animation.
+  - Added Corridor vs. All filter buttons (`#filter-corridor-btn`, `#filter-all-btn`) with live unattributed badge (`#unresolved-count-badge`).
+  - Added quick-focus chips for hero anomalies (`#hero-flare-1-btn`, `#hero-flare-2-btn`, `#hero-leak-btn`).
+- **P6: Sentinel-2 Multispectral Fusion Roadmap (B9)**:
+  - Replaced misleading before/after stock photo swipe with an honest Sentinel-2 optical/IR multispectral fusion roadmap panel (retained hidden container for DOM contract compatibility).
+
+## [Phase 0 - Update] - Geocode Correction, Dozier Background & Narrow Fallback (2026-09-24)
+
+### Fixed
+- **Option B (Facility Geocode Correction & Per-Facility Match Radius)**:
+  - Corrected `Hazira LNG/Steel` in `agnivani/geo/registry.py` from gate/office node `(21.13, 72.64)` to `(21.1055, 72.6405)`, the empirical centroid of the continuous thermal cluster observed across VIIRS passes (21.099–21.114 N, 72.632–72.653 E).
+  - Added optional `match_radius_m` field to `Facility` dataclass with a 3500 m override for Hazira LNG/Steel to encompass the contiguous industrial complex (AM/NS Steel, Reliance, Shell LNG, ONGC).
+  - Global default match radius remains strictly 2000 m via `FACILITY_MATCH_RADIUS_M` in `agnivani/config.py` (not raised globally to prevent misassociating crop-residue fires).
+- **Option D (Dozier Independent Background Estimation)**:
+  - Fixed background temperature formulation in `agnivani/physics/planck.py` and `agnivani/geo/cluster.py`: replaced self-background ($T_{bg} = T_{TIR}$) which forced $L_5 - B_{5b} = 0$ and caused 100% `NO_ROOT` failures.
+  - Implemented prioritized background estimation: (a) 5th-percentile $T_{TIR}$ for cluster observations when $N \ge 3$; (b) median $T_{TIR}$ of low-FRP ($< 5\text{ MW}$) ambient detections in the pass; (c) pixel's own $T_{TIR}$ flagging `"BACKGROUND_UNAVAILABLE"` with $T_{fire} = \text{null}$.
+  - Added unit tests in `tests/test_planck.py` verifying single-pixel retrieval with independent background and explicit flag on self-background.
+- **Option C (Narrow Evidence Fallback)**:
+  - Added explicit, non-silent fallback rule in `HeuristicScorer` for unresolved Dozier retrievals: when $T_{fire}$ is null but $FRP_{max} \ge 25\text{ MW}$, $night\_frac \ge 0.70$, $dist \le 3500\text{ m}$, and sector in `{REFI_GAS, POWER, STEEL}`, classify as `FLARE` with confidence 0.60 and reason `"Dozier unresolved (background_unavailable); classified on radiative power + nocturnal persistence + facility proximity"`.
+- **P0.3 Checkpoint Resolution & Governance (C1, C2, C3)**:
+  - *Checkpoint Resolution (C1)*: Formally authorized by user to proceed past the P0.3 gate (UNRESOLVED 87.8% > 60%; FLARE+IND_FIRE = 2 < 5). The 4 facility-matched detections at 492–1372 m and 2 Dozier-retrieved flares at Hazira confirm real operational detection, while the 36 UNRESOLVED detections represent non-industrial thermal activity (crop residue) deliberately unattributed. Moving forward, when any verification gate trips, execution will halt immediately for user confirmation.
+  - *Empirical Threshold Disclosure (C2)*: Formally documented that `FLARE` threshold $T_{\text{fire}} \ge 450\text{ K}$ is "empirically derived from a 5-day corridor sample (n=29); to be re-derived as more data arrives." It is an operational retrieval threshold for 375m mixed pixels, not a physical constant.
+  - *Candidate Leak Framing (C3)*: Detections `AV-07D8247D` and `AV-EF7A2C35` are explicitly classified as `"candidate fugitive thermal anomaly - low confidence"` at conf 0.55. UI and reason strings display the 0.55 confidence score prominently and prohibit calling these confirmed leaks.
+- **Test Artifact Isolation**:
+  - Isolated `test_train_writes_four_artifacts` in `tests/test_training.py` using `pytest` fixture `tmp_path`, preventing pytest from clobbering production model artifacts in `data/models/`.
+
 ## [Phase 0] - Integrity Hardening (2026-09-24)
 
 ### Fixed
