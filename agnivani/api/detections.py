@@ -43,9 +43,16 @@ def detection(request:Request,detection_id:str):
 @router.get("/stats",response_model=StatsOut)
 def stats(request:Request):
     items=request.app.state.store.detections(); by_class={x:0 for x in CLASSES}; by_severity={x:0 for x in ["CRITICAL","HIGH","MODERATE","LOW"]}
-    for x in items:by_class[x["cls"]]+=1; by_severity[x["severity"]]+=1
+    for x in items:
+        if x["cls"] in by_class:
+            by_class[x["cls"]]+=1
+        by_severity[x["severity"]]+=1
     last=max((datetime.fromisoformat(x["ts"].replace("Z","+00:00")) for x in items),default=None)
-    return {"total_detections":len(items),"total_sources":len(items),"by_class":by_class,"by_severity":by_severity,"last_ingest_utc":last,"scorer":request.app.state.scorer.metadata(),"coverage_pct":None}
+    scorer_meta = request.app.state.scorer.metadata()
+    cov_pct = None
+    if scorer_meta and scorer_meta.get("metrics"):
+        cov_pct = scorer_meta["metrics"].get("conformal_coverage_pct")
+    return {"total_detections":len(items),"total_sources":len(items),"by_class":by_class,"by_severity":by_severity,"last_ingest_utc":last,"scorer":scorer_meta,"coverage_pct":cov_pct}
 
 @router.get("/facilities",response_model=list[FacilityOut])
 def facilities(request:Request,sector:str|None=None):

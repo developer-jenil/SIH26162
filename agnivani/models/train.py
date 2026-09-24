@@ -1,17 +1,25 @@
 """Spatial-block training entry point. Requires externally labelled ground truth."""
 from __future__ import annotations
-import argparse, json
+
+import argparse
+from datetime import datetime, timezone
+import json
 from pathlib import Path
-import joblib, pandas as pd
+
+import joblib
+import numpy as np
+import pandas as pd
 from sklearn.calibration import CalibratedClassifierCV
+from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import GroupKFold
 from xgboost import XGBClassifier
+
 from agnivani.features.build import FEATURES, FORBIDDEN, spatial_block_id
+from agnivani.models.evaluate import conformal_coverage
 from agnivani.models.scorer import CLASSES
 
 
-def train(data_dir=Path("data"), dry_run=False):
-    import numpy as np
+def train(data_dir: Path | str = Path("data"), dry_run: bool = False):
     leaks = set(FEATURES) & FORBIDDEN
     if leaks:
         raise RuntimeError(f"coordinate leakage candidates: {sorted(leaks)}")
@@ -46,7 +54,10 @@ def train(data_dir=Path("data"), dry_run=False):
     # 2. Derive block_id := spatial_block_id(centroid_lat, centroid_lon)
     if "block_id" not in df.columns:
         if "centroid_lat" in df.columns and "centroid_lon" in df.columns:
-            df["block_id"] = [spatial_block_id(float(lat), float(lon)) for lat, lon in zip(df["centroid_lat"], df["centroid_lon"])]
+            df["block_id"] = [
+                spatial_block_id(float(lat), float(lon))
+                for lat, lon in zip(df["centroid_lat"], df["centroid_lon"])
+            ]
         else:
             raise ValueError("Cannot derive block_id: missing 'centroid_lat' or 'centroid_lon'")
 
@@ -73,8 +84,9 @@ def train(data_dir=Path("data"), dry_run=False):
     except Exception:
         pass
 
-    class_to_idx = {c: i for i, c in enumerate(CLASSES)}
-    y = df.cls.map(class_to_idx).astype(int)
+    unique_classes = sorted(df["cls"].unique())
+    class_to_idx = {c: i for i, c in enumerate(unique_classes)}
+    y = df["cls"].map(class_to_idx).astype(int)
     weights = np.where(df["origin"] == "real", 2.0, 1.0) if "origin" in df.columns else None
 
     X = df[FEATURES].copy()
@@ -82,23 +94,80 @@ def train(data_dir=Path("data"), dry_run=False):
         from agnivani.features.build import DIURNAL_SHAPES
         shape_to_idx = {s: float(i) for i, s in enumerate(DIURNAL_SHAPES)}
         X["diurnal_shape"] = X["diurnal_shape"].map(lambda v: shape_to_idx.get(v, float(v) if isinstance(v, (int, float)) else 4.0))
-    X = X.astype(float)
-    cv = GroupKFold(n_splits=min(5, df.block_id.nunique()))
-    model = XGBClassifier(n_estimators=100, max_depth=6, learning_rate=0.05, random_state=42)
-    for train_idx, test_idx in cv.split(X, y, df.block_id):
-        w_tr = weights[train_idx] if weights is not None else None
-        model.fit(X.iloc[train_idx], y.iloc[train_idx], sample_weight=w_tr)
+    X = X.astype(float).fillna(0.0)
 
+    # Spatial-block cross-validation
+    n_splits = min(5, df["block_id"].nunique())
+    cv = GroupKFold(n_splits=n_splits)
+
+    oof_preds = np.zeros(len(y), dtype=int)
+    oof_probs = np.zeros((len(y), len(unique_classes)))
+
+    for tr, te in cv.split(X, y, df["block_id"]):
+        fold_model = XGBClassifier(n_estimators=300, max_depth=6, learning_rate=0.05, random_state=42)
+        w_tr = weights[tr] if weights is not None else None
+        fold_model.fit(X.iloc[tr], y.iloc[tr], sample_weight=w_tr)
+        oof_preds[te] = fold_model.predict(X.iloc[te])
+        oof_probs[te] = fold_model.predict_proba(X.iloc[te])
+
+    spatial_block_cv_accuracy = float(accuracy_score(y, oof_preds))
+    macro_f1 = float(f1_score(y, oof_preds, average="macro"))
+    per_class_f1_arr = f1_score(y, oof_preds, average=None)
+    per_class_f1 = {cls_name: float(round(score, 4)) for cls_name, score in zip(unique_classes, per_class_f1_arr)}
+
+    # Conformal calibration on out-of-fold spatial predictions
+    p_true = [float(oof_probs[i, y.iloc[i]]) for i in range(len(y))]
+    non_conf = [1.0 - pt for pt in p_true]
+    q = float(round(float(np.quantile(non_conf, 0.90)), 4))
+    lo = np.maximum(0.0, oof_probs.max(axis=1) - q)
+    hi = np.minimum(1.0, oof_probs.max(axis=1) + q)
+    cov_frac = conformal_coverage(oof_probs.max(axis=1), lo, hi)
+    conformal_coverage_pct = float(round(cov_frac * 100.0, 2))
+
+    # Fit final production model and calibrator on all data
+    model = XGBClassifier(n_estimators=300, max_depth=6, learning_rate=0.05, random_state=42)
     model.fit(X, y, sample_weight=weights)
+
     out = Path(data_dir) / "models"
     out.mkdir(parents=True, exist_ok=True)
     joblib.dump(model, out / "model.joblib")
 
     calibrator = CalibratedClassifierCV(estimator=model, cv="prefit")
-    calibrator.fit(X.fillna(0.0), y)
+    calibrator.fit(X, y)
     joblib.dump(calibrator, out / "calibrator.joblib")
-    (out / "conformal.json").write_text(json.dumps({"version": "1.0", "q": 0.1, "classes": CLASSES}, indent=2))
-    print(f"[ok] model and calibrated artifacts saved to {out}")
 
-if __name__=="__main__":
-    p=argparse.ArgumentParser(); p.add_argument("--dry-run",action="store_true"); p.add_argument("--data-dir",type=Path,default=Path("data")); a=p.parse_args(); train(a.data_dir,a.dry_run)
+    conformal_data = {
+        "version": "1.0",
+        "q": q,
+        "coverage_level": 0.90,
+        "classes": unique_classes,
+    }
+    (out / "conformal.json").write_text(json.dumps(conformal_data, indent=2))
+
+    provenance_counts = (
+        df["origin"].value_counts().to_dict()
+        if "origin" in df.columns
+        else {"real": int(len(df))}
+    )
+    metrics_data = {
+        "spatial_block_cv_accuracy": float(round(spatial_block_cv_accuracy, 4)),
+        "macro_f1": float(round(macro_f1, 4)),
+        "per_class_f1": per_class_f1,
+        "conformal_coverage_pct": conformal_coverage_pct,
+        "n_samples": int(len(df)),
+        "n_blocks": int(df["block_id"].nunique()),
+        "trained_at_utc": datetime.now(timezone.utc).isoformat(),
+        "label_provenance_counts": provenance_counts,
+    }
+    (out / "metrics.json").write_text(json.dumps(metrics_data, indent=2))
+
+    print(f"[ok] model and calibrated artifacts saved to {out}")
+    print(f"[ok] metrics: accuracy={spatial_block_cv_accuracy:.4f}, macro_f1={macro_f1:.4f}, coverage={conformal_coverage_pct}%")
+
+
+if __name__ == "__main__":
+    p = argparse.ArgumentParser()
+    p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--data-dir", type=Path, default=Path("data"))
+    a = p.parse_args()
+    train(a.data_dir, a.dry_run)

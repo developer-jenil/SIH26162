@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     data_dir: Path = Path("data")
     log_level: str = "INFO"
     offline_mode: bool = False
+    worldcover_cache_dir: Path = Path("data/raw/worldcover")
     llm_provider: Literal["auto", "ollama", "openai", "anthropic", "template"] = "auto"
     ollama_url: str = "http://localhost:11434"
     ollama_model: str = "llama3.2:1b"

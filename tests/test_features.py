@@ -76,10 +76,14 @@ def test_reproduce_av_8a95cffe_offshore_suppression(tmp_path):
 def test_scorer_backend_missing_artifacts_fails_loud(tmp_path):
     import pytest
     from agnivani.config import Settings
-    from agnivani.models.scorer import get_scorer
-    s = Settings(scorer_backend="xgboost", data_dir=tmp_path, offline_mode=True)
+    from agnivani.models.scorer import XGBScorer, get_scorer
     with pytest.raises(FileNotFoundError, match="Train the model first"):
-        get_scorer(s)
+        XGBScorer(tmp_path)
+    s = Settings(scorer_backend="xgboost", data_dir=tmp_path, offline_mode=True)
+    scorer = get_scorer(s)
+    assert scorer.mode == "fallback"
+    assert "Fallback active" in scorer.metadata()["disclosure"]
+
 
 def test_train_k1_normalization_and_fail_loud(tmp_path):
     import pytest

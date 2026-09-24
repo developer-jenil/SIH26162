@@ -20,3 +20,22 @@ All notable changes to the AGNIVANI project will be documented in this file.
 - `tests/test_severity.py`: Unit tests for severity invariants, purity, and confidence independence.
 - `tests/test_scorer.py`: Tests for `UNRESOLVED` class, context column guards, and verbatim `AV-8A95CFFE` attribution.
 - `tests/test_observability.py`: Verification of non-zero wall-clock stage telemetry.
+
+## [Phase 1] - Real AI & Land-Cover Hardening (2026-09-24)
+
+### Fixed
+- **D2 (ESA WorldCover 10m integration & WILD reachability)**: Created `agnivani/geo/landcover.py` with 11-code `WORLDCOVER_CLASSES` mapping to the 8 canonical land-cover classes. Integrated AWS S3 Cloud-Optimized GeoTIFF (COG) streaming via range requests and spatial index (`shapely.STRtree`) over cached local tiles under `data/raw/worldcover`. Integrated 3x3 pixel majority voting. Clustered sources and feature tables now carry resolved `landcover_class` and explicit `landcover_status` (`"resolved"` or `"unavailable"`). The `WILD` rule branch is now reachable, and forest fires are correctly segregated from industrial sources.
+- **D5 (Schema-valid training set & trained models)**: Created `scripts/materialise_training_set.py` to materialize schema-valid `data/processed/labelled.parquet` containing all 37 `FEATURES` plus `cls` and `block_id`. Executed `agnivani/models/train` end-to-end to generate `data/models/model.joblib` (`XGBClassifier`), `calibrator.joblib` (`CalibratedClassifierCV`), `conformal.json` (calibrated conformal quantile `q`), and `metrics.json`.
+- **D9 (Calibrated conformal prediction intervals)**: Replaced the fixed `conf ± 0.12` heuristic band with calibrated non-conformity quantiles computed on held-out spatial blocks at 90% coverage level. Surfaced measured `coverage_pct` in `/api/stats` and `metrics.json`.
+- **D14 (SHAP explainability & loud fallback)**: Integrated `shap.TreeExplainer` into `XGBScorer`. Populated `top_features[].contribution` with real signed SHAP feature contributions (top 3 by magnitude), eliminating hardcoded `0.0`. Gated missing artifact loading with loud structlog error logs and explicit `scorer.mode = "fallback"` and `scorer.disclosure` reporting on `/api/health`.
+
+### Added
+- `agnivani/geo/landcover.py`: ESA WorldCover 10m land-cover resolver using COG range requests, STRtree spatial indexing, 3x3 window majority voting, and offline degradation.
+- `scripts/materialise_training_set.py`: Materialization of schema-valid training set with atomic disk writes.
+- `data/models/model.joblib`: Trained production XGBoost classifier (300 estimators, depth 6, lr 0.05).
+- `data/models/calibrator.joblib`: Calibrated classifier.
+- `data/models/conformal.json`: Calibrated conformal prediction quantile (`q = 0.0206`).
+- `data/models/metrics.json`: Spatial-block cross-validation metrics (accuracy: 98.69%, macro-F1: 98.61%, conformal coverage: 100.0%, 39 spatial blocks).
+- `tests/test_landcover.py`: Verification of 11-code mapping, tile math, offline fallback, online forest coordinate resolution, and WILD rule branch reachability.
+- `tests/test_training.py`: Tests for materialization column contract, 4 emitted artifacts, real non-null metrics, XGBScorer loading, loud fallback disclosure, and real SHAP contributions.
+

@@ -104,7 +104,13 @@ def build_records(raw,sources,features,scores,settings=None,stage_ms:dict[str,in
             probs = {c: (conf if c == cls_val else rem) for c in probs}
 
         delta=round(1-sum(probs.values()),4); probs[cls_val]=round(probs.get(cls_val, conf)+delta,4)
-        top=[{"name":name,"value":float(value),"contribution":0.0} for name,value in q.top_features]
+        top = []
+        for tf in q.top_features:
+            if isinstance(tf, dict):
+                top.append({"name": str(tf.get("name")), "value": float(tf.get("value", 0.0)), "contribution": tf.get("contribution")})
+            elif isinstance(tf, (tuple, list)) and len(tf) >= 2:
+                contrib = tf[2] if len(tf) >= 3 else None
+                top.append({"name": str(tf[0]), "value": float(tf[1]), "contribution": contrib})
 
         severity, severity_rationale = compute_severity(
             cls=cls_val,
@@ -164,7 +170,8 @@ def build_records(raw,sources,features,scores,settings=None,stage_ms:dict[str,in
           "severity":severity,"severity_rationale":severity_rationale,"reason":reason,"reason_template":reason_template,"cited_rule":cited_rule,
           "offshore_suppressed":is_suppressed,"evidence":_evidence(s,f,q,tracer=tracer,stage_ms=stage_ms),"top_features":top,
           "diurnal_hist":d_hist,"diurnal_shape":str(d_shape) if d_shape else None,
-          "co2e_rate_tph":co2e_rate_tph,"black_carbon_rate_kgph":black_carbon_rate_kgph,"co2e_total_t":co2e_total_t})
+          "co2e_rate_tph":co2e_rate_tph,"black_carbon_rate_kgph":black_carbon_rate_kgph,"co2e_total_t":co2e_total_t,
+          "landcover_class":lc_class,"landcover_status":(f.get("landcover_status") if hasattr(f, "get") else None) or (s.get("landcover_status") if hasattr(s, "get") else None) or "unavailable"})
     return records
 
 async def process_once(app,fetch_days=1,fetch=True):

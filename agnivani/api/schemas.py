@@ -7,7 +7,7 @@ ClassName=Literal["FLARE","IND_FIRE","COAL","WILD","LEAK","UNRESOLVED","GEO","UN
 
 class EvidenceStage(BaseModel):
     stage:int=Field(ge=1,le=6); label:str; status:Literal["ok","warn","fail"]; detail:str; value:str|None=None; ms:int=Field(ge=0)
-class FeatureContrib(BaseModel): name:str; value:float; contribution:float
+class FeatureContrib(BaseModel): name:str; value:float; contribution:float|None=None
 class DetectionOut(BaseModel):
     id:str; lat:float; lon:float; cls:ClassName; conf:float=Field(ge=0,le=1); probs:dict[str,float]; lo:float; hi:float
     temp_K:float|None; bg_K:float; frac:float|None; frp_MW:float; frp_max_MW:float; area_m2:float; ts:datetime
@@ -16,6 +16,7 @@ class DetectionOut(BaseModel):
     severity:Literal["CRITICAL","HIGH","MODERATE","LOW"]; severity_rationale:str|None=None; reason:str; reason_template:str|None=None; cited_rule:str|None=None; offshore_suppressed:bool=False; evidence:list[EvidenceStage]; top_features:list[FeatureContrib]
     diurnal_hist:list[float]|None=None; diurnal_shape:str|None=None
     co2e_rate_tph:float|None=None; black_carbon_rate_kgph:float|None=None; co2e_total_t:float|None=None
+    landcover_class:str|None=None; landcover_status:str|None=None
 class StatsOut(BaseModel):
     total_detections:int; total_sources:int; by_class:dict[str,int]; by_severity:dict[str,int]; last_ingest_utc:datetime|None; scorer:dict; coverage_pct:float|None=None
 class DispatchRequest(BaseModel): detection_id:str; authority:str; channel:Literal["sms","email","api","mock"]; note:str|None=None

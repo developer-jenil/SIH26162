@@ -23,6 +23,7 @@ CONTEXT_COLUMNS = [
     "facility_sector",
     "dist_facility_m",
     "landcover_class",
+    "landcover_status",
     "state",
     "district",
 ]
@@ -52,17 +53,15 @@ def build_features(sources_df: pd.DataFrame, facilities_gdf, landcover=None) -> 
         facility, distance = nearest_facility(facilities_gdf, s.centroid_lat, s.centroid_lon)
         retrieval = dozier(float(s.ti4_median), float(s.ti5_median), float(s.get("pixel_area_m2",375**2)))
         sector = facility.sector if facility else "UNKNOWN"
-        raw_lc = None
-        if landcover is not None:
+        raw_lc = s.get("landcover_class")
+        if (raw_lc is None or pd.isna(raw_lc) or str(raw_lc).lower().strip() in ("unknown", "nan", "none", "")) and landcover is not None:
             if isinstance(landcover, dict):
                 raw_lc = landcover.get(s.source_id) or landcover.get((s.centroid_lat, s.centroid_lon)) or landcover.get((round(s.centroid_lat, 3), round(s.centroid_lon, 3)))
             elif isinstance(landcover, pd.Series):
                 raw_lc = landcover.get(s.source_id)
-        if raw_lc is None:
-            raw_lc = s.get("landcover_class")
-        raw_lc = str(raw_lc).lower().strip() if raw_lc is not None else ""
-        if not raw_lc or raw_lc in ("unknown", "nan", "none"):
+        if raw_lc is None or pd.isna(raw_lc) or str(raw_lc).lower().strip() in ("unknown", "nan", "none", ""):
             raw_lc = resolve_landcover(s.centroid_lat, s.centroid_lon)
+        raw_lc = str(raw_lc).lower().strip() if raw_lc is not None else ""
         lc = raw_lc if raw_lc in LANDCOVERS else "other"
         hour=float(s.get("local_solar_hour",12)); dist = float(distance) if np.isfinite(distance) else 1_000_000.
 
@@ -88,7 +87,7 @@ def build_features(sources_df: pd.DataFrame, facilities_gdf, landcover=None) -> 
              "hits_per_day":float(s.n_hits/max(1,s.n_days)),"recurrence_gap_days":float(s.recurrence_gap_days),"frp_cv":float(s.frp_cv),
              "ti4_std":float(s.ti4_std),"cluster_extent_m":float(s.cluster_extent_m),"fill_ratio":float(s.fill_ratio),
              "log1p_dist_nearest_facility_m":math.log1p(dist),"dist_nearest_settlement_m":float(s.get("dist_nearest_settlement_m",1_000_000)),
-             "landcover_class":lc,"retrieval_flags":retrieval.flags,
+             "landcover_class":lc,"landcover_status":s.get("landcover_status", "unavailable"),"retrieval_flags":retrieval.flags,
              "diurnal_hist":hist,"diurnal_shape":shape}
         row.update({f"sector_{x}":float(sector==x) for x in SECTORS}); row.update({f"landcover_{x}":float(lc==x) for x in LANDCOVERS})
         row.update({f"diurnal_{x}":float(shape==x) for x in DIURNAL_SHAPES})

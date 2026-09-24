@@ -85,7 +85,11 @@ def cluster_sources(df: pd.DataFrame, cell_deg: float = 0.02) -> pd.DataFrame:
                "frp_mean","frp_max","frp_median","frp_cv","ti4_median","ti4_max","ti5_median","dT_median",
                "ti4_std","local_solar_hour","pixel_area_m2","cluster_extent_m","fill_ratio","recurrence_gap_days",
                "centroid_lat","centroid_lon","flare_score","diurnal_hist","diurnal_shape"]
-    if df.empty: return pd.DataFrame(columns=columns)
+    if df.empty:
+        empty_res = pd.DataFrame(columns=columns)
+        empty_res["landcover_class"] = pd.Series(dtype=object)
+        empty_res["landcover_status"] = pd.Series(dtype=object)
+        return empty_res
     work = df.copy()
     work["lat_cell"] = np.floor(work.latitude / cell_deg).astype(int)
     work["lon_cell"] = np.floor(work.longitude / cell_deg).astype(int)
@@ -141,4 +145,6 @@ def cluster_sources(df: pd.DataFrame, cell_deg: float = 0.02) -> pd.DataFrame:
                "night_frac": night_frac, "diurnal_hist": hist, "diurnal_shape": shape}
         row["flare_score"] = flare_score(row)
         records.append(row)
-    return pd.DataFrame(records, columns=columns)
+    res = pd.DataFrame(records, columns=columns)
+    from agnivani.geo.landcover import annotate_landcover
+    return annotate_landcover(res)
