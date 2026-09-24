@@ -16,6 +16,29 @@ FEATURES = [
 ] + [f"sector_{x}" for x in SECTORS] + [f"landcover_{x}" for x in LANDCOVERS] + [f"diurnal_{x}" for x in DIURNAL_SHAPES] + ["diurnal_shape"]
 FORBIDDEN = {"lat","lon","latitude","longitude","centroid_lat","centroid_lon","block_id","lat_cell","lon_cell","facility_lat","facility_lon"}
 
+CONTEXT_COLUMNS = [
+    "source_id",
+    "block_id",
+    "facility_name",
+    "facility_sector",
+    "dist_facility_m",
+    "landcover_class",
+    "state",
+    "district",
+]
+
+
+def canonical_frame(features_df: pd.DataFrame) -> pd.DataFrame:
+    """Return the single frame that scorers must receive: FEATURES + CONTEXT_COLUMNS.
+
+    Slicing to FEATURES alone silently breaks the HeuristicScorer's context-dependent rules.
+    """
+    needed_cols = [c for c in CONTEXT_COLUMNS if c in features_df.columns]
+    feat_cols = [c for c in FEATURES if c in features_df.columns]
+    dynamic_cols = [c for c in ["diurnal_hist", "retrieval_flags"] if c in features_df.columns]
+    ordered_cols = list(dict.fromkeys(needed_cols + feat_cols + dynamic_cols))
+    return features_df[ordered_cols].copy()
+
 
 def spatial_block_id(lat: float, lon: float, size_deg: float = 2.0) -> str:
     return f"{math.floor(lat/size_deg)}_{math.floor(lon/size_deg)}"

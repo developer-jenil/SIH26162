@@ -5,8 +5,7 @@ Sources (in priority order for name selection on dedup):
   1. GEM – Global Energy Monitor trackers (Steel / Coal / Cement / Oil & Gas)
   2. OSM  – Overpass query for landuse=industrial, man_made=works, power=plant
             plus industrial=* nodes/ways/relations near India
-  3. Bhuvan – ISRO industrial layers (try; skip cleanly if unreachable)
-  4. MANUAL – hard-coded seed from firms_profile.py (source_of_truth == "MANUAL")
+  3. MANUAL – hard-coded seed from firms_profile.py (source_of_truth == "MANUAL")
 
 Merge rules:
   * Deduplicate within 500 m (Haversine). Prefer GEM > OSM > MANUAL for `name`.
@@ -278,29 +277,6 @@ def _fetch_osm_industrial(timeout: int = 8) -> pd.DataFrame:
     )
 
 
-def _fetch_bhuvan(timeout: int = 5) -> pd.DataFrame:
-    """Try ISRO Bhuvan industrial layer; skip cleanly on any failure."""
-    # Bhuvan does not expose a simple CSV endpoint; industrial boundaries are
-    # available via WMS/WFS but require authentication in many states.  We make
-    # a best-effort GET and fall through silently.
-    urls = [
-        "https://bhuvan.nrsc.gov.in/api/geojson/state_geojson.php?state=Gujarat",
-        "https://bhuvan-app1.nrsc.gov.in/geoportal/api/geometry/get?layer=industrial",
-    ]
-    for url in urls:
-        text = _safe_urlopen(url, timeout=timeout)
-        if text and len(text) > 100:
-            print(f"  [info] Bhuvan returned {len(text)} bytes from {url}")
-            # Parsing Bhuvan WFS/WMS responses is highly irregular – best left
-            # to manual inspection.  We log success but return empty DF.
-            return pd.DataFrame(
-                columns=["name", "lat", "lon", "sector", "source"]
-            )
-    return pd.DataFrame(
-        columns=["name", "lat", "lon", "sector", "source"]
-    )
-
-
 # ---------------------------------------------------------------------------
 # Manual seed (the 38 facilities from firms_profile.py)
 # ---------------------------------------------------------------------------
@@ -364,13 +340,10 @@ def build_registry(raw_dir: Path, out_dir: Path) -> pd.DataFrame:
     gem_df = _fetch_gem_trackers()
     print(f"      GEM: {len(gem_df)} rows")
     osm_df = _fetch_osm_industrial()
-    print(f"      OSM: {len(osm_df)} rows")
-    bhuvan_df = _fetch_bhuvan()
-    print(f"      Bhuvan: {len(bhuvan_df)} rows (parsed)")
     manual_df = _manual_seed()
     print(f"      MANUAL seed: {len(manual_df)} rows")
 
-    all_df = pd.concat([gem_df, osm_df, bhuvan_df, manual_df], ignore_index=True)
+    all_df = pd.concat([gem_df, osm_df, manual_df], ignore_index=True)
     print(f"      Combined (pre-dedupe): {len(all_df)} rows")
 
     # Sort so GEM entries come first (highest priority) within each lat/lon group

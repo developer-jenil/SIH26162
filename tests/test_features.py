@@ -265,9 +265,9 @@ def test_emission_proxy_offshore_suppressed_emits_null(tmp_path):
     assert rec["black_carbon_rate_kgph"] is None
     assert rec["co2e_total_t"] is None
 
-    # Preserves 5-class invariant and sums to 1.0
+    # Preserves class invariant and sums to 1.0
     assert rec["cls"] in CLASSES
-    assert len(rec["probs"]) == 5
+    assert len(rec["probs"]) == len(CLASSES)
     assert abs(sum(rec["probs"].values()) - 1.0) < 1e-4
 
     # Validates with Pydantic DetectionOut schema
@@ -312,9 +312,9 @@ def test_emission_proxy_onshore_flare_wire_record(tmp_path):
     # Expected cumulative total over 5 days: rate * 5 * 24
     assert rec["co2e_total_t"] == round(rec["co2e_rate_tph"] * 5 * 24.0, 3)
 
-    # 5-class invariant and prob sum
+    # class invariant and prob sum
     assert rec["cls"] == "FLARE"
-    assert len(rec["probs"]) == 5
+    assert len(rec["probs"]) == len(CLASSES)
     assert abs(sum(rec["probs"].values()) - 1.0) < 1e-4
 
     wire_out = DetectionOut(**rec)
@@ -449,9 +449,9 @@ def test_generated_reason_fields_and_cited_rule(tmp_path):
         assert wire.reason_template == rec["reason_template"]
         assert wire.cited_rule == rec["cited_rule"]
 
-        # 5. 5-class invariant and prob sum
+        # 5. class invariant and prob sum
         assert rec["cls"] in CLASSES
-        assert len(rec["probs"]) == 5
+        assert len(rec["probs"]) == len(CLASSES)
         assert abs(sum(rec["probs"].values()) - 1.0) < 1e-4
 
     # 6. Coordinate leakage invariant

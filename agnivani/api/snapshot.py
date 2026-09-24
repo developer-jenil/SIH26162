@@ -1,18 +1,20 @@
 """Single-call snapshot endpoint for dashboard first paint."""
 import json
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Response
 from .schemas import StatsOut
+from agnivani.models.scorer import CLASSES
 router = APIRouter()
 
 @router.get("/snapshot")
-def snapshot(request: Request):
+def snapshot(request: Request, response: Response, demo: bool = False):
     """Return stats, detections, and facilities in one round trip."""
+    response.headers["X-Agnivani-Mode"] = "demo" if demo else "live"
     store = request.app.state.store
     scorer_meta = request.app.state.scorer.metadata()
 
     # Stats
     items = store.detections()
-    by_class = {c: 0 for c in ["FLARE", "IND_FIRE", "COAL", "WILD", "LEAK"]}
+    by_class = {c: 0 for c in CLASSES}
     by_severity = {s: 0 for s in ["CRITICAL", "HIGH", "MODERATE", "LOW"]}
     last_ingest = None
     for x in items:

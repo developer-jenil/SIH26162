@@ -115,15 +115,16 @@
       </button>
 
       <div class="hidden sm:flex gap-sm">
+        <div id="live-status-pill" class="hud-border bg-surface-container px-2 py-1 rounded flex items-center gap-xs">
+          <div id="live-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span id="live-status-text" class="font-label-caps text-[10px] text-emerald-400 font-bold">LIVE</span>
+        </div>
         <div class="hud-border bg-surface-container px-2 py-1 rounded flex items-center gap-xs">
-          <div class="w-2 h-2 rounded-full bg-error pulse-critical"></div>
-          <span class="font-label-caps text-[10px] text-error font-bold">LIVE</span>
+          <span class="font-label-caps text-[10px] text-on-surface-variant">LAST INGEST:</span>
+          <span id="last-ingest-clock" class="font-label-caps text-[10px] text-primary font-bold">--:--:--</span>
         </div>
         <div class="hud-border bg-surface-container px-2 py-1 rounded">
-          <span class="font-label-caps text-[10px] text-on-surface-variant">NOAA-20</span>
-        </div>
-        <div class="hud-border bg-surface-container px-2 py-1 rounded">
-          <span class="font-label-caps text-[10px] text-on-surface-variant">VIIRS 375m</span>
+          <span class="font-label-caps text-[10px] text-on-surface-variant">NOAA-20 / VIIRS 375m</span>
         </div>
       </div>
 

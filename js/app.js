@@ -112,8 +112,8 @@ const AGNIVANI_API = window.AGNIVANI_API || null;
 const URL_PARAMS = typeof window !== 'undefined' && window.location ? new URLSearchParams(window.location.search) : new URLSearchParams();
 const IS_EXPLICIT_DEMO = URL_PARAMS.get('demo') === '1';
 
-// Embedded Demo Anomalies (Strictly reserved for offline rehearsal with ?demo=1)
-const EMBEDDED_DEMO_ANOMALIES = [
+// Embedded Demo Fixtures (Strictly reserved for offline rehearsal with ?demo=1)
+const DEMO_FIXTURES = [
   {
     id: 'AGN-04832',
     shortId: 'A94X',
@@ -121,8 +121,8 @@ const EMBEDDED_DEMO_ANOMALIES = [
     facilityId: 'RIL-JAM-01',
     coords: { lat: 22.35, lon: 70.02 },
     coordsStr: '22.350° N, 70.020° E',
-    time: '14:02:11 UTC',
-    timestamp: '14:02:11',
+    time: '2026-09-01T14:02:11Z',
+    timestamp: '14:02:11 UTC',
     severity: 'CRITICAL',
     type: 'GAS FLARE',
     typeColor: '#ffa94d',
@@ -140,6 +140,7 @@ const EMBEDDED_DEMO_ANOMALIES = [
     black_carbon_rate_kgph: 145.31,
     co2e_total_t: 14755.2,
     status: 'DISPATCHED',
+    diurnal_shape: 'FLAT_24H',
     dispatchTime: '14:02Z',
     receivedTime: '14:05Z',
     respondedTime: 'PENDING',
@@ -152,8 +153,8 @@ const EMBEDDED_DEMO_ANOMALIES = [
     facilityId: 'HAZ-LNG-02',
     coords: { lat: 21.13, lon: 72.64 },
     coordsStr: '21.130° N, 72.640° E',
-    time: '13:58:44 UTC',
-    timestamp: '13:58:44',
+    time: '2026-09-01T13:58:44Z',
+    timestamp: '13:58:44 UTC',
     severity: 'HIGH',
     type: 'GAS FLARE',
     typeColor: '#ffa94d',
@@ -171,6 +172,7 @@ const EMBEDDED_DEMO_ANOMALIES = [
     black_carbon_rate_kgph: 97.11,
     co2e_total_t: 7888.3,
     status: 'RECEIVED',
+    diurnal_shape: 'FLAT_24H',
     dispatchTime: '13:59Z',
     receivedTime: '14:01Z',
     respondedTime: '14:10Z',
@@ -183,8 +185,8 @@ const EMBEDDED_DEMO_ANOMALIES = [
     facilityId: 'VAD-MAR-03',
     coords: { lat: 22.56, lon: 69.73 },
     coordsStr: '22.560° N, 69.730° E',
-    time: '13:45:18 UTC',
-    timestamp: '13:45:18',
+    time: '2026-09-01T13:45:18Z',
+    timestamp: '13:45:18 UTC',
     severity: 'HIGH',
     type: 'INDUSTRIAL FIRE',
     typeColor: '#ff4d4d',
@@ -202,6 +204,7 @@ const EMBEDDED_DEMO_ANOMALIES = [
     black_carbon_rate_kgph: 116.28,
     co2e_total_t: 3119.0,
     status: 'RESPONDED',
+    diurnal_shape: 'SPIKE_DECAY',
     dispatchTime: '13:46Z',
     receivedTime: '13:48Z',
     respondedTime: '14:00Z',
@@ -214,9 +217,9 @@ const EMBEDDED_DEMO_ANOMALIES = [
     facilityId: 'IOCL-PAN-04',
     coords: { lat: 29.39, lon: 76.97 },
     coordsStr: '29.390° N, 76.970° E',
-    time: '13:12:05 UTC',
-    timestamp: '13:12:05',
-    severity: 'WARNING',
+    time: '2026-09-01T13:12:05Z',
+    timestamp: '13:12:05 UTC',
+    severity: 'MODERATE',
     type: 'COAL SEAM',
     typeColor: '#f59e0b',
     sevColor: '#ffd6a3',
@@ -233,6 +236,7 @@ const EMBEDDED_DEMO_ANOMALIES = [
     black_carbon_rate_kgph: 26.50,
     co2e_total_t: 8743.7,
     status: 'RESPONDED',
+    diurnal_shape: 'FLAT_24H',
     dispatchTime: '13:14Z',
     receivedTime: '13:18Z',
     respondedTime: '13:35Z',
@@ -245,8 +249,8 @@ const EMBEDDED_DEMO_ANOMALIES = [
     facilityId: 'DHJ-SEZ-05',
     coords: { lat: 21.71, lon: 72.58 },
     coordsStr: '21.710° N, 72.580° E',
-    time: '12:49:33 UTC',
-    timestamp: '12:49:33',
+    time: '2026-09-01T12:49:33Z',
+    timestamp: '12:49:33 UTC',
     severity: 'CRITICAL',
     type: 'GAS LEAK',
     typeColor: '#b197fc',
@@ -264,6 +268,7 @@ const EMBEDDED_DEMO_ANOMALIES = [
     black_carbon_rate_kgph: 0.0,
     co2e_total_t: 3207.6,
     status: 'DISPATCHED',
+    diurnal_shape: 'DAYTIME_ONLY',
     dispatchTime: '12:50Z',
     receivedTime: '12:52Z',
     respondedTime: 'PENDING',
@@ -283,10 +288,11 @@ const AppState = {
   leafletMarkers: [],
   liveMode: !!AGNIVANI_API,
   detCounter: 0,
+  lastIngestUtc: null,
 
   // Live Anomaly Dataset (VIIRS 375m & FIRMS Persistent Sources)
   // When ?demo=1 is explicitly supplied, initialize with demo fixtures; otherwise start empty and hydrate from live/cache
-  anomalies: IS_EXPLICIT_DEMO ? [...EMBEDDED_DEMO_ANOMALIES] : [],
+  anomalies: IS_EXPLICIT_DEMO ? [...DEMO_FIXTURES] : [],
 
   // Audit Trail Records
   auditTrail: [
@@ -298,59 +304,12 @@ const AppState = {
   ]
 };
 
-// --- Demo-mode fallback generator ---
-const DEMO_TYPES = ['GAS FLARE','INDUSTRIAL FIRE','COAL SEAM','GAS LEAK'];
-const DEMO_FACILITIES = [
-  {name:'Jamnagar Refinery',lat:22.35,lon:70.02},
-  {name:'Hazira LNG Complex',lat:21.13,lon:72.64},
-  {name:'Vadinar Marine Terminal',lat:22.56,lon:69.73},
-  {name:'Panipat Petrochem',lat:29.39,lon:76.97},
-  {name:'Dahej SEZ',lat:21.71,lon:72.58},
-];
-const DEMO_SEVS = ['CRITICAL','HIGH','MODERATE','LOW'];
-const DEMO_SEV_COLORS = {'CRITICAL':'#ff4d4d','HIGH':'#ffb13b','MODERATE':'#ffd6a3','LOW':'#859397'};
-const DEMO_TYPE_COLORS = {'GAS FLARE':'#ffa94d','INDUSTRIAL FIRE':'#ff4d4d','COAL SEAM':'#f59e0b','GAS LEAK':'#b197fc'};
-
+// --- Deterministic Demo Detection Generator (no Math.random) ---
 function generateDemoDetection() {
   if (!IS_EXPLICIT_DEMO) return null;
+  const fixture = DEMO_FIXTURES[AppState.detCounter % DEMO_FIXTURES.length];
   AppState.detCounter += 1;
-  const fac = DEMO_FACILITIES[Math.floor(Math.random() * DEMO_FACILITIES.length)];
-  const type = DEMO_TYPES[Math.floor(Math.random() * DEMO_TYPES.length)];
-  const sev = DEMO_SEVS[Math.floor(Math.random() * DEMO_SEVS.length)];
-  const conf = +(0.7 + Math.random() * 0.28).toFixed(3);
-  const frp = +(5 + Math.random() * 80).toFixed(1);
-  const temp = Math.round(800 + Math.random() * 1100);
-  const id = `AGN-${(10000 + AppState.detCounter).toString()}`;
-  const now = new Date();
-  const dShape = type === 'GAS FLARE' ? 'FLAT_24H' : (type === 'INDUSTRIAL FIRE' ? 'SPIKE_DECAY' : (type === 'COAL SEAM' ? 'FLAT_24H' : 'DAYTIME_ONLY'));
-  let dHist = Array(24).fill(1 / 24);
-  if (dShape === 'DAYTIME_ONLY') {
-    dHist = Array(24).fill(0.005);
-    for (let h = 10; h <= 16; h++) dHist[h] = 0.13;
-  } else if (dShape === 'SPIKE_DECAY') {
-    dHist = Array(24).fill(0.01);
-    const uh = now.getUTCHours() % 24;
-    dHist[uh] = 0.55; dHist[(uh + 1) % 24] = 0.20;
-  }
-  const co2eFactor = type === 'GAS FLARE' ? 1.98 : (type === 'COAL SEAM' ? 3.96 : (type === 'INDUSTRIAL FIRE' ? 3.42 : 2.97));
-  const bcFactor = type === 'GAS FLARE' ? 2.34 : (type === 'INDUSTRIAL FIRE' ? 3.06 : (type === 'COAL SEAM' ? 1.44 : 1.08));
-  const co2eRate = +(frp * co2eFactor / 3.6 * 3.6 / 1.0).toFixed(2);
-  const bcRate = +(frp * bcFactor / 3.6 * 3.6 / 1.0).toFixed(2);
-  return {
-    id, shortId: `D${AppState.detCounter}`, name: fac.name, facilityId: `FAC-${AppState.detCounter}`,
-    coords: { lat: fac.lat + (Math.random() - 0.5) * 0.05, lon: fac.lon + (Math.random() - 0.5) * 0.05 },
-    coordsStr: `${fac.lat.toFixed(3)}° N, ${fac.lon.toFixed(3)}° E`,
-    time: now.toISOString(), timestamp: now.toISOString().substr(11,8)+' UTC',
-    severity: sev, type, typeColor: DEMO_TYPE_COLORS[type], sevColor: DEMO_SEV_COLORS[sev],
-    confidence: conf, effTemp: `${temp} K`, tempValue: temp,
-    area: `${(frp * 0.35).toFixed(1)} m²`, frp: `${frp} MW`, frpValue: frp,
-    status: 'NEW',
-    diurnal_shape: dShape,
-    diurnal_hist: dHist,
-    co2e_rate_tph: co2eRate,
-    black_carbon_rate_kgph: bcRate,
-    co2e_total_t: +(co2eRate * 24 * 2).toFixed(1)
-  };
+  return { ...fixture };
 }
 
 // --- Initialization ---
@@ -408,8 +367,86 @@ function hideUnreachableBanner() {
   if (banner) banner.remove();
 }
 
+function renderDemoBanner() {
+  if (!IS_EXPLICIT_DEMO) return;
+  document.body.dataset.mode = 'demo';
+  let banner = document.getElementById('demo-mode-persistent-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'demo-mode-persistent-banner';
+    banner.className = 'w-full bg-red-600 text-white font-mono text-[13px] font-bold px-4 py-2 border-b-2 border-red-800 flex items-center justify-center z-50 shadow-lg shrink-0 tracking-wider select-none';
+    banner.innerHTML = '⚠ SIMULATED DATA — NOT LIVE';
+    document.body.prepend(banner);
+  }
+}
+
+function updateLiveStatusIndicator(lastIngestUtc, isOnline = true) {
+  const pill = document.getElementById('live-status-pill');
+  const dot = document.getElementById('live-status-dot');
+  const text = document.getElementById('live-status-text');
+  const clock = document.getElementById('last-ingest-clock');
+  if (!pill || !dot || !text) return;
+
+  if (lastIngestUtc) AppState.lastIngestUtc = lastIngestUtc;
+
+  if (clock) {
+    if (AppState.lastIngestUtc) {
+      const d = new Date(AppState.lastIngestUtc);
+      clock.textContent = d.toLocaleTimeString();
+    } else {
+      clock.textContent = 'never';
+    }
+  }
+
+  if (!isOnline) {
+    dot.className = 'w-2 h-2 rounded-full bg-error';
+    text.className = 'font-label-caps text-[10px] text-error font-bold';
+    text.textContent = 'OFFLINE';
+    return;
+  }
+
+  const pollIntervalSeconds = 600;
+  let isStale = false;
+  if (AppState.lastIngestUtc) {
+    const ageSeconds = (Date.now() - new Date(AppState.lastIngestUtc).getTime()) / 1000;
+    if (ageSeconds > 3 * pollIntervalSeconds) {
+      isStale = true;
+    }
+  }
+
+  if (isStale) {
+    dot.className = 'w-2 h-2 rounded-full bg-amber-500';
+    text.className = 'font-label-caps text-[10px] text-amber-400 font-bold';
+    text.textContent = 'STALE';
+  } else {
+    dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
+    text.className = 'font-label-caps text-[10px] text-emerald-400 font-bold';
+    text.textContent = 'LIVE';
+  }
+}
+
+function renderEmptyState(lastIngest) {
+  const feed = document.getElementById('alert-feed');
+  if (feed) {
+    feed.innerHTML = `
+      <div class="p-6 text-center text-outline font-data-mono text-sm">
+        <p class="font-bold text-on-surface">No detections in the selected window.</p>
+        <p class="text-xs text-outline mt-1">Last ingest: ${lastIngest || 'never'}</p>
+      </div>`;
+  }
+  const inspPanel = document.getElementById('inspection-panel');
+  if (inspPanel) {
+    inspPanel.innerHTML = `
+      <div class="p-6 text-center text-outline font-data-mono text-xs">
+        No thermal anomaly selected. Last ingest: ${lastIngest || 'never'}
+      </div>`;
+  }
+  initMapCanvas();
+}
+
 function handleBackendUnreachable(msg) {
   showUnreachableBanner(msg || 'LIVE BACKEND UNREACHABLE — using cached snapshot');
+  updateLiveStatusIndicator(AppState.lastIngestUtc, false);
 
   let cached = null;
   try {
@@ -425,8 +462,9 @@ function handleBackendUnreachable(msg) {
   } else {
     console.warn('[AGNIVANI] No cached snapshot found in localStorage.');
     if (IS_EXPLICIT_DEMO) {
-      showDemoBadge();
       startDemoSimulation();
+    } else {
+      renderEmptyState('never (offline)');
     }
   }
 }
@@ -434,10 +472,10 @@ function handleBackendUnreachable(msg) {
 // --- Live mode bootstrap ---
 async function setupLiveMode() {
   hideUnreachableBanner();
+  renderDemoBanner();
 
   if (IS_EXPLICIT_DEMO) {
     console.log('[AGNIVANI] EXPLICIT DEMO MODE (?demo=1) — starting rehearsal simulation');
-    showDemoBadge();
     startDemoSimulation();
     return;
   }
@@ -450,7 +488,7 @@ async function setupLiveMode() {
 
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 3000);
+    const timer = setTimeout(() => controller.abort(), 20000);
     const res = await fetch('/api/snapshot', { signal: controller.signal });
     clearTimeout(timer);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -473,33 +511,25 @@ async function setupLiveMode() {
   }
 }
 
-function showDemoBadge() {
-  const topbar = document.querySelector('header');
-  if (!topbar) return;
-  let badge = document.getElementById('demo-mode-badge');
-  if (!badge) {
-    badge = document.createElement('div');
-    badge.id = 'demo-mode-badge';
-    badge.className = 'hud-border bg-error-container text-on-error-container font-label-caps text-[10px] px-2 py-1 rounded flex items-center gap-xs mr-2';
-    badge.innerHTML = '<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div> DEMO MODE — synthetic feed';
-    topbar.querySelector('.flex.items-center.gap-md:last-child')?.appendChild(badge);
-  }
-}
-
 function hydrateFromSnapshot(data) {
   if (!data) return;
+  const lastIngestStr = data.stats?.last_ingest_utc ? new Date(data.stats.last_ingest_utc).toLocaleString() : 'never';
+  updateLiveStatusIndicator(data.stats?.last_ingest_utc, true);
+
   // Stats -> KPIs & Model Integrity
   if (data.stats) updateStatsPanel(data.stats);
   // Detections -> anomaly list (newest first)
-  if (Array.isArray(data.detections)) {
+  if (Array.isArray(data.detections) && data.detections.length > 0) {
     const mapped = data.detections.map(d => apiDetectionToAnomaly(d));
     AppState.anomalies = mapped;
     initAlertFeed();
     initMapCanvas();
     if (AppState.mapMode === 'satellite') refreshLeafletMap();
     if (AppState.anomalies.length > 0) selectAnomaly(AppState.anomalies[0].id);
+  } else {
+    AppState.anomalies = [];
+    renderEmptyState(lastIngestStr);
   }
-  // Facilities -> nothing urgent to render in current view
 }
 
 function apiDetectionToAnomaly(d) {
@@ -653,10 +683,12 @@ function connectSSE() {
         console.error('[AGNIVANI] SSE parse error:', err);
       }
     });
-    sseSource.addEventListener('heartbeat', () => {});
+    sseSource.addEventListener('heartbeat', () => {
+      updateLiveStatusIndicator(AppState.lastIngestUtc, true);
+    });
     sseSource.onerror = (err) => {
       console.warn('[AGNIVANI] SSE error, reconnecting...', err);
-      // browsers auto-reconnect EventSource; just log
+      updateLiveStatusIndicator(AppState.lastIngestUtc, false);
     };
   } catch (err) {
     console.warn('[AGNIVANI] EventSource unavailable:', err);
@@ -1367,21 +1399,27 @@ function initHeatmap() {
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - 364);
 
+  const dateCounts = {};
+  (AppState.anomalies || []).forEach(a => {
+    if (a.time) {
+      const d = a.time.substring(0, 10);
+      dateCounts[d] = (dateCounts[d] || 0) + 1;
+    }
+  });
+
   for (let i = 0; i < 364; i++) {
     const curDate = new Date(startDate);
     curDate.setDate(curDate.getDate() + i);
     const dateStr = curDate.toISOString().substring(0, 10);
+    const count = dateCounts[dateStr] || 0;
 
     let colorIdx = 0;
-    const r = Math.random();
-    if (r > 0.85) colorIdx = 6;
-    else if (r > 0.70) colorIdx = 5;
-    else if (r > 0.50) colorIdx = 4;
-    else if (r > 0.35) colorIdx = 3;
-    else if (r > 0.20) colorIdx = 2;
+    if (count > 5) colorIdx = 6;
+    else if (count > 3) colorIdx = 5;
+    else if (count > 2) colorIdx = 4;
+    else if (count > 1) colorIdx = 3;
+    else if (count > 0) colorIdx = 2;
     else colorIdx = 0;
-
-    const count = colorIdx === 0 ? 0 : Math.floor(colorIdx * 2.5 + Math.random() * 3);
 
     const cell = document.createElement('div');
     cell.className = `w-full h-[9px] rounded-sm transition-all hover:scale-125 hover:z-20 cursor-pointer ${colors[colorIdx]}`;
@@ -1563,7 +1601,7 @@ function parseAndIngestCSV(csvText, filename = 'custom_firms.csv') {
       type,
       typeColor,
       sevColor,
-      confidence: 0.85 + Math.random() * 0.12,
+      confidence: Number((0.85 + Math.min(0.12, (frp / 100.0) * 0.10)).toFixed(3)),
       effTemp: `${Math.round(ti4 * 4.2)} K`,
       tempValue: Math.round(ti4 * 4.2),
       area: `${(frp * 0.35).toFixed(1)} m²`,

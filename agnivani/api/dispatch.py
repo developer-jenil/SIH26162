@@ -2,10 +2,11 @@
 from datetime import datetime,timezone
 from pathlib import Path
 import json,uuid
-from fastapi import APIRouter,HTTPException,Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from .schemas import DispatchRequest,DispatchOut
+from .auth import verify_mutation_token
 router=APIRouter()
-@router.post("/dispatch",response_model=DispatchOut)
+@router.post("/dispatch",response_model=DispatchOut,dependencies=[Depends(verify_mutation_token)])
 def dispatch(payload:DispatchRequest,request:Request):
     exists=not request.app.state.store.query("SELECT 1 FROM detections WHERE id=?",[payload.detection_id]).empty
     if not exists:raise HTTPException(404,f"Detection '{payload.detection_id}' was not found")

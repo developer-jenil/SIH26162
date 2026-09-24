@@ -23,6 +23,8 @@ log=structlog.get_logger()
 @asynccontextmanager
 async def lifespan(app:FastAPI):
     settings=Settings(); configure_logging(settings.log_level,os.getenv("AGNIVANI_ENV")=="production")
+    if not settings.agnivani_api_token:
+        log.warning("AGNIVANI_API_TOKEN is not set — mutating endpoints are unauthenticated")
     app.state.settings=settings; app.state.store=DuckStore(settings.data_dir); app.state.broker=EventBroker(); app.state.scorer=get_scorer(settings)
     facilities=load_facilities(settings.data_dir)
     for row in facilities.drop(columns="geometry").to_dict("records"):app.state.store.upsert_facility(row)
@@ -45,14 +47,14 @@ def create_app(settings:Settings|None=None):
             async with lifespan(app):yield
         else:
             configure_logging(settings.log_level); app.state.settings=settings; app.state.store=DuckStore(settings.data_dir); app.state.broker=EventBroker(); app.state.scorer=get_scorer(settings)
+            if not settings.agnivani_api_token:
+                log.warning("AGNIVANI_API_TOKEN is not set — mutating endpoints are unauthenticated")
             for row in load_facilities(settings.data_dir).drop(columns="geometry").to_dict("records"):app.state.store.upsert_facility(row)
             try:await process_once(app,settings.backfill_days,False)
             except Exception as exc:app.state.store.log("BACKFILL",f"seed unavailable: {exc}",level="WARN")
             yield; app.state.broker.close(); app.state.store.close()
     cfg = settings or Settings()
-    cors_origins = cfg.cors_origins if cfg and getattr(cfg, "cors_origins", None) else [
-        "http://localhost:8000", "http://127.0.0.1:8000", "http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5173", "http://127.0.0.1:5173"
-    ]
+    cors_origins = cfg.cors_origins_list
     api=FastAPI(title="AGNIVANI",version="0.1.0",lifespan=configured_lifespan,default_response_class=ORJSONResponse)
     api.add_middleware(CORSMiddleware,allow_origins=cors_origins,allow_credentials=False,allow_methods=["*"],allow_headers=["*"])
     for router in (detections.router,stream.router,dispatch.router,pipeline.router,snapshot.router):api.include_router(router,prefix="/api")

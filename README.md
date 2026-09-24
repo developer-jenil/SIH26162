@@ -22,12 +22,12 @@
 2. [End-to-End System Architecture](#-end-to-end-system-architecture)
 3. [Existing Features & Capabilities](#-existing-features--capabilities)
    - [1. Satellite Ingestion & Data Pipeline](#1-satellite-ingestion--data-pipeline)
-   - [2. Geospatial Processing & Mainland Filtering](#2-geospatial-processing--mainland-filtering)
-   - [3. Sub-Pixel Planck / Dozier Physical Inversion](#3-sub-pixel-planck--dozier-physical-inversion)
-   - [4. Multi-Source Industrial Registry & Gap Discovery](#4-multi-source-industrial-registry--gap-discovery)
-   - [5. Leakage-Safe Classification & Conformal Inference](#5-leakage-safe-classification--conformal-inference)
+   - [2. Geospatial Processing, Mainland Filtering & Diurnal Signatures](#2-geospatial-processing--mainland-filtering)
+   - [3. Sub-Pixel Planck Inversion & Emissions Proxy](#3-sub-pixel-planck--dozier-physical-inversion--emissions-proxy)
+   - [4. Multi-Source Industrial Registry & Synthetic Generation](#4-multi-source-industrial-registry-negative-controls--synthetic-generation)
+   - [5. Leakage-Safe Classification & Grounded Decision Narratives](#5-leakage-safe-classification-conformal-inference--decision-narratives)
    - [6. Thread-Safe Analytical Storage & Event Engine](#6-thread-safe-analytical-storage--event-engine)
-   - [7. Tactical Mission-Grade Web Dashboard](#7-tactical-mission-grade-web-dashboard)
+   - [7. Tactical Mission-Grade Web Dashboard & Fail-Loud Resilience](#7-tactical-mission-grade-web-dashboard)
 4. [UI Module Showcase](#-ui-module-showcase)
 5. [Repository Structure](#-repository-structure)
 6. [Quickstart & Installation](#-quickstart--installation)
@@ -81,7 +81,6 @@ flowchart TD
     subgraph REGISTRY ["4. Multi-Source Facility Fusion"]
         GEM["Global Energy Monitor (GEM)"] --> REG_BUILD["build_registry.py"]
         OSM["OpenStreetMap Overpass"] --> REG_BUILD
-        BHUVAN["ISRO Bhuvan Layers"] --> REG_BUILD
         MANUAL["Curated Industrial Seed"] --> REG_BUILD
         REG_BUILD --> FAC_DB[("facilities.parquet / DuckDB")]
         FAC_DB --> SPATIAL_JOIN["Nearest-Facility Geospatial Join (< 500m Dedupe)"]
@@ -131,8 +130,16 @@ flowchart TD
   - Groups raw pixel hits into ~2 km discrete geographic cells (`CELL_DEG = 0.02`).
   - Stable MD5 cryptographic cluster identifiers (`AV-XXXXXXXX`).
   - Tracks spatiotemporal attributes: total hits (`n_hits`), distinct active days (`n_days`), night detection count (`n_nights`), day/night ratio (`night_frac`), temporal span (`span_days`), recurrence gaps (`recurrence_gap_days`), cluster physical extent (`cluster_extent_m`), and flare scores.
+- **24-Hour Diurnal Solar Histograms & Temporal Signatures**:
+  - Decomposes cluster detection timestamps into a 24-bin normalized histogram across local solar hours (`diurnal_hist`, sums to 1.0).
+  - Classifies temporal emission shapes into canonical physical signatures (`diurnal_shape`):
+    - `FLAT_24H`: Continuous 24/7 industrial flaring, kilns, or smelters (high night fraction, low entropy).
+    - `SPIKE_DECAY`: Abrupt emergency explosion or structural fire event.
+    - `EVENING_BURST`: Concentrated agricultural stubble burning (mass concentrated between 16:00–20:00 local solar time).
+    - `DAYTIME_ONLY`: Peak diurnal solar wildfire behavior (mass concentrated between 10:00–16:00 local solar time).
+    - `SPARSE`: Low-frequency or single-detection events.
 
-### 3. Sub-Pixel Planck / Dozier Physical Inversion
+### 3. Sub-Pixel Planck / Dozier Physical Inversion & Emissions Proxy
 - **Dual-Band Dozier Algorithm (`agnivani/physics/planck.py`)**:
   - Formulates and solves non-linear Planck blackbody radiation equations over two infrared channels:
     $$\lambda_{\text{MIR}} = 3.74\,\mu\text{m} \quad (\text{Band } I4), \qquad \lambda_{\text{TIR}} = 11.45\,\mu\text{m} \quad (\text{Band } I5)$$
@@ -142,20 +149,28 @@ flowchart TD
     - **$T_{\text{fire}}$**: Sub-pixel emitter kinetic temperature (Kelvin).
     - **$p$**: Sub-pixel emitter area fraction ($0 < p \le 1$).
     - **$\text{FRP}_{\text{derived}}$**: Derived Fire Radiative Power (MW) calculated via the Stefan-Boltzmann equation ($\sigma \cdot p \cdot A_{\text{pixel}} \cdot T^4$).
+- **Radiative Emissions Proxy ($CO_2e$ & Black Carbon Tracking)**:
+  - Couples retrieved FRP ($MW$) with published sector-specific radiative emission factors (Akagi et al., IPCC, CPCB flare conversion constants):
+    - **$CO_2e$ Rate**: Measured in tonnes per hour ($\text{t/h}$).
+    - **Black Carbon Rate**: Measured in kilograms per hour ($\text{kg/h}$).
+    - **Cumulative $CO_2e$**: Estimated total tonnage emitted across the cluster's active temporal span.
+  - **Marine / Offshore Suppression**: Hotspots over open ocean without associated offshore oil/gas infrastructure are flagged (`offshore_suppressed = true`), assigning zero terrestrial emission credit to eliminate phantom maritime pollution.
 - **Honest Physical Failure Modes**:
   - Distinguishes physical non-convergences: `NO_MIR_EXCESS` (no hot-source elevation over background), `NO_ROOT` (mixed-pixel saturation without root), and `P_CLIPPED` (sub-pixel area fraction exceeds unity).
 
-### 4. Multi-Source Industrial Registry & Gap Discovery
+### 4. Multi-Source Industrial Registry, Negative Controls & Synthetic Generation
 - **Comprehensive Facility Coverage (`data/processed/facilities.parquet`)**:
   - Curated and programmatically merged database covering Indian Refineries, LNG terminals, Petrochemicals, Steel plants, Thermal Power stations, Coalfields, Cement, and Fertilizers.
-  - Automated integration from **GEM (Global Energy Monitor)**, **OSM (OpenStreetMap)**, **ISRO Bhuvan**, and manual seeds.
+  - Automated integration from **GEM (Global Energy Monitor)**, **OSM (OpenStreetMap)**, and manual seeds.
   - Spatial deduplication within 500 meters using Haversine formulas.
-- **Negative Control Generation**:
+- **Negative Control Generation (`sample_negative_controls`)**:
   - Automated generation of hard negative controls (8–25 km away from known industrial facilities) for training robust background classifiers.
+- **Physics-Informed Synthetic Hotspot Generator (`generate_synthetic_blobs`)**:
+  - Synthesizes realistic thermal clusters whose physical features match facility sector thermodynamics (`FLARE`/`REFI_GAS`, `COAL`, `IND_FIRE`, `WILD`, `LEAK`) for leak-free model training, stress testing, and offline benchmarking.
 - **Registry Gap Analysis (`data/processed/registry_gaps.parquet`)**:
   - Automatically identifies persistent, intense thermal emitters located $>50\,\text{km}$ away from any registered industrial facility, surfacing unregistered/clandestine industrial operations.
 
-### 5. Leakage-Safe Classification & Conformal Inference
+### 5. Leakage-Safe Classification, Conformal Inference & Decision Narratives
 - **5-Class Thermal Anomaly Taxonomy**:
   1. `FLARE`: Gas flaring at refineries, petrochemical complexes, and offshore/onshore platforms.
   2. `IND_FIRE`: High-temperature structural or industrial process fires.
@@ -164,11 +179,16 @@ flowchart TD
   5. `LEAK`: Fugitive emissions or unignited gas leaks (characterized by proximity to gas/refinery infrastructure without MIR excess).
 - **Leak-Free ML Engineering (`agnivani/features/build.py`)**:
   - Strictly bans raw spatial coordinates (`lat`, `lon`, `centroid_lat`, `centroid_lon`, `block_id`, etc.) from model training to prevent geographic memorization.
-  - Leverages 21+ physical & contextual features: $T_{\text{fire}}$, sub-pixel area fraction, $\Delta T$ ($I4 - I5$), radiance ratios, $\log(1 + \text{FRP})$, cyclic solar hour ($\sin / \cos$), night fraction, temporal recurrence gap, facility distance, and landcover classification.
+  - Leverages 23+ physical & contextual features: $T_{\text{fire}}$, sub-pixel area fraction, $\Delta T$ ($I4 - I5$), radiance ratios, $\log(1 + \text{FRP})$, cyclic solar hour ($\sin / \cos$), diurnal shape, night fraction, temporal recurrence gap, facility distance, and landcover classification.
 - **Dual Scorer Architecture**:
   - **Heuristic Prior Scorer** (Default): Transparent, fully auditable rule-based expert prior model reporting hand-set prior distributions with zero cold-start dependencies.
   - **Calibrated XGBoost Scorer**: Multi-class gradient boosted trees evaluated using `GroupKFold` spatial-block cross-validation (`GroupKFold` on $2^\circ \times 2^\circ$ spatial grid cells) to ensure generalization to unseen regions.
 - **Conformal Prediction**: Outputs valid confidence intervals $[lo, hi]$ around predicted probabilities, providing operators with statistical bounds on uncertainty.
+- **Explainable Decision Narrative & Anti-Hallucination Guard (`agnivani/narrative/reason.py`)**:
+  - Synthesizes a grounded, single-sentence decision narrative explaining classification, confidence, the two strongest physical evidences, and statutory rule implications.
+  - Supports local/remote LLM execution (`auto`, `ollama`, `openai`, `anthropic`) with an instant deterministic template fallback for offline operation.
+  - Cites applicable Indian regulations: `CPCB-FLARE-PERMIT`, `NDMA-INDUSTRIAL-SAFETY`, `DGMS-COAL-FIRE`, `PNGRB-GAS-LEAK`, `CPCB-AGRICULTURAL-BURN`, and `MOEFCC-FOREST-FIRE`.
+  - **Strict Anti-Hallucination Guard**: Regex numerical scanner (`validate_no_hallucinated_numbers`) rejecting any generated explanation containing numeric tokens ungrounded in the physical evidence dictionary.
 
 ### 6. Thread-Safe Analytical Storage & Event Engine
 - **Embedded DuckDB Engine (`agnivani/store/duck.py`)**:
@@ -176,28 +196,35 @@ flowchart TD
   - Direct zero-copy Parquet integration through analytical views (`v_detections`, `v_sources`, `v_facilities`, `v_labelled`).
 - **Real-Time Pub/Sub Broker (`agnivani/api/events.py`)**:
   - In-memory asynchronous pub/sub broker distributing live satellite detections and pipeline execution metrics to connected clients over Server-Sent Events (`/api/stream`).
-- **Telemetry Pipeline Log**:
-  - Execution-level telemetry tracking step latency in milliseconds across all pipeline stages (`VIIRS INGEST`, `INDIA FILTER`, `SOURCE CLUSTER`, `PLANCK RETRIEVAL`, `REGISTRY JOIN`, `CLASSIFY`).
+- **Real Stage Latency Benchmarking (`perf_counter`)**:
+  - Execution-level telemetry tracking real elapsed time in milliseconds across all six verification pipeline stages (`VIIRS INGEST`, `INDIA FILTER`, `SOURCE CLUSTER`, `PLANCK RETRIEVAL`, `REGISTRY JOIN`, `CLASSIFY`).
 
 ### 7. Tactical Mission-Grade Web Dashboard
 - **Mission Control Center (`index.html#mission-control`)**:
-  - Real-time animated **Live Alert Feed** displaying recent thermal triggers.
+  - Real-time animated **Live Alert Feed** displaying recent thermal triggers with emissions rates.
   - Dual Map Visualization:
     - **Vector Radar Mode**: Custom HTML5 Canvas rendering a simulated orbital sweep, range rings, coordinate grids, and pulsing thermal hotspots.
     - **Satellite Mode**: Interactive Leaflet.js map with CartoDB Dark Matter tiles, custom SVG markers, dynamic clustering, and facility pins.
   - **Optical vs. Infrared Swipe Comparison**: Interactive before/after split slider comparing high-resolution optical imagery with SWIR/MWIR thermal false-color layers for the selected anomaly.
   - **Live Terminal & Telemetry Bar**: Shows satellite orbit status, NOAA-20 overpass counter, coordinates, and real-time execution logs.
+  - **Decision Narrative & Why Chips**: Displays the generated single-sentence regulatory narrative, statutory badge (`cited_rule`), and dynamic ranking chips for top contributing physical features.
+  - **Diurnal Signature Sparkline**: 24-bin micro-histogram rendered in the inspection panel showing solar hour distribution.
+  - **Sentinel-2 (S2) Tasking Telemetry**: Automated generator preparing SWIR Band 11 (1.610 µm) & Band 12 (2.190 µm) high-resolution optical tasking scripts.
+- **Fail-Loud Resilience & Offline Caching**:
+  - Caches `/api/snapshot` payloads in browser `localStorage` (`agnivani_snapshot_cache`).
+  - On network timeout or backend disruption, displays a visible, high-priority `"LIVE BACKEND UNREACHABLE — using cached snapshot"` banner with a pulsing indicator and `"RETRY SYNC"` button.
+  - Strictly restricts synthetic simulation loops behind an explicit `?demo=1` flag for offline rehearsals, preventing random blips in operational environments.
 - **Alerts Queue Module (`index.html#alerts`)**:
   - Enterprise alert management table with filtering by severity (`CRITICAL`, `HIGH`, `MODERATE`, `LOW`), classification, and operational status (`NEW`, `DISPATCHED`, `RECEIVED`, `RESPONDED`).
   - Multi-channel dispatch status tracking (SMS, Email, API Webhook, Mock).
 - **Telemetry & Insights Analytics (`index.html#analytics`)**:
-  - High-level KPIs: Total Detections, Active Persistent Sources, Critical Anomalies, Mean FRP.
+  - High-level KPIs: Total Detections, Active Persistent Sources, Critical Anomalies, Mean FRP, and **Estimated Emissions Rate ($CO_2e$ t/h)**.
   - Sector-wise thermal emission breakdown (Refineries, Steel, Coal, Cement, Fertilizer).
   - FRP vs. Temperature physical correlation scatter metrics.
   - Diurnal solar hour distribution analysis ($\sin/\cos$).
 - **Detection Dossier Module (`index.html#dossier`)**:
   - Forensic audit of any selected anomaly.
-  - **6-Stage Verification Breadcrumb Trail**: Visual status cards for VIIRS Ingest, India Filter, Source Cluster, Planck Retrieval, Registry Join, and Classify.
+  - **6-Stage Verification Breadcrumb Trail**: Visual status cards for VIIRS Ingest, India Filter, Source Cluster, Planck Retrieval, Registry Join, and Classify with real millisecond deltas.
   - **Planck Spectral Radiance Curve**: Interactive visual comparison of spectral radiance $L_\lambda$ across wavelengths ($\lambda_{\text{MIR}}$ vs $\lambda_{\text{TIR}}$) comparing background ambient emission against anomalous fire Planck curves.
   - **Conformal Uncertainty Display**: Visual confidence bar with lower and upper confidence bounds.
   - **Feature Attribution Ranking**: Visual contribution breakdown of top contributing features (temperature, night fraction, facility distance).
@@ -270,6 +297,10 @@ flowchart TD
 │   │   ├── scorer.py                         # Heuristic prior & Calibrated XGBoost scorers
 │   │   └── train.py                          # Leak-free spatial-block model training pipeline
 │   │
+│   ├── narrative/                            # Regulatory narrative & anti-hallucination guard
+│   │   ├── __init__.py                       # Package exports
+│   │   └── reason.py                         # Multi-provider LLM/template reason generator & numerical guard
+│   │
 │   ├── physics/                              # Radiative transfer & thermal inversion
 │   │   └── planck.py                         # Planck spectral radiance & dual-band Dozier solver
 │   │
@@ -282,7 +313,7 @@ flowchart TD
 │   └── app.js                                # Application state, Web Audio FX, Leaflet & SSE client
 │
 ├── scripts/                                  # Utility & administration scripts
-│   ├── build_registry.py                     # Multi-source registry builder (GEM + OSM + Bhuvan)
+│   ├── build_registry.py                     # Multi-source registry builder (GEM + OSM)
 │   ├── fetch_firms.py                        # Standalone script to fetch recent NASA FIRMS CSVs
 │   └── train.py                              # Wrapper script to execute spatial-block ML training
 │
@@ -300,12 +331,13 @@ flowchart TD
 │
 ├── stitch_agnivani_thermal_intelligence_grid/ # UI Design System, assets & screen mocks
 └── tests/                                    # Automated Pytest test suite
-    ├── test_api.py                           # API contract & live endpoint tests
+    ├── test_api.py                           # API contract, CORS & live endpoint tests
     ├── test_features.py                      # Leak-free coordinate & feature matrix tests
     ├── test_india.py                         # Sovereign boundary point-in-polygon verification
     ├── test_live_integration.py              # Snapshot endpoint & config shim integration tests
     ├── test_planck.py                        # Planck inversion & Dozier convergence unit tests
-    └── test_registry.py                      # Registry deduplication, labelling & negative controls
+    ├── test_registry.py                      # Registry deduplication, labelling & negative controls
+    └── test_synth.py                         # Synthetic facility blobs & diurnal shape tests
 ```
 
 ---
@@ -347,7 +379,7 @@ Copy-Item .env.example .env     # Windows PowerShell
 
 The default configuration is pre-tuned for an **instant, zero-friction offline demo**:
 ```env
-# Set to 'false' and provide FIRMS_MAP_KEY to fetch live orbital passes
+# Core & Offline Mode
 OFFLINE_MODE=true
 FIRMS_MAP_KEY=
 SCORER_BACKEND=heuristic
@@ -355,6 +387,17 @@ DATA_DIR=data
 LOG_LEVEL=INFO
 POLL_INTERVAL_SECONDS=600
 BACKFILL_DAYS=90
+
+# Explainable Regulatory Narrative LLM Provider (auto | ollama | openai | anthropic | template)
+LLM_PROVIDER=auto
+OLLAMA_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2:1b
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+
+# Environment & CORS Security (comma-separated origins)
+AGNIVANI_ENV=development
+CORS_ORIGINS=http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000,http://localhost:5173
 ```
 
 ### 4. Run the Application
@@ -365,11 +408,15 @@ uvicorn agnivani.main:app --reload --host 0.0.0.0 --port 8000
 
 ### 5. Access the Platform
 - **Tactical Dashboard**: Open your browser at [http://localhost:8000/](http://localhost:8000/)
+- **Offline Rehearsal Mode**: Open [http://localhost:8000/?demo=1](http://localhost:8000/?demo=1) to activate embedded demonstration fixtures and synthetic anomaly generation.
 - **Interactive OpenAPI Documentation**: Open [http://localhost:8000/docs](http://localhost:8000/docs)
 - **Alternative ReDoc Docs**: Open [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
 > [!TIP]
 > When `OFFLINE_MODE=true`, the system immediately loads bundled observations from `data/raw/firms/firms_india.csv` and executes the complete pipeline without requiring any API keys or network calls.
+
+> [!NOTE]
+> In production and live monitoring, synthetic anomalies are strictly suppressed to guarantee 100% telemetry authenticity. If the backend is unreachable, the dashboard automatically fails loud and presents cached historical observations from `localStorage`. Synthetic simulation is strictly restricted behind `?demo=1`.
 
 ---
 
@@ -388,7 +435,7 @@ python -m agnivani.models.train --dry-run
 ```
 
 ### Build or Update the Industrial Facility Registry
-Fetch and merge data from GEM, OSM Overpass, and ISRO Bhuvan into `data/processed/facilities.parquet`:
+Fetch and merge data from GEM and OSM Overpass into `data/processed/facilities.parquet`:
 ```powershell
 python -m scripts.build_registry
 ```
@@ -418,14 +465,23 @@ AGNIVANI exposes an OpenAPI-compliant REST API and real-time Server-Sent Events 
 | :--- | :--- | :--- | :--- |
 | `GET` | `/` | Web tactical dashboard with injected live API configuration shim. | None |
 | `GET` | `/api/health` | Healthcheck returning backend status, active scorer metadata, and ingest age. | None |
-| `GET` | `/api/snapshot` | **Single-call dashboard hydration** returning stats, detections, and facilities in one payload. | None |
+| `GET` | `/api/snapshot` | **Single-call dashboard hydration** returning stats, detections, and facilities in one atomic payload with offline cache compatibility. | None |
 | `GET` | `/api/detections` | Query filtered detections. | `bbox` (minx,miny,maxx,maxy), `hours` (default: 24), `cls` (repeatable), `min_conf` (0–1), `limit` (default: 500) |
 | `GET` | `/api/detections/{id}` | Detailed forensic record for a specific anomaly ID. | `detection_id` (path parameter) |
 | `GET` | `/api/stats` | High-level system statistics (counts by class, severity breakdown, scorer metadata). | None |
 | `GET` | `/api/facilities` | List registered industrial facilities with spatial coordinates. | `sector` (`REFI_GAS`, `STEEL`, `COAL`, `POWER`, `CEMENT`, `FERTILIZER`) |
 | `GET` | `/api/stream` | **Server-Sent Events (SSE)** stream delivering live `detection` and `ingest` events with 15s heartbeat. | None |
 | `POST` | `/api/dispatch` | Dispatch alert to emergency authorities (stores receipt locally in JSONL and alerts table). | `{"detection_id": "...", "authority": "...", "channel": "sms"\|"email"\|"api"\|"mock", "note": "..."}` |
-| `GET` | `/api/pipeline/log` | Operator-visible execution log showing pipeline stages and elapsed processing times. | None |
+| `GET` | `/api/pipeline/log` | Operator-visible execution log showing 6-stage verification timing deltas in real milliseconds. | None |
+
+### Key Detection Payload Schema (`DetectionOut`)
+Every detection record returned by `/api/detections` and `/api/snapshot` incorporates physical, regulatory, and emissions telemetry:
+- **`id` & Coordinates**: `id` (e.g. `AV-4D5F8A12`), `lat`, `lon`, `centroid_lat`, `centroid_lon`.
+- **Classification & Uncertainty**: `cls` (`FLARE`, `IND_FIRE`, `COAL`, `WILD`, `LEAK`), `conf` (0.0–1.0), `lo` / `hi` (conformal bounds), `probs` (5-class normalized probability vector summing to $1.0$).
+- **Thermal Radiative Inversion**: `t_fire_K` (sub-pixel kinetic temperature in Kelvin), `p_area` (sub-pixel area fraction), `frp_derived_MW` (Stefan-Boltzmann derived FRP), `frp_MW` (VIIRS observed FRP).
+- **Emissions Proxy**: `co2e_rate_tph` (tonnes $CO_2e$/hr), `black_carbon_rate_kgph` (kg Black Carbon/hr), `co2e_total_t` (cumulative tonnes emitted), `offshore_suppressed` (boolean flag for ocean clusters without platforms).
+- **Diurnal Signature**: `diurnal_shape` (`FLAT_24H`, `SPIKE_DECAY`, `EVENING_BURST`, `DAYTIME_ONLY`, `SPARSE`), `diurnal_hist` (24-bin normalized hourly histogram).
+- **Explainable Decision Narrative**: `reason` (grounded single-sentence explanation), `reason_template` (deterministic fallback), `cited_rule` (statutory regulation machine tag, e.g. `CPCB-FLARE-PERMIT`).
 
 ---
 

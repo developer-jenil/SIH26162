@@ -3,6 +3,8 @@ from fastapi.testclient import TestClient
 from agnivani.config import Settings
 from agnivani.main import create_app
 
+from agnivani.models.scorer import CLASSES
+
 def test_empty_store_api(tmp_path):
     settings=Settings(offline_mode=True,data_dir=tmp_path)
     with TestClient(create_app(settings)) as client:
@@ -10,6 +12,10 @@ def test_empty_store_api(tmp_path):
         assert client.get("/api/detections").json()==[]
         stats=client.get("/api/stats")
         assert stats.status_code==200 and stats.json()["total_detections"]==0
+        snap=client.get("/api/snapshot")
+        assert snap.status_code==200
+        assert snap.headers.get("X-Agnivani-Mode")=="live"
+        assert snap.json()["detections"]==[]
         assert client.get("/api/detections/missing").status_code==404
         assert client.get("/api/pipeline/log").status_code==200
         assert client.get("/api/facilities").status_code==200
@@ -23,7 +29,7 @@ def test_seed_data_api(tmp_path):
         assert result.status_code==200 and result.json()
         item=result.json()[0]
         assert set(["id","lat","lon","cls","conf","frp_MW","evidence"])<=set(item)
-        assert len(item["evidence"])==6 and set(item["probs"])=={"FLARE","IND_FIRE","COAL","WILD","LEAK"}
+        assert len(item["evidence"])==6 and set(item["probs"])==set(CLASSES)
         assert abs(sum(item["probs"].values())-1)<1e-4
         response=client.post("/api/dispatch",json={"detection_id":item["id"],"authority":"TEST","channel":"mock"})
         assert response.status_code==200 and response.json()["status"]=="sent"
@@ -117,8 +123,49 @@ def test_snapshot_cached_and_replayed_when_backend_down(tmp_path):
     # Verify integrity of replayed detections
     for orig, replay in zip(data["detections"], replayed["detections"]):
         assert replay["id"] == orig["id"]
-        assert replay["cls"] in {"FLARE", "IND_FIRE", "COAL", "WILD", "LEAK"}
+        assert replay["cls"] in CLASSES
         assert abs(sum(replay["probs"].values()) - 1.0) < 1e-4
         assert not replay["id"].startswith("DUMMY-")
         assert not replay["id"].startswith("AGN-04832") or orig["id"] == "AGN-04832"
+
+
+def test_token_auth_on_mutating_routes(tmp_path):
+    raw = tmp_path / "raw" / "firms"
+    raw.mkdir(parents=True)
+    source = Path(__file__).parents[1] / "firms_india.csv"
+    (raw / "firms_india.csv").write_bytes(source.read_bytes())
+
+    # When token is configured, mutating endpoints require valid Bearer token
+    secure_settings = Settings(
+        offline_mode=True,
+        data_dir=tmp_path,
+        agnivani_api_token="test-secret-key-42",
+    )
+    with TestClient(create_app(secure_settings)) as client:
+        # First get a valid detection ID
+        dets = client.get("/api/detections?hours=0&limit=1").json()
+        assert len(dets) > 0
+        det_id = dets[0]["id"]
+
+        # Missing token -> 401
+        res_no_token = client.post("/api/dispatch", json={"detection_id": det_id, "authority": "SEC", "channel": "mock"})
+        assert res_no_token.status_code == 401
+
+        # Wrong token -> 401
+        res_wrong = client.post(
+            "/api/dispatch",
+            json={"detection_id": det_id, "authority": "SEC", "channel": "mock"},
+            headers={"Authorization": "Bearer wrong-token"},
+        )
+        assert res_wrong.status_code == 401
+
+        # Correct token -> 200
+        res_auth = client.post(
+            "/api/dispatch",
+            json={"detection_id": det_id, "authority": "SEC", "channel": "mock"},
+            headers={"Authorization": "Bearer test-secret-key-42"},
+        )
+        assert res_auth.status_code == 200
+        assert res_auth.json()["status"] == "sent"
+
 

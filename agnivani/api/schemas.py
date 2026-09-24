@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Literal
 from pydantic import BaseModel, Field
 
-ClassName=Literal["FLARE","IND_FIRE","COAL","WILD","LEAK"]
+ClassName=Literal["FLARE","IND_FIRE","COAL","WILD","LEAK","UNRESOLVED","GEO","UNAUTHORISED"]
 
 class EvidenceStage(BaseModel):
     stage:int=Field(ge=1,le=6); label:str; status:Literal["ok","warn","fail"]; detail:str; value:str|None=None; ms:int=Field(ge=0)
@@ -13,7 +13,7 @@ class DetectionOut(BaseModel):
     temp_K:float|None; bg_K:float; frac:float|None; frp_MW:float; frp_max_MW:float; area_m2:float; ts:datetime
     n_hits:int; n_days:int; night_frac:float; facility_name:str|None=None; facility_sector:str|None=None
     dist_facility_m:float|None=None; state:str|None=None; district:str|None=None
-    severity:Literal["CRITICAL","HIGH","MODERATE","LOW"]; reason:str; reason_template:str|None=None; cited_rule:str|None=None; offshore_suppressed:bool=False; evidence:list[EvidenceStage]; top_features:list[FeatureContrib]
+    severity:Literal["CRITICAL","HIGH","MODERATE","LOW"]; severity_rationale:str|None=None; reason:str; reason_template:str|None=None; cited_rule:str|None=None; offshore_suppressed:bool=False; evidence:list[EvidenceStage]; top_features:list[FeatureContrib]
     diurnal_hist:list[float]|None=None; diurnal_shape:str|None=None
     co2e_rate_tph:float|None=None; black_carbon_rate_kgph:float|None=None; co2e_total_t:float|None=None
 class StatsOut(BaseModel):

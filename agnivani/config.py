@@ -26,14 +26,18 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     anthropic_api_key: str = ""
     agnivani_env: Literal["development", "production", "staging"] = "development"
-    cors_origins: list[str] = [
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ]
+    cors_allow_origins: str = "http://localhost:8000,http://127.0.0.1:8000"
+    agnivani_cors_allow_all: bool = False
+    agnivani_api_token: str = ""
+    cors_origins: list[str] | None = None
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        if self.agnivani_cors_allow_all:
+            return ["*"]
+        if self.cors_origins is not None:
+            return self.cors_origins
+        return [x.strip() for x in self.cors_allow_origins.split(",") if x.strip()]
 
     @field_validator("cors_origins", mode="before")
     @classmethod
