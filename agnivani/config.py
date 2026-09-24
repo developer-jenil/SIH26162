@@ -25,6 +25,22 @@ class Settings(BaseSettings):
     ollama_model: str = "llama3.2:1b"
     openai_api_key: str = ""
     anthropic_api_key: str = ""
+    agnivani_env: Literal["development", "production", "staging"] = "development"
+    cors_origins: list[str] = [
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, value):
+        if isinstance(value, str):
+            return [x.strip() for x in value.split(",") if x.strip()]
+        return value
 
     @field_validator("firms_sources")
     @classmethod

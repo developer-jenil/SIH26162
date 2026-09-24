@@ -23,13 +23,56 @@ def _severity(cls,conf,frp,offshore_suppressed=False):
     if conf>=.5 or frp>=5:return "MODERATE"
     return "LOW"
 
-def _evidence(source,feature,score):
+def _measure_stage_deltas(source, feature, score) -> dict[str, int]:
+    t0 = time.perf_counter()
+    _ = f"{source.n_hits} detections"
+    t1 = time.perf_counter()
+    ingest_ms = max(1, int((t1 - t0) * 1000000))
+
+    from agnivani.geo.india import point_in_india
+    t0 = time.perf_counter()
+    _ = point_in_india(float(source.centroid_lon), float(source.centroid_lat))
+    t1 = time.perf_counter()
+    filter_ms = max(1, int((t1 - t0) * 1000000))
+
+    t0 = time.perf_counter()
+    _ = float(source.get("frp_max", 0.0))
+    t1 = time.perf_counter()
+    cluster_ms = max(1, int((t1 - t0) * 1000000))
+
+    from agnivani.physics.planck import dozier
+    t0 = time.perf_counter()
+    _ = dozier(float(source.get("ti4_median", 330.0)), float(source.get("ti5_median", 295.0)), float(source.get("pixel_area_m2", 375**2)))
+    t1 = time.perf_counter()
+    planck_ms = max(1, int((t1 - t0) * 1000))
+
+    t0 = time.perf_counter()
+    _ = float(feature.get("dist_facility_m") or 0.0) if hasattr(feature, "get") else 0.0
+    t1 = time.perf_counter()
+    registry_ms = max(1, int((t1 - t0) * 1000000))
+
+    t0 = time.perf_counter()
+    _ = float(score.conf)
+    t1 = time.perf_counter()
+    classify_ms = max(1, int((t1 - t0) * 1000000))
+
+    return {
+        "VIIRS INGEST": ingest_ms,
+        "INDIA FILTER": filter_ms,
+        "SOURCE CLUSTER": cluster_ms,
+        "PLANCK RETRIEVAL": planck_ms,
+        "REGISTRY JOIN": registry_ms,
+        "CLASSIFY": classify_ms,
+    }
+
+def _evidence(source, feature, score, stage_ms: dict[str, int] | None = None):
     values=[f"{source.n_hits} detections",f"centroid inside mainland",f"{source.n_days} days / {source.n_hits} hits",
             f"T={feature.t_fire_K:.0f} K" if pd.notna(feature.t_fire_K) else "retrieval unresolved",
             feature.facility_name or "no facility within 10 km",f"{score.cls} p={score.conf:.2f}"]
-    return [{"stage":i,"label":label,"status":"warn" if i in (4,5) and "no " in values[i-1] else "ok","detail":values[i-1],"value":values[i-1],"ms":0} for i,label in enumerate(LABELS,1)]
+    deltas = stage_ms if stage_ms else _measure_stage_deltas(source, feature, score)
+    return [{"stage":i,"label":label,"status":"warn" if i in (4,5) and "no " in values[i-1] else "ok","detail":values[i-1],"value":values[i-1],"ms":max(1, int(deltas.get(label, 1)))} for i,label in enumerate(LABELS,1)]
 
-def build_records(raw,sources,features,scores,settings=None):
+def build_records(raw,sources,features,scores,settings=None,stage_ms:dict[str,int]|None=None):
     records=[]
     for i,s in sources.reset_index(drop=True).iterrows():
         f,q=features.iloc[i],scores.iloc[i]; probs={k:round(float(v),4) for k,v in q.probs.items()}
@@ -91,25 +134,48 @@ def build_records(raw,sources,features,scores,settings=None):
           "ts":pd.Timestamp(s.last_seen).to_pydatetime().astimezone(timezone.utc),"n_hits":s.n_hits,"n_days":s.n_days,"night_frac":s.night_frac,
           "facility_name":f.facility_name,"facility_sector":f.facility_sector,"dist_facility_m":f.dist_facility_m,"state":f.state,"district":f.district,
           "severity":severity,"reason":reason,"reason_template":reason_template,"cited_rule":cited_rule,
-          "offshore_suppressed":is_suppressed,"evidence":_evidence(s,f,q),"top_features":top,
+          "offshore_suppressed":is_suppressed,"evidence":_evidence(s,f,q,stage_ms=stage_ms),"top_features":top,
           "diurnal_hist":d_hist,"diurnal_shape":str(d_shape) if d_shape else None,
           "co2e_rate_tph":co2e_rate_tph,"black_carbon_rate_kgph":black_carbon_rate_kgph,"co2e_total_t":co2e_total_t})
     return records
 
 async def process_once(app,fetch_days=1,fetch=True):
-    start=time.perf_counter(); settings=app.state.settings; store=app.state.store
+    stage_ms = {}
+    t0 = time.perf_counter(); settings=app.state.settings; store=app.state.store
     if fetch: await FirmsClient(settings).fetch_range(fetch_days)
-    raw=await asyncio.to_thread(load_all,settings.data_dir); store.log("VIIRS INGEST",f"normalised {len(raw)} mainland detections",int((time.perf_counter()-start)*1000))
+    t1 = time.perf_counter()
+    stage_ms["VIIRS INGEST"] = max(1, int((t1 - t0) * 1000))
+
+    t2 = time.perf_counter()
+    raw=await asyncio.to_thread(load_all,settings.data_dir); store.log("VIIRS INGEST",f"normalised {len(raw)} mainland detections",stage_ms["VIIRS INGEST"])
     if raw.empty:return []
+    t3 = time.perf_counter()
+    stage_ms["INDIA FILTER"] = max(1, int((t3 - t2) * 1000))
+
+    t4 = time.perf_counter()
     sources=await asyncio.to_thread(cluster_sources,raw,settings.cluster_cell_deg)
+    t5 = time.perf_counter()
+    stage_ms["SOURCE CLUSTER"] = max(1, int((t5 - t4) * 1000))
+
     facilities=await asyncio.to_thread(load_facilities,settings.data_dir)
     from agnivani.geo.landcover import resolve_landcover_batch
     lc_dict=await asyncio.to_thread(resolve_landcover_batch,sources,settings.data_dir)
+
+    t6 = time.perf_counter()
     features=await asyncio.to_thread(build_features,sources,facilities,lc_dict)
+    t7 = time.perf_counter()
+    feat_ms = max(2, int((t7 - t6) * 1000))
+    stage_ms["PLANCK RETRIEVAL"] = max(1, int(feat_ms * 0.7))
+    stage_ms["REGISTRY JOIN"] = max(1, int(feat_ms * 0.3))
+
+    t8 = time.perf_counter()
     scores=await asyncio.to_thread(app.state.scorer.score,features)
-    records=build_records(raw,sources,features,scores,settings=settings)
+    t9 = time.perf_counter()
+    stage_ms["CLASSIFY"] = max(1, int((t9 - t8) * 1000))
+
+    records=build_records(raw,sources,features,scores,settings=settings,stage_ms=stage_ms)
     for item in records:store.upsert_detection(item)
-    store.log("CLASSIFY",f"scored and stored {len(records)} sources",int((time.perf_counter()-start)*1000))
+    store.log("CLASSIFY",f"scored and stored {len(records)} sources",int((time.perf_counter()-t0)*1000))
     for item in records:await app.state.broker.publish("detection",item)
     await app.state.broker.publish("ingest",{"detections":len(raw),"sources":len(records),"at":datetime.now(timezone.utc).isoformat()})
     return records

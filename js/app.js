@@ -109,12 +109,173 @@ const SoundFX = {
 
 // --- Config shim (injected by FastAPI; absent in file:// demo) ---
 const AGNIVANI_API = window.AGNIVANI_API || null;
+const URL_PARAMS = typeof window !== 'undefined' && window.location ? new URLSearchParams(window.location.search) : new URLSearchParams();
+const IS_EXPLICIT_DEMO = URL_PARAMS.get('demo') === '1';
+
+// Embedded Demo Anomalies (Strictly reserved for offline rehearsal with ?demo=1)
+const EMBEDDED_DEMO_ANOMALIES = [
+  {
+    id: 'AGN-04832',
+    shortId: 'A94X',
+    name: 'Jamnagar Refinery',
+    facilityId: 'RIL-JAM-01',
+    coords: { lat: 22.35, lon: 70.02 },
+    coordsStr: '22.350° N, 70.020° E',
+    time: '14:02:11 UTC',
+    timestamp: '14:02:11',
+    severity: 'CRITICAL',
+    type: 'GAS FLARE',
+    typeColor: '#ffa94d',
+    sevColor: '#ff4d4d',
+    confidence: 0.943,
+    effTemp: '1847 K',
+    tempValue: 1847,
+    area: '12.4 m²',
+    frp: '62.1 MW',
+    frpValue: 62.1,
+    swirRad: '14.8 W/m²/sr/μm',
+    mwirRad: '8.2 W/m²/sr/μm',
+    ch4Est: '0.42 kg/s',
+    co2e_rate_tph: 122.96,
+    black_carbon_rate_kgph: 145.31,
+    co2e_total_t: 14755.2,
+    status: 'DISPATCHED',
+    dispatchTime: '14:02Z',
+    receivedTime: '14:05Z',
+    respondedTime: 'PENDING',
+    authority: 'Dist. Collector - SEC 7 (AUTH-7A)'
+  },
+  {
+    id: 'AGN-04831',
+    shortId: 'B21Y',
+    name: 'Hazira LNG/Steel Complex',
+    facilityId: 'HAZ-LNG-02',
+    coords: { lat: 21.13, lon: 72.64 },
+    coordsStr: '21.130° N, 72.640° E',
+    time: '13:58:44 UTC',
+    timestamp: '13:58:44',
+    severity: 'HIGH',
+    type: 'GAS FLARE',
+    typeColor: '#ffa94d',
+    sevColor: '#ffb13b',
+    confidence: 0.912,
+    effTemp: '1620 K',
+    tempValue: 1620,
+    area: '9.8 m²',
+    frp: '41.5 MW',
+    frpValue: 41.5,
+    swirRad: '11.2 W/m²/sr/μm',
+    mwirRad: '6.4 W/m²/sr/μm',
+    ch4Est: '0.28 kg/s',
+    co2e_rate_tph: 82.17,
+    black_carbon_rate_kgph: 97.11,
+    co2e_total_t: 7888.3,
+    status: 'RECEIVED',
+    dispatchTime: '13:59Z',
+    receivedTime: '14:01Z',
+    respondedTime: '14:10Z',
+    authority: 'Hazira Industrial Safety Directorate'
+  },
+  {
+    id: 'AGN-04829',
+    shortId: 'C55Z',
+    name: 'Vadinar Marine Terminal',
+    facilityId: 'VAD-MAR-03',
+    coords: { lat: 22.56, lon: 69.73 },
+    coordsStr: '22.560° N, 69.730° E',
+    time: '13:45:18 UTC',
+    timestamp: '13:45:18',
+    severity: 'HIGH',
+    type: 'INDUSTRIAL FIRE',
+    typeColor: '#ff4d4d',
+    sevColor: '#ffb13b',
+    confidence: 0.885,
+    effTemp: '1250 K',
+    tempValue: 1250,
+    area: '34.2 m²',
+    frp: '38.0 MW',
+    frpValue: 38.0,
+    swirRad: '7.8 W/m²/sr/μm',
+    mwirRad: '5.9 W/m²/sr/μm',
+    ch4Est: '--',
+    co2e_rate_tph: 129.96,
+    black_carbon_rate_kgph: 116.28,
+    co2e_total_t: 3119.0,
+    status: 'RESPONDED',
+    dispatchTime: '13:46Z',
+    receivedTime: '13:48Z',
+    respondedTime: '14:00Z',
+    authority: 'Kandla Coast Guard & Disaster Cell'
+  },
+  {
+    id: 'AGN-04820',
+    shortId: 'D18K',
+    name: 'Panipat Petrochemical Complex',
+    facilityId: 'IOCL-PAN-04',
+    coords: { lat: 29.39, lon: 76.97 },
+    coordsStr: '29.390° N, 76.970° E',
+    time: '13:12:05 UTC',
+    timestamp: '13:12:05',
+    severity: 'WARNING',
+    type: 'COAL SEAM',
+    typeColor: '#f59e0b',
+    sevColor: '#ffd6a3',
+    confidence: 0.792,
+    effTemp: '890 K',
+    tempValue: 890,
+    area: '85.0 m²',
+    frp: '18.4 MW',
+    frpValue: 18.4,
+    swirRad: '3.1 W/m²/sr/μm',
+    mwirRad: '3.8 W/m²/sr/μm',
+    ch4Est: '--',
+    co2e_rate_tph: 72.86,
+    black_carbon_rate_kgph: 26.50,
+    co2e_total_t: 8743.7,
+    status: 'RESPONDED',
+    dispatchTime: '13:14Z',
+    receivedTime: '13:18Z',
+    respondedTime: '13:35Z',
+    authority: 'Haryana State Disaster Management Authority'
+  },
+  {
+    id: 'AGN-04815',
+    shortId: 'E09M',
+    name: 'Dahej Petrochem SEZ',
+    facilityId: 'DHJ-SEZ-05',
+    coords: { lat: 21.71, lon: 72.58 },
+    coordsStr: '21.710° N, 72.580° E',
+    time: '12:49:33 UTC',
+    timestamp: '12:49:33',
+    severity: 'CRITICAL',
+    type: 'GAS LEAK',
+    typeColor: '#b197fc',
+    sevColor: '#ff4d4d',
+    confidence: 0.961,
+    effTemp: '1410 K',
+    tempValue: 1410,
+    area: '18.6 m²',
+    frp: '29.7 MW',
+    frpValue: 29.7,
+    swirRad: '9.4 W/m²/sr/μm',
+    mwirRad: '6.1 W/m²/sr/μm',
+    ch4Est: '1.15 kg/s',
+    co2e_rate_tph: 133.65,
+    black_carbon_rate_kgph: 0.0,
+    co2e_total_t: 3207.6,
+    status: 'DISPATCHED',
+    dispatchTime: '12:50Z',
+    receivedTime: '12:52Z',
+    respondedTime: 'PENDING',
+    authority: 'Gujarat Pollution Control Board Emergency Cell'
+  }
+];
 
 // --- Global Application State ---
 const AppState = {
   activeView: 'mission-control',
-  selectedAnomalyId: 'AGN-04832',
-  selectedFacilityId: 'RIL-JAM-01',
+  selectedAnomalyId: IS_EXPLICIT_DEMO ? 'AGN-04832' : null,
+  selectedFacilityId: IS_EXPLICIT_DEMO ? 'RIL-JAM-01' : null,
   systemTimeOffset: 0,
   terminalPaused: false,
   mapMode: 'vector', // 'vector' | 'satellite'
@@ -124,163 +285,8 @@ const AppState = {
   detCounter: 0,
 
   // Live Anomaly Dataset (VIIRS 375m & FIRMS Persistent Sources)
-  anomalies: [
-    {
-      id: 'AGN-04832',
-      shortId: 'A94X',
-      name: 'Jamnagar Refinery',
-      facilityId: 'RIL-JAM-01',
-      coords: { lat: 22.35, lon: 70.02 },
-      coordsStr: '22.350° N, 70.020° E',
-      time: '14:02:11 UTC',
-      timestamp: '14:02:11',
-      severity: 'CRITICAL',
-      type: 'GAS FLARE',
-      typeColor: '#ffa94d',
-      sevColor: '#ff4d4d',
-      confidence: 0.943,
-      effTemp: '1847 K',
-      tempValue: 1847,
-      area: '12.4 m²',
-      frp: '62.1 MW',
-      frpValue: 62.1,
-      swirRad: '14.8 W/m²/sr/μm',
-      mwirRad: '8.2 W/m²/sr/μm',
-      ch4Est: '0.42 kg/s',
-      co2e_rate_tph: 122.96,
-      black_carbon_rate_kgph: 145.31,
-      co2e_total_t: 14755.2,
-      status: 'DISPATCHED',
-      dispatchTime: '14:02Z',
-      receivedTime: '14:05Z',
-      respondedTime: 'PENDING',
-      authority: 'Dist. Collector - SEC 7 (AUTH-7A)'
-    },
-    {
-      id: 'AGN-04831',
-      shortId: 'B21Y',
-      name: 'Hazira LNG/Steel Complex',
-      facilityId: 'HAZ-LNG-02',
-      coords: { lat: 21.13, lon: 72.64 },
-      coordsStr: '21.130° N, 72.640° E',
-      time: '13:58:44 UTC',
-      timestamp: '13:58:44',
-      severity: 'HIGH',
-      type: 'GAS FLARE',
-      typeColor: '#ffa94d',
-      sevColor: '#ffb13b',
-      confidence: 0.912,
-      effTemp: '1620 K',
-      tempValue: 1620,
-      area: '9.8 m²',
-      frp: '41.5 MW',
-      frpValue: 41.5,
-      swirRad: '11.2 W/m²/sr/μm',
-      mwirRad: '6.4 W/m²/sr/μm',
-      ch4Est: '0.28 kg/s',
-      co2e_rate_tph: 82.17,
-      black_carbon_rate_kgph: 97.11,
-      co2e_total_t: 7888.3,
-      status: 'RECEIVED',
-      dispatchTime: '13:59Z',
-      receivedTime: '14:01Z',
-      respondedTime: '14:10Z',
-      authority: 'Hazira Industrial Safety Directorate'
-    },
-    {
-      id: 'AGN-04829',
-      shortId: 'C55Z',
-      name: 'Vadinar Marine Terminal',
-      facilityId: 'VAD-MAR-03',
-      coords: { lat: 22.56, lon: 69.73 },
-      coordsStr: '22.560° N, 69.730° E',
-      time: '13:45:18 UTC',
-      timestamp: '13:45:18',
-      severity: 'HIGH',
-      type: 'INDUSTRIAL FIRE',
-      typeColor: '#ff4d4d',
-      sevColor: '#ffb13b',
-      confidence: 0.885,
-      effTemp: '1250 K',
-      tempValue: 1250,
-      area: '34.2 m²',
-      frp: '38.0 MW',
-      frpValue: 38.0,
-      swirRad: '7.8 W/m²/sr/μm',
-      mwirRad: '5.9 W/m²/sr/μm',
-      ch4Est: '--',
-      co2e_rate_tph: 129.96,
-      black_carbon_rate_kgph: 116.28,
-      co2e_total_t: 3119.0,
-      status: 'RESPONDED',
-      dispatchTime: '13:46Z',
-      receivedTime: '13:48Z',
-      respondedTime: '14:00Z',
-      authority: 'Kandla Coast Guard & Disaster Cell'
-    },
-    {
-      id: 'AGN-04820',
-      shortId: 'D18K',
-      name: 'Panipat Petrochemical Complex',
-      facilityId: 'IOCL-PAN-04',
-      coords: { lat: 29.39, lon: 76.97 },
-      coordsStr: '29.390° N, 76.970° E',
-      time: '13:12:05 UTC',
-      timestamp: '13:12:05',
-      severity: 'WARNING',
-      type: 'COAL SEAM',
-      typeColor: '#f59e0b',
-      sevColor: '#ffd6a3',
-      confidence: 0.792,
-      effTemp: '890 K',
-      tempValue: 890,
-      area: '85.0 m²',
-      frp: '18.4 MW',
-      frpValue: 18.4,
-      swirRad: '3.1 W/m²/sr/μm',
-      mwirRad: '3.8 W/m²/sr/μm',
-      ch4Est: '--',
-      co2e_rate_tph: 72.86,
-      black_carbon_rate_kgph: 26.50,
-      co2e_total_t: 8743.7,
-      status: 'RESPONDED',
-      dispatchTime: '13:14Z',
-      receivedTime: '13:18Z',
-      respondedTime: '13:35Z',
-      authority: 'Haryana State Disaster Management Authority'
-    },
-    {
-      id: 'AGN-04815',
-      shortId: 'E09M',
-      name: 'Dahej Petrochem SEZ',
-      facilityId: 'DHJ-SEZ-05',
-      coords: { lat: 21.71, lon: 72.58 },
-      coordsStr: '21.710° N, 72.580° E',
-      time: '12:49:33 UTC',
-      timestamp: '12:49:33',
-      severity: 'CRITICAL',
-      type: 'GAS LEAK',
-      typeColor: '#b197fc',
-      sevColor: '#ff4d4d',
-      confidence: 0.961,
-      effTemp: '1410 K',
-      tempValue: 1410,
-      area: '18.6 m²',
-      frp: '29.7 MW',
-      frpValue: 29.7,
-      swirRad: '9.4 W/m²/sr/μm',
-      mwirRad: '6.1 W/m²/sr/μm',
-      ch4Est: '1.15 kg/s',
-      co2e_rate_tph: 133.65,
-      black_carbon_rate_kgph: 0.0,
-      co2e_total_t: 3207.6,
-      status: 'DISPATCHED',
-      dispatchTime: '12:50Z',
-      receivedTime: '12:52Z',
-      respondedTime: 'PENDING',
-      authority: 'Gujarat Pollution Control Board Emergency Cell'
-    }
-  ],
+  // When ?demo=1 is explicitly supplied, initialize with demo fixtures; otherwise start empty and hydrate from live/cache
+  anomalies: IS_EXPLICIT_DEMO ? [...EMBEDDED_DEMO_ANOMALIES] : [],
 
   // Audit Trail Records
   auditTrail: [
@@ -306,6 +312,7 @@ const DEMO_SEV_COLORS = {'CRITICAL':'#ff4d4d','HIGH':'#ffb13b','MODERATE':'#ffd6
 const DEMO_TYPE_COLORS = {'GAS FLARE':'#ffa94d','INDUSTRIAL FIRE':'#ff4d4d','COAL SEAM':'#f59e0b','GAS LEAK':'#b197fc'};
 
 function generateDemoDetection() {
+  if (!IS_EXPLICIT_DEMO) return null;
   AppState.detCounter += 1;
   const fac = DEMO_FACILITIES[Math.floor(Math.random() * DEMO_FACILITIES.length)];
   const type = DEMO_TYPES[Math.floor(Math.random() * DEMO_TYPES.length)];
@@ -365,14 +372,82 @@ document.addEventListener('DOMContentLoaded', () => {
   setupLiveMode();
 });
 
+// --- Fail-Loud Unreachable Banner ---
+function showUnreachableBanner(msg) {
+  let banner = document.getElementById('backend-unreachable-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'backend-unreachable-banner';
+    banner.className = 'w-full bg-error-container text-on-error font-data-mono text-[12px] font-bold px-4 py-2 border-b border-error flex items-center justify-between z-50 shadow-lg shrink-0';
+    const header = document.querySelector('header');
+    if (header && header.parentNode) {
+      header.parentNode.insertBefore(banner, header.nextSibling);
+    } else {
+      document.body.prepend(banner);
+    }
+  }
+  banner.innerHTML = `
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-2.5 rounded-full bg-error animate-pulse shrink-0"></div>
+      <span class="tracking-wide">${msg || 'LIVE BACKEND UNREACHABLE — using cached snapshot'}</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="retry-backend-btn" class="bg-surface-container hover:bg-surface-bright text-primary border border-outline px-2.5 py-1 rounded text-[10px] font-label-caps transition-colors cursor-pointer">
+        RETRY SYNC
+      </button>
+    </div>
+  `;
+  document.getElementById('retry-backend-btn')?.addEventListener('click', () => {
+    hideUnreachableBanner();
+    setupLiveMode();
+  });
+}
+
+function hideUnreachableBanner() {
+  const banner = document.getElementById('backend-unreachable-banner');
+  if (banner) banner.remove();
+}
+
+function handleBackendUnreachable(msg) {
+  showUnreachableBanner(msg || 'LIVE BACKEND UNREACHABLE — using cached snapshot');
+
+  let cached = null;
+  try {
+    const raw = localStorage.getItem('agnivani_snapshot_cache');
+    if (raw) cached = JSON.parse(raw);
+  } catch (e) {
+    console.warn('[AGNIVANI] Error reading cached snapshot from localStorage:', e);
+  }
+
+  if (cached) {
+    console.log('[AGNIVANI] Loaded snapshot from localStorage cache');
+    hydrateFromSnapshot(cached);
+  } else {
+    console.warn('[AGNIVANI] No cached snapshot found in localStorage.');
+    if (IS_EXPLICIT_DEMO) {
+      showDemoBadge();
+      startDemoSimulation();
+    }
+  }
+}
+
 // --- Live mode bootstrap ---
 async function setupLiveMode() {
-  if (!AppState.liveMode) {
-    // file:// standalone demo: keep existing animation loop
-    console.log('[AGNIVANI] DEMO MODE — running embedded fixtures');
+  hideUnreachableBanner();
+
+  if (IS_EXPLICIT_DEMO) {
+    console.log('[AGNIVANI] EXPLICIT DEMO MODE (?demo=1) — starting rehearsal simulation');
+    showDemoBadge();
     startDemoSimulation();
     return;
   }
+
+  if (!AppState.liveMode) {
+    console.warn('[AGNIVANI] Offline environment without live API detected');
+    handleBackendUnreachable('LIVE BACKEND UNREACHABLE — using cached snapshot');
+    return;
+  }
+
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 3000);
@@ -380,34 +455,45 @@ async function setupLiveMode() {
     clearTimeout(timer);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    console.log('[AGNIVANI] Snapshot loaded:', data.stats.total_detections, 'detections');
+    console.log('[AGNIVANI] Snapshot loaded:', data.stats?.total_detections, 'detections');
+
+    // Write cache on every successful snapshot
+    try {
+      localStorage.setItem('agnivani_snapshot_cache', JSON.stringify(data));
+    } catch (e) {
+      console.warn('[AGNIVANI] Could not cache snapshot to localStorage:', e);
+    }
+
     hydrateFromSnapshot(data);
     connectSSE();
     startPipelinePolling();
   } catch (err) {
-    console.warn('[AGNIVANI] Snapshot failed, falling back to DEMO MODE:', err.message);
-    showDemoBadge();
-    startDemoSimulation();
+    console.warn('[AGNIVANI] Live backend unreachable:', err.message);
+    handleBackendUnreachable('LIVE BACKEND UNREACHABLE — using cached snapshot');
   }
 }
 
 function showDemoBadge() {
   const topbar = document.querySelector('header');
   if (!topbar) return;
-  const badge = document.createElement('div');
-  badge.id = 'demo-mode-badge';
-  badge.className = 'hud-border bg-error-container text-on-error-container font-label-caps text-[10px] px-2 py-1 rounded flex items-center gap-xs mr-2';
-  badge.innerHTML = '<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div> DEMO MODE — synthetic feed';
-  topbar.querySelector('.flex.items-center.gap-md:last-child')?.appendChild(badge);
+  let badge = document.getElementById('demo-mode-badge');
+  if (!badge) {
+    badge = document.createElement('div');
+    badge.id = 'demo-mode-badge';
+    badge.className = 'hud-border bg-error-container text-on-error-container font-label-caps text-[10px] px-2 py-1 rounded flex items-center gap-xs mr-2';
+    badge.innerHTML = '<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div> DEMO MODE — synthetic feed';
+    topbar.querySelector('.flex.items-center.gap-md:last-child')?.appendChild(badge);
+  }
 }
 
 function hydrateFromSnapshot(data) {
+  if (!data) return;
   // Stats -> KPIs & Model Integrity
   if (data.stats) updateStatsPanel(data.stats);
   // Detections -> anomaly list (newest first)
   if (Array.isArray(data.detections)) {
     const mapped = data.detections.map(d => apiDetectionToAnomaly(d));
-    AppState.anomalies = [...mapped, ...AppState.anomalies.slice(0, 20)];
+    AppState.anomalies = mapped;
     initAlertFeed();
     initMapCanvas();
     if (AppState.mapMode === 'satellite') refreshLeafletMap();
@@ -620,13 +706,17 @@ function renderPipelineLog(rows) {
   logContainer.scrollTop = logContainer.scrollHeight;
 }
 
-// --- Demo simulation loop (keeps the dashboard animated in file:// mode) ---
+// --- Demo simulation loop (strictly for ?demo=1 offline rehearsal) ---
 let demoInterval = null;
 function startDemoSimulation() {
+  if (!IS_EXPLICIT_DEMO) {
+    console.log('[AGNIVANI] Demo simulation disabled (requires ?demo=1)');
+    return;
+  }
   if (demoInterval) return;
   demoInterval = setInterval(() => {
     const det = generateDemoDetection();
-    appendAlertCard(det);
+    if (det) appendAlertCard(det);
   }, 4000);
 }
 

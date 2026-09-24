@@ -49,8 +49,12 @@ def create_app(settings:Settings|None=None):
             try:await process_once(app,settings.backfill_days,False)
             except Exception as exc:app.state.store.log("BACKFILL",f"seed unavailable: {exc}",level="WARN")
             yield; app.state.broker.close(); app.state.store.close()
+    cfg = settings or Settings()
+    cors_origins = cfg.cors_origins if cfg and getattr(cfg, "cors_origins", None) else [
+        "http://localhost:8000", "http://127.0.0.1:8000", "http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5173", "http://127.0.0.1:5173"
+    ]
     api=FastAPI(title="AGNIVANI",version="0.1.0",lifespan=configured_lifespan,default_response_class=ORJSONResponse)
-    api.add_middleware(CORSMiddleware,allow_origins=["*"],allow_credentials=False,allow_methods=["*"],allow_headers=["*"])
+    api.add_middleware(CORSMiddleware,allow_origins=cors_origins,allow_credentials=False,allow_methods=["*"],allow_headers=["*"])
     for router in (detections.router,stream.router,dispatch.router,pipeline.router,snapshot.router):api.include_router(router,prefix="/api")
     for route,path in (("/css",ROOT/"css"),("/js",ROOT/"js")):
         if path.exists():api.mount(route,StaticFiles(directory=path),name=route.strip("/"))
