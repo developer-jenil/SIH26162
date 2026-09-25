@@ -132,8 +132,8 @@ const HERO_FIXTURES = [
     facilityId: 'FAC-004',
     coords: { lat: 21.1055, lon: 72.6405 },
     coordsStr: '21.106° N, 72.641° E',
-    time: '2026-08-30T19:42:00Z',
-    timestamp: '19:42:00 UTC',
+    time: '2026-09-24T09:02:00Z',
+    timestamp: '09:02:00 UTC',
     severity: 'HIGH',
     type: 'GAS FLARE',
     typeColor: '#ffa94d',
@@ -153,8 +153,8 @@ const HERO_FIXTURES = [
     co2e_total_t: 2894.4,
     status: 'DISPATCHED',
     diurnal_shape: 'FLAT_24H',
-    dispatchTime: '19:43Z',
-    receivedTime: '19:45Z',
+    dispatchTime: '09:03Z',
+    receivedTime: '09:05Z',
     respondedTime: 'PENDING',
     authority: 'Hazira Emergency & Industrial Safety Cell',
     provenance: 'VERIFIED'
@@ -166,8 +166,8 @@ const HERO_FIXTURES = [
     facilityId: 'FAC-004',
     coords: { lat: 21.1080, lon: 72.6420 },
     coordsStr: '21.108° N, 72.642° E',
-    time: '2026-08-30T19:42:00Z',
-    timestamp: '19:42:00 UTC',
+    time: '2026-09-24T09:02:00Z',
+    timestamp: '09:02:00 UTC',
     severity: 'HIGH',
     type: 'GAS FLARE',
     typeColor: '#ffa94d',
@@ -187,9 +187,9 @@ const HERO_FIXTURES = [
     co2e_total_t: 3252.0,
     status: 'RECEIVED',
     diurnal_shape: 'FLAT_24H',
-    dispatchTime: '19:44Z',
-    receivedTime: '19:46Z',
-    respondedTime: '19:55Z',
+    dispatchTime: '09:04Z',
+    receivedTime: '09:06Z',
+    respondedTime: '09:15Z',
     authority: 'Hazira Industrial Safety Directorate',
     provenance: 'VERIFIED'
   },
@@ -200,8 +200,8 @@ const HERO_FIXTURES = [
     facilityId: 'FAC-004',
     coords: { lat: 21.1020, lon: 72.6480 },
     coordsStr: '21.102° N, 72.648° E',
-    time: '2026-08-29T18:15:00Z',
-    timestamp: '18:15:00 UTC',
+    time: '2026-09-23T21:50:00Z',
+    timestamp: '21:50:00 UTC',
     severity: 'MODERATE',
     type: 'candidate fugitive thermal anomaly - low confidence (0.55)',
     typeColor: '#b197fc',
@@ -221,9 +221,9 @@ const HERO_FIXTURES = [
     co2e_total_t: 661.2,
     status: 'RESPONDED',
     diurnal_shape: 'SPARSE',
-    dispatchTime: '18:16Z',
-    receivedTime: '18:18Z',
-    respondedTime: '18:30Z',
+    dispatchTime: '21:52Z',
+    receivedTime: '21:55Z',
+    respondedTime: '22:10Z',
     authority: 'Surat District Disaster Management Cell',
     provenance: 'UNVERIFIED_CANDIDATE'
   },
@@ -234,8 +234,8 @@ const HERO_FIXTURES = [
     facilityId: 'FAC-004',
     coords: { lat: 21.1120, lon: 72.6380 },
     coordsStr: '21.112° N, 72.638° E',
-    time: '2026-08-31T20:05:00Z',
-    timestamp: '20:05:00 UTC',
+    time: '2026-09-24T09:02:00Z',
+    timestamp: '09:02:00 UTC',
     severity: 'MODERATE',
     type: 'candidate fugitive thermal anomaly - low confidence (0.55)',
     typeColor: '#b197fc',
@@ -677,12 +677,10 @@ function updateStatsPanel(stats) {
   const miScorer = mustEl('mi-scorer');
   const miMode = mustEl('mi-mode');
   const miF1 = mustEl('mi-f1');
-  const miBrier = mustEl('mi-brier');
   const miLeakage = mustEl('mi-leakage');
   if (miScorer) miScorer.textContent = `${stats?.scorer?.name || 'heuristic'} v${stats?.scorer?.version || ''}`;
   if (miMode) miMode.textContent = stats?.scorer?.mode || stats?.scorer?.name || 'heuristic';
   if (miF1) miF1.textContent = stats?.scorer?.metrics?.spatial_f1 != null ? stats.scorer.metrics.spatial_f1.toFixed(3) : '—';
-  if (miBrier) miBrier.textContent = stats?.scorer?.metrics?.brier != null ? stats.scorer.metrics.brier.toFixed(4) : '—';
   const rf1 = stats?.scorer?.metrics?.random_f1 != null ? stats.scorer.metrics.random_f1.toFixed(3) : '—';
   const sf1 = stats?.scorer?.metrics?.spatial_f1 != null ? stats.scorer.metrics.spatial_f1.toFixed(3) : '—';
   if (miLeakage) miLeakage.textContent = `random ${rf1} vs spatial ${sf1}`;
@@ -763,6 +761,14 @@ async function fetchProvenance() {
     if (clock && prov.last_run?.ts) {
       const d = new Date(prov.last_run.ts);
       clock.textContent = d.toISOString().substring(11, 19) + ' UTC';
+    }
+    const disclosureWindow = mustEl('analytics-disclosure-window');
+    if (disclosureWindow && prov.temporal_window) {
+      disclosureWindow.textContent = prov.temporal_window;
+    }
+    const facSpan = mustEl('fac-temporal-span');
+    if (facSpan && prov.temporal_window) {
+      facSpan.textContent = prov.temporal_window.split(' (')[0];
     }
   } catch (err) {
     console.warn('[AGNIVANI] fetchProvenance failed:', err);
@@ -1196,6 +1202,24 @@ function selectAnomaly(id) {
   }
   if (alertSumCoords) alertSumCoords.innerText = `${item.name}: ${item.coordsStr}`;
 
+  const sumTimeDispatched = mustEl('summary-time-dispatched');
+  const sumTimeReceived = mustEl('summary-time-received');
+  if (sumTimeDispatched && sumTimeReceived) {
+    const auditMatch = (AppState.auditTrail || []).find(r => r.ref === item.id);
+    if (auditMatch) {
+      sumTimeDispatched.innerText = auditMatch.timestamp;
+      sumTimeReceived.innerText = auditMatch.timestamp + ' (ACK)';
+    } else if (item.status === 'DISPATCHED' && item.dispatchTime) {
+      sumTimeDispatched.innerText = item.dispatchTime;
+      sumTimeReceived.innerText = item.receivedTime || 'ACKNOWLEDGED';
+    } else {
+      sumTimeDispatched.innerText = 'NOT DISPATCHED';
+      sumTimeReceived.innerText = 'AWAITING RELAY';
+    }
+  }
+
+  renderAnalyticsMapPoints();
+
   // Update Dossier Info
   const dossierId = mustEl('dossier-id');
   const dossierType = mustEl('dossier-type');
@@ -1308,6 +1332,39 @@ function initMapCanvas() {
   });
 
   mapContainer.appendChild(svg);
+  renderAnalyticsMapPoints();
+}
+
+// --- Real Detection Plotter for Analytics Observation Footprint Map ---
+function renderAnalyticsMapPoints() {
+  const svg = mustEl('analytics-map-svg');
+  if (!svg || !AppState.anomalies || AppState.anomalies.length === 0) return;
+  svg.innerHTML = '';
+  // Corridor Bounding Box: 21.0°N to 23.5°N, 69.5°E to 73.5°E
+  const minLat = 21.0, maxLat = 23.5, minLon = 69.5, maxLon = 73.5;
+  AppState.anomalies.forEach(a => {
+    if (!a.coords) return;
+    const { lat, lon } = a.coords;
+    if (lat < minLat || lat > maxLat || lon < minLon || lon > maxLon) return;
+    const xPct = ((lon - minLon) / (maxLon - minLon)) * 100;
+    const yPct = ((maxLat - lat) / (maxLat - minLat)) * 100;
+    const isSelected = a.id === AppState.selectedAnomalyId;
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', `${xPct}%`);
+    circle.setAttribute('cy', `${yPct}%`);
+    circle.setAttribute('r', isSelected ? '6' : (a.cls === 'FLARE' || a.cls === 'LEAK' ? '4' : '2.5'));
+    circle.setAttribute('fill', a.typeColor || '#859397');
+    circle.setAttribute('stroke', isSelected ? '#ffffff' : (a.typeColor || '#859397'));
+    circle.setAttribute('stroke-width', isSelected ? '2' : '0.5');
+    circle.setAttribute('opacity', isSelected ? '1' : '0.85');
+    circle.setAttribute('class', 'cursor-pointer pointer-events-auto');
+    circle.innerHTML = `<title>${a.id} (${a.type}) - ${a.name}</title>`;
+    circle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectAnomaly(a.id);
+    });
+    svg.appendChild(circle);
+  });
 }
 
 // --- Real Leaflet Dark Matter Satellite Engine ---

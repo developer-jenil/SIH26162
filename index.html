@@ -591,7 +591,6 @@
                 <div><span class="text-on-surface-variant">SCORER:</span> <span class="text-primary" id="mi-scorer">heuristic v1.0</span></div>
                 <div><span class="text-on-surface-variant">MODE:</span> <span id="mi-mode">heuristic</span></div>
                 <div><span class="text-on-surface-variant">SPATIAL-BLOCK F1:</span> <span class="text-primary" id="mi-f1">—</span></div>
-                <div><span class="text-on-surface-variant">BRIER SCORE:</span> <span id="mi-brier">—</span></div>
                 <div><span class="text-on-surface-variant">LEAKAGE-GAP:</span> <span id="mi-leakage">random — vs spatial —</span></div>
               </div>
             </div>
@@ -875,8 +874,9 @@
             </div>
             <div class="flex-1 relative bg-[#05080c] min-h-[320px]">
               <div class="absolute inset-0 bg-cover bg-center opacity-65" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDShYo4frQwsmd06XCu3ZBnZlAxXfKBB_R00oY74mtbcWa14gaNUOYkZL-auKCJNbi1cZ1sDusY0q1X5zmM_knj7xzamG_142B5OYcPm2bj4ynMVdL5lZj9G7CWa5C8PSVyIIg6vV2BJmEGlGef6L3Vbxi6xZBW9VfWwNKXrurcmnOLrG4s1thPvk89ylcfdf8PxkOFvHHbAr_oPYnLFFNh4Gp1dpoxae12cNvbgM68J6Q0mFnRqU0')"></div>
+              <svg id="analytics-map-svg" class="absolute inset-0 w-full h-full pointer-events-none z-10"></svg>
               
-              <div class="absolute bottom-3 left-3 bg-surface-dim/90 backdrop-blur-sm border border-outline-variant p-2 rounded">
+              <div class="absolute bottom-3 left-3 bg-surface-dim/90 backdrop-blur-sm border border-outline-variant p-2 rounded z-20">
                 <div class="font-label-caps text-[9px] text-on-surface-variant mb-1">CORRIDOR BOUNDS</div>
                 <div class="font-data-mono text-[10px] text-cyan-400">21.0°N - 23.5°N, 69.5°E - 73.5°E</div>
                 <div class="font-data-mono text-[9px] text-on-surface-variant mt-1">Hazira / Jamnagar Industrial Arc</div>
@@ -899,7 +899,7 @@
               <div class="p-3 flex flex-col gap-2 overflow-y-auto font-data-mono text-[11px]">
                 <div class="bg-surface-container/50 border border-outline-variant p-2 rounded">
                   <span class="text-on-surface-variant text-[10px] block font-bold mb-1">CORRIDOR TEMPORAL WINDOW:</span>
-                  <span class="text-on-surface" id="analytics-disclosure-window">2026-08-28 to 2026-09-02 (5 days)</span>
+                  <span class="text-on-surface" id="analytics-disclosure-window">2026-09-20 to 2026-09-24 (5 days)</span>
                 </div>
                 <div class="bg-surface-container/50 border border-outline-variant p-2 rounded">
                   <span class="text-amber-400 text-[10px] block font-bold mb-1">UNRESOLVED ACTIVITY DISCLOSURE:</span>
@@ -948,25 +948,24 @@
           <div class="hud-header-bg px-3 py-2 flex justify-between items-center shrink-0">
             <span class="font-label-caps text-[11px] text-on-surface uppercase tracking-widest flex items-center gap-2">
               <span class="material-symbols-outlined text-[14px] text-on-surface-variant">timeline</span>
-              Detections Volatility (90 Days)
+              Observation Window Temporal Profile (5-Day NRT)
             </span>
             <div class="flex gap-2">
-              <button class="font-label-caps text-[9px] px-2 py-0.5 border border-outline-variant text-on-surface hover:bg-surface-bright">1W</button>
-              <button class="font-label-caps text-[9px] px-2 py-0.5 border border-outline-variant text-on-surface hover:bg-surface-bright">1M</button>
-              <button class="font-label-caps text-[9px] px-2 py-0.5 border border-primary bg-primary/10 text-primary">3M</button>
+              <span class="font-data-mono text-[9px] px-2 py-0.5 border border-primary bg-primary/10 text-primary">2026-09-20 TO 2026-09-24</span>
             </div>
           </div>
           <div class="flex-1 relative p-2 flex flex-col justify-end border-b border-outline-variant m-2 mb-4 opacity-75">
             <div class="w-full h-1/2 bg-gradient-to-t from-primary/20 to-transparent border-t border-primary relative">
               <div class="absolute top-0 right-1/4 w-px h-full bg-error border-l border-dashed border-error">
-                <span class="absolute -top-4 -left-4 font-data-mono text-[9px] text-error bg-surface-container px-1 rounded-sm border border-error">PEAK EVENT</span>
+                <span class="absolute -top-4 -left-4 font-data-mono text-[9px] text-error bg-surface-container px-1 rounded-sm border border-error">HAZIRA PEAK PASS</span>
               </div>
             </div>
             <div class="flex justify-between absolute -bottom-4 left-0 w-full font-data-mono text-[9px] text-on-surface-variant">
-              <span>T-90</span>
-              <span>T-60</span>
-              <span>T-30</span>
-              <span>T-0 (NOW)</span>
+              <span>2026-09-20</span>
+              <span>2026-09-21</span>
+              <span>2026-09-22</span>
+              <span>2026-09-23</span>
+              <span>2026-09-24 (NOW)</span>
             </div>
           </div>
         </div>
@@ -1269,7 +1268,7 @@
               <div class="p-sm bg-surface-container rounded border border-outline-variant space-y-xs font-data-mono text-[11px]" id="fac-attribution-summary">
                 <div class="flex justify-between">
                   <span class="text-on-surface-variant">Corridor Temporal Span:</span>
-                  <span class="text-on-surface">2026-08-28 to 2026-09-02</span>
+                  <span class="text-on-surface" id="fac-temporal-span">2026-09-20 to 2026-09-24</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-on-surface-variant">Associated Flaring:</span>

@@ -68,6 +68,9 @@ def test_purged_mock_values():
         "A94X",
         "AGN-04832",
         "CRYPTOGRAPHICALLY",
+        "90 Days",
+        "BRIER SCORE",
+        "0.112",
     ]
 
     violations = []

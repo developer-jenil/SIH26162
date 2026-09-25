@@ -106,7 +106,7 @@ def get_provenance(request: Request):
     return {
         "dataset_name": "Gujarat Industrial Corridor (VIIRS 5-Day NRT)",
         "sensor": "VIIRS NOAA-20 / NOAA-21 (375m)",
-        "temporal_window": "2026-08-28 to 2026-09-02 (5 days)",
+        "temporal_window": "2026-09-20 to 2026-09-24 (5 days)",
         "pipeline_version": "5.0-production",
         "last_run": last_run_obj,
         "total_detections": total_detections,

@@ -95,6 +95,7 @@ def test_provenance_endpoint(client):
 
     assert data["dataset_name"] == "Gujarat Industrial Corridor (VIIRS 5-Day NRT)"
     assert data["sensor"] == "VIIRS NOAA-20 / NOAA-21 (375m)"
+    assert "2026-09-20 to 2026-09-24" in data["temporal_window"]
     assert data["total_detections"] >= 40
     assert data["facilities_matched"] >= 1
     assert data["detections_matched"] >= 4
