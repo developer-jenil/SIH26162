@@ -8,13 +8,23 @@ import duckdb, pandas as pd
 import os
 
 class DuckStore:
-    def __init__(self, data_dir):
+    def __init__(self, data_dir, read_only: bool | None = None):
         self.data_dir = Path(data_dir)
         (self.data_dir / "processed").mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
-        self.read_only = os.getenv("AGNIVANI_READONLY_DB", "").lower() in ("1", "true", "yes")
+        if read_only is not None:
+            self.read_only = read_only
+        else:
+            self.read_only = os.getenv("AGNIVANI_READONLY_DB", "").lower() in ("1", "true", "yes")
         db_path = str(self.data_dir / "agnivani.duckdb")
-        self.conn = duckdb.connect(db_path, read_only=self.read_only)
+        try:
+            self.conn = duckdb.connect(db_path, read_only=self.read_only)
+        except Exception as exc:
+            if not self.read_only and "already open" in str(exc).lower():
+                self.read_only = True
+                self.conn = duckdb.connect(db_path, read_only=True)
+            else:
+                raise
         if not self.read_only:
             self._ddl()
     def _ddl(self):

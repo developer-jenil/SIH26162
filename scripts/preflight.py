@@ -93,9 +93,20 @@ def run_preflight() -> int:
     # 6. Database & Hero Detections Verification
     print("\n[6/6] Verifying DuckDB Detections & Hero Targets...")
     try:
-        from agnivani.store.duck import DuckStore
-        store = DuckStore(ROOT / "data")
-        dets = store.detections()
+        dets = []
+        try:
+            from agnivani.store.duck import DuckStore
+            store = DuckStore(ROOT / "data")
+            dets = store.detections()
+            store.close()
+        except Exception as lock_err:
+            if "already open" in str(lock_err).lower():
+                import urllib.request, json
+                req = urllib.request.urlopen("http://localhost:8000/api/snapshot", timeout=5)
+                payload = json.loads(req.read().decode())
+                dets = payload.get("detections", [])
+            else:
+                raise
         print(f"  [PASS] DuckDB Store: {len(dets)} total detections active")
 
         det_map = {d["id"]: d for d in dets}
@@ -112,7 +123,6 @@ def run_preflight() -> int:
             else:
                 print(f"  [FAIL] Hero [{hid}] {label:<22}: NOT FOUND in DuckDB")
                 failures += 1
-        store.close()
     except Exception as exc:
         print(f"  [FAIL] DuckDB Verification FAILED: {exc}")
         failures += 1

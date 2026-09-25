@@ -148,7 +148,7 @@
 
       <!-- Clock & Audio Synthesizer Controls -->
       <div class="flex items-center gap-md font-data-mono text-[12px] border-l border-outline-variant pl-md">
-        <span class="text-on-surface-variant hidden lg:inline">gcc-xgb v4.2</span>
+        <span class="text-on-surface-variant hidden lg:inline" id="scorer-engine-tag">heuristic v1.0</span>
         <span class="text-primary font-bold tracking-widest" id="system-clock">T-00:00:00</span>
         
         <!-- Audio HUD Sound Effects Toggle -->
@@ -268,32 +268,40 @@
             </div>
 
             <!-- Class Distribution Bar -->
-            <div class="h-[120px] hud-border border-x-0 border-b-0 bg-surface-dim/50 p-base flex flex-col justify-end shrink-0">
-              <span class="font-label-caps text-[9px] text-on-surface-variant mb-sm">CLASS DISTRIBUTION</span>
-              <div class="space-y-1">
+            <div class="hud-border border-x-0 border-b-0 bg-surface-dim/50 p-base flex flex-col justify-end shrink-0">
+              <span class="font-label-caps text-[9px] text-on-surface-variant mb-xs">CLASS DISTRIBUTION (LIVE /API/STATS)</span>
+              <div class="space-y-1" id="class-distribution-container">
                 <div class="flex items-center gap-xs">
                   <div class="w-2 h-2 rounded-sm bg-[#ffa94d]"></div>
                   <span class="font-label-caps text-[9px] w-20 truncate">Gas Flare</span>
                   <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
-                    <div class="h-full bg-[#ffa94d] w-[60%]"></div>
+                    <div class="h-full bg-[#ffa94d] w-[4.9%]"></div>
                   </div>
-                  <span class="font-data-mono text-[9px] text-on-surface-variant">60%</span>
+                  <span class="font-data-mono text-[9px] text-on-surface-variant">2 (4.9%)</span>
                 </div>
                 <div class="flex items-center gap-xs">
-                  <div class="w-2 h-2 rounded-sm bg-error"></div>
-                  <span class="font-label-caps text-[9px] w-20 truncate">Ind. Fire</span>
+                  <div class="w-2 h-2 rounded-sm bg-cyan-400"></div>
+                  <span class="font-label-caps text-[9px] w-20 truncate">Fugitive Leak</span>
                   <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
-                    <div class="h-full bg-error w-[25%]"></div>
+                    <div class="h-full bg-cyan-400 w-[4.9%]"></div>
                   </div>
-                  <span class="font-data-mono text-[9px] text-on-surface-variant">25%</span>
+                  <span class="font-data-mono text-[9px] text-on-surface-variant">2 (4.9%)</span>
                 </div>
                 <div class="flex items-center gap-xs">
-                  <div class="w-2 h-2 rounded-sm bg-[#f59e0b]"></div>
-                  <span class="font-label-caps text-[9px] w-20 truncate">Coal Seam</span>
+                  <div class="w-2 h-2 rounded-sm bg-emerald-400"></div>
+                  <span class="font-label-caps text-[9px] w-20 truncate">Wildfire</span>
                   <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
-                    <div class="h-full bg-[#f59e0b] w-[15%]"></div>
+                    <div class="h-full bg-emerald-400 w-[2.4%]"></div>
                   </div>
-                  <span class="font-data-mono text-[9px] text-on-surface-variant">15%</span>
+                  <span class="font-data-mono text-[9px] text-on-surface-variant">1 (2.4%)</span>
+                </div>
+                <div class="flex items-center gap-xs">
+                  <div class="w-2 h-2 rounded-sm bg-slate-400"></div>
+                  <span class="font-label-caps text-[9px] w-20 truncate">Unresolved</span>
+                  <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
+                    <div class="h-full bg-slate-400 w-[87.8%]"></div>
+                  </div>
+                  <span class="font-data-mono text-[9px] text-on-surface-variant">36 (87.8%)</span>
                 </div>
               </div>
             </div>
@@ -386,10 +394,7 @@
                 <span class="font-data-mono text-[9px] text-on-surface-variant">AUTO-STREAMING // 100 Hz</span>
               </div>
               <div class="flex-1 overflow-y-auto terminal-text space-y-1" id="terminal-log">
-                <div><span class="text-on-surface-variant/50">[14:02:11]</span> <span class="text-primary-container">[GEE] </span> Initiating ingestion stream v4.2...</div>
-                <div><span class="text-on-surface-variant/50">[14:02:12]</span> <span class="text-tertiary-container">[PHYS]</span> Calculating spectral signatures for cluster ID:A94X</div>
-                <div><span class="text-on-surface-variant/50">[14:02:12]</span> <span class="text-[#ffa94d]">[BASE]</span> Background contextualization complete. Anomaly diff > 4.6σ</div>
-                <div><span class="text-on-surface-variant/50">[14:02:13]</span> <span class="text-error">[FUSE]</span> WARNING: Multi-band saturation detected at coords 22.35°N, 70.02°E</div>
+                <div class="text-on-surface-variant/50 italic py-1">[Awaiting pipeline telemetry from /api/pipeline/log...]</div>
               </div>
             </div>
           </div>
@@ -398,29 +403,29 @@
           <div id="inspection-panel" class="w-[372px] hud-border border-l border-y-0 border-r-0 flex flex-col shrink-0 bg-surface-dim/50 h-full overflow-y-auto">
             <div class="h-8 hud-border border-x-0 border-t-0 bg-[#1b2735]/50 flex items-center justify-between px-base shrink-0">
               <span class="font-label-caps text-label-caps text-on-surface">DETECTION INSPECTOR</span>
-              <span class="font-data-mono text-[10px] text-primary" id="insp-selected-id">ID: A94X</span>
+              <span class="font-data-mono text-[10px] text-primary" id="insp-selected-id">NO SELECTION</span>
             </div>
 
             <div class="p-base space-y-md">
               <!-- Primary Verdict Card -->
               <div class="hud-panel hud-border p-sm rounded-sm flex items-center justify-between">
                 <div class="flex items-center gap-sm">
-                  <span class="material-symbols-outlined text-[#ffa94d] text-[24px]">local_fire_department</span>
+                  <span class="material-symbols-outlined text-primary text-[24px]">radar</span>
                   <div>
                     <div class="font-label-caps text-[9px] text-on-surface-variant">PRIMARY CLASSIFICATION</div>
-                    <div class="font-headline-sm text-[16px] text-[#ffa94d] font-bold" id="insp-type">GAS FLARE</div>
+                    <div class="font-headline-sm text-[16px] text-on-surface-variant font-bold" id="insp-type">—</div>
                   </div>
                 </div>
                 <div class="text-right">
                   <div class="font-label-caps text-[9px] text-on-surface-variant">CONFIDENCE</div>
-                  <div class="font-data-mono text-[14px] text-primary font-bold" id="insp-conf">p=0.943</div>
+                  <div class="font-data-mono text-[14px] text-on-surface-variant font-bold" id="insp-conf">—</div>
                 </div>
               </div>
 
               <!-- Facility Target -->
               <div class="hud-border bg-surface-container/40 p-xs rounded-sm">
                 <div class="font-label-caps text-[9px] text-on-surface-variant">TARGET FACILITY</div>
-                <div class="font-body-md text-[13px] font-bold text-on-surface" id="insp-name">Jamnagar Refinery</div>
+                <div class="font-body-md text-[13px] font-bold text-on-surface" id="insp-name">No detection selected</div>
               </div>
 
               <!-- Evidence Chain Steps -->
@@ -436,7 +441,7 @@
                 <div class="flex justify-between font-data-mono text-[9px] text-on-surface-variant mt-1">
                   <span>VIIRS SAT</span>
                   <span>SPECTRAL</span>
-                  <span>XGB VERDICT</span>
+                  <span>ATTRIBUTION</span>
                 </div>
               </div>
 
@@ -446,19 +451,19 @@
                 <div class="grid grid-cols-2 gap-sm">
                   <div class="hud-border bg-surface-container/50 p-xs rounded-sm">
                     <div class="font-label-caps text-[9px] text-on-surface-variant">EFF. TEMP</div>
-                    <div class="font-data-mono text-[13px] text-primary font-bold" id="insp-temp">1847 K</div>
+                    <div class="font-data-mono text-[13px] text-primary font-bold" id="insp-temp">—</div>
                   </div>
                   <div class="hud-border bg-surface-container/50 p-xs rounded-sm">
                     <div class="font-label-caps text-[9px] text-on-surface-variant">AREA</div>
-                    <div class="font-data-mono text-[13px] text-on-surface" id="insp-area">12.4 m²</div>
+                    <div class="font-data-mono text-[13px] text-on-surface" id="insp-area">—</div>
                   </div>
                   <div class="hud-border bg-surface-container/50 p-xs rounded-sm">
                     <div class="font-label-caps text-[9px] text-on-surface-variant">FRP</div>
-                    <div class="font-data-mono text-[13px] text-tertiary-container font-bold" id="insp-frp">62.1 MW</div>
+                    <div class="font-data-mono text-[13px] text-tertiary-container font-bold" id="insp-frp">—</div>
                   </div>
                   <div class="hud-border bg-surface-container/50 p-xs rounded-sm">
                     <div class="font-label-caps text-[9px] text-on-surface-variant">CH4 EST</div>
-                    <div class="font-data-mono text-[13px] text-on-surface" id="insp-ch4">0.42 kg/s</div>
+                    <div class="font-data-mono text-[13px] text-on-surface" id="insp-ch4">—</div>
                   </div>
                   <div class="hud-border bg-surface-container/50 p-xs rounded-sm">
                     <div class="font-label-caps text-[9px] text-on-surface-variant">CO2e RATE</div>
@@ -635,35 +640,31 @@
               <div class="hud-header-bg p-sm border-b border-[#1b2735] flex justify-between items-center shrink-0 z-10">
                 <div class="flex items-center gap-md">
                   <span class="text-label-caps font-label-caps text-on-surface-variant">INCIDENT SUMMARY</span>
-                  <span class="text-data-mono font-data-mono text-primary font-bold" id="summary-anomaly-id">AGN-04832</span>
+                  <span class="text-data-mono font-data-mono text-primary font-bold" id="summary-anomaly-id">—</span>
                 </div>
                 <div class="flex gap-sm items-center" id="summary-severity-badge">
-                  <span class="material-symbols-outlined text-error text-[16px]">warning</span>
-                  <span class="text-label-caps font-label-caps text-error font-bold">SEV-1 CRITICAL</span>
+                  <span class="material-symbols-outlined text-on-surface-variant text-[16px]">radar</span>
+                  <span class="text-label-caps font-label-caps text-on-surface-variant font-bold" id="summary-severity-text">AWAITING SELECTION</span>
                 </div>
               </div>
 
               <div class="p-md flex-1 overflow-y-auto z-10 flex flex-col gap-md min-h-0">
                 <!-- Visual Evidence Chain Cards -->
                 <div class="grid grid-cols-3 gap-sm h-32 shrink-0">
-                  <div class="hud-border bg-[#060910] rounded-[2px] relative overflow-hidden group">
-                    <img alt="Thermal Imaging" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8vSQrQAqP5v1jvqu7SqodX3GM67RK7Uo9Jng5SkMqlGePODoQLmkHhFZPSXEAAMArracktfqEU2TjeSgieDUNVPX28HzrqTBflBuJJS8KLY1XMxEVB4JgEBj2UxujghmesnCXD-Xxp9WnKq9580z8NarbzcAl0Zk9rI-KbA5Vg9cSWjEjKuhWdi035HHFpsTQSnEg0K-geNIcYl5vMFdEZ0kwIDNmNDl4llU-zKh3nl6BZVuRqAo"/>
-                    <div class="absolute bottom-0 left-0 w-full bg-black/60 backdrop-blur-sm p-xs border-t border-[#1b2735]">
-                      <span class="text-[9px] font-data-mono text-on-surface-variant block">THERMAL.IR</span>
-                    </div>
+                  <div class="hud-border bg-[#060910] rounded-[2px] relative overflow-hidden flex flex-col items-center justify-center p-sm">
+                    <span class="material-symbols-outlined text-primary mb-xs text-[22px]">wb_iridescent</span>
+                    <span class="text-[9px] font-data-mono text-on-surface-variant text-center">OPTICAL PREVIEW<br><span class="text-[8px] opacity-70">(S2 Preview Pending Pass)</span></span>
                   </div>
 
-                  <div class="hud-border bg-[#060910] rounded-[2px] relative overflow-hidden group">
-                    <img alt="Telemetry Spike" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiUJJHOiE9Nmbx0dBIpTB74RBC9-4kpwz1UCD1pAzbgWohLFaqR1Fnu1OdnZVnDkS9k56W-HtpNcY5CKz7oQWfHQiQ74gJvYkMP1NZ92Jh74WPTekh8RqBJGH6CcZSW71O0yodMnezRQrEQ2hcNF8Y0cOwyl8HW0TQZOBckEMcEn2Stch6bs82NnZ6U2cvGsc-Jo5wMTSuipDV_vNfg4qUwrI69UBejBwyqasKgwbVbdqgg5FUMpo"/>
-                    <div class="absolute bottom-0 left-0 w-full bg-black/60 backdrop-blur-sm p-xs border-t border-[#1b2735]">
-                      <span class="text-[9px] font-data-mono text-on-surface-variant block">SENSOR.SIG</span>
-                    </div>
+                  <div class="hud-border bg-[#060910] rounded-[2px] relative overflow-hidden flex flex-col items-center justify-center p-sm">
+                    <span class="material-symbols-outlined text-tertiary-container mb-xs text-[22px]">graphic_eq</span>
+                    <span class="text-[9px] font-data-mono text-on-surface-variant text-center">SPECTRAL RAD.<br><span class="text-[8px] opacity-70">(Dual-Band Radiance)</span></span>
                   </div>
 
                   <div class="hud-border bg-[#060910] rounded-[2px] relative overflow-hidden flex items-center justify-center p-sm">
                     <div class="text-center">
                       <span class="material-symbols-outlined text-primary mb-xs">map</span>
-                      <div class="text-[10px] font-data-mono text-on-surface" id="summary-coords">Jamnagar Refinery: 22.350° N, 70.020° E</div>
+                      <div class="text-[10px] font-data-mono text-on-surface" id="summary-coords">No incident selected</div>
                     </div>
                   </div>
                 </div>
@@ -678,7 +679,7 @@
                     </label>
                     <label class="flex items-center gap-sm p-xs hover:bg-[#1b2735] rounded-[2px] cursor-pointer transition-colors border border-transparent">
                       <input class="protocol-checkbox w-3.5 h-3.5 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0" type="checkbox"/>
-                      <span class="protocol-text text-data-mono font-data-mono text-on-surface text-[12px]">Review physics signature & subpixel Plank temperature</span>
+                      <span class="protocol-text text-data-mono font-data-mono text-on-surface text-[12px]">Review physics signature & subpixel Planck temperature</span>
                     </label>
                     <label class="flex items-center gap-sm p-xs hover:bg-[#1b2735] rounded-[2px] cursor-pointer transition-colors border border-transparent">
                       <input class="protocol-checkbox w-3.5 h-3.5 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0" type="checkbox"/>
@@ -707,13 +708,13 @@
                   <div class="flex items-center gap-sm pb-md relative">
                     <div class="absolute left-[-16px] w-2 h-2 rounded-full bg-primary ring-2 ring-[#060910]"></div>
                     <span class="text-data-mono font-data-mono text-on-surface text-[11px]">Dispatched</span>
-                    <span class="text-data-mono font-data-mono text-on-surface-variant text-[9px] ml-auto">14:02Z</span>
+                    <span class="text-data-mono font-data-mono text-on-surface-variant text-[9px] ml-auto" id="summary-time-dispatched">PENDING</span>
                   </div>
 
                   <div class="flex items-center gap-sm pb-md relative">
                     <div class="absolute left-[-16px] w-2 h-2 rounded-full bg-primary ring-2 ring-[#060910] animate-pulse"></div>
                     <span class="text-data-mono font-data-mono text-primary text-[11px] font-bold">Received</span>
-                    <span class="text-data-mono font-data-mono text-on-surface-variant text-[9px] ml-auto">14:05Z</span>
+                    <span class="text-data-mono font-data-mono text-on-surface-variant text-[9px] ml-auto" id="summary-time-received">AWAITING RELAY</span>
                   </div>
 
                   <div class="flex items-center gap-sm relative opacity-50">
@@ -725,7 +726,7 @@
               </div>
 
               <!-- Directory of Authorities -->
-              <div class="text-label-caps font-label-caps text-on-surface-variant mb-xs mt-sm shrink-0">NODAL AUTHORITIES</div>
+              <div class="text-label-caps font-label-caps text-on-surface-variant mb-xs mt-sm shrink-0">NODAL AUTHORITIES DIRECTORY (Illustrative)</div>
               <div class="flex flex-col gap-xs">
                 <div class="flex items-center justify-between p-xs bg-[#060910] hud-border rounded-[2px]">
                   <div class="flex flex-col">
@@ -757,11 +758,11 @@
           </div>
         </div>
 
-        <!-- BOTTOM: Immutable Audit Trail Table -->
+        <!-- BOTTOM: Operational Audit Trail Table -->
         <div class="h-40 shrink-0 hud-panel hud-border rounded-DEFAULT overflow-hidden flex flex-col">
           <div class="hud-header-bg p-sm border-b border-[#1b2735] flex justify-between items-center shrink-0">
-            <span class="text-label-caps font-label-caps text-on-surface-variant">IMMUTABLE AUDIT TRAIL</span>
-            <span class="font-data-mono text-[9px] text-primary">CRYPTOGRAPHICALLY VERIFIED LOG</span>
+            <span class="text-label-caps font-label-caps text-on-surface-variant">OPERATIONAL AUDIT TRAIL</span>
+            <span class="font-data-mono text-[9px] text-primary">SYSTEM EVENT LOG</span>
           </div>
           <div class="flex-1 overflow-y-auto min-h-0">
             <table class="w-full text-left border-collapse">
@@ -788,7 +789,7 @@
         <div class="flex justify-between items-end mb-sm shrink-0">
           <div>
             <h1 class="font-headline-lg text-[26px] text-primary uppercase font-bold tracking-tight">Fleet-Wide Intelligence</h1>
-            <p class="font-data-mono text-[12px] text-on-surface-variant mt-1">GLOBAL_PERFORMANCE_METRICS // LAST 90 DAYS</p>
+            <p class="font-data-mono text-[12px] text-on-surface-variant mt-1" id="analytics-temporal-subtitle">GUJARAT INDUSTRIAL CORRIDOR // SATELLITE NRT OBSERVATION WINDOW</p>
           </div>
           <div class="flex gap-2">
             <button class="px-3 py-1 bg-transparent border border-primary text-primary font-label-caps text-[11px] rounded flex items-center gap-2 hover:bg-primary/10 transition-colors">
@@ -810,41 +811,41 @@
               <span class="material-symbols-outlined text-[14px] text-tertiary">scatter_plot</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="font-data-mono text-[28px] text-on-surface font-bold" id="kpi-total-detections">14,208</span>
-              <span class="font-data-mono text-[11px] text-primary">+12.4%</span>
+              <span class="font-data-mono text-[28px] text-on-surface font-bold" id="kpi-total-detections">41</span>
+              <span class="font-data-mono text-[11px] text-primary">NRT CORRIDOR</span>
             </div>
           </div>
 
           <div class="hud-panel p-3 flex flex-col justify-between h-24 rounded">
             <div class="flex justify-between items-start">
-              <span class="font-label-caps text-[10px] text-on-surface-variant tracking-wider uppercase">Mean Recalibrated p</span>
-              <span class="material-symbols-outlined text-[14px] text-primary">model_training</span>
+              <span class="font-label-caps text-[10px] text-on-surface-variant tracking-wider uppercase">Industrial Flares</span>
+              <span class="material-symbols-outlined text-[14px] text-[#ffa94d]">local_fire_department</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="font-data-mono text-[28px] text-on-surface font-bold">0.942</span>
-              <span class="font-data-mono text-[11px] text-on-surface-variant">+/- 0.015</span>
+              <span class="font-data-mono text-[28px] text-on-surface font-bold text-[#ffa94d]" id="kpi-flares-count">2</span>
+              <span class="font-data-mono text-[11px] text-on-surface-variant">T_fire ≥ 450 K</span>
             </div>
           </div>
 
-          <div class="hud-panel p-3 flex flex-col justify-between h-24 hud-glow border-primary/50 relative overflow-hidden rounded">
-            <div class="flex justify-between items-start relative z-10">
-              <span class="font-label-caps text-[10px] text-on-surface-variant tracking-wider uppercase">Dispatch Rate</span>
-              <span class="material-symbols-outlined text-[14px] text-error">local_fire_department</span>
+          <div class="hud-panel p-3 flex flex-col justify-between h-24 rounded border border-cyan-500/40">
+            <div class="flex justify-between items-start">
+              <span class="font-label-caps text-[10px] text-on-surface-variant tracking-wider uppercase">Candidate Leaks</span>
+              <span class="material-symbols-outlined text-[14px] text-cyan-400">warning</span>
             </div>
-            <div class="flex items-baseline gap-2 relative z-10">
-              <span class="font-data-mono text-[28px] text-primary font-bold">8.4%</span>
-              <span class="font-data-mono text-[11px] text-error font-bold">CRITICAL</span>
+            <div class="flex items-baseline gap-2">
+              <span class="font-data-mono text-[28px] text-cyan-400 font-bold" id="kpi-leaks-count">2</span>
+              <span class="font-data-mono text-[11px] text-cyan-400 font-bold">HAZIRA PROX.</span>
             </div>
           </div>
 
           <div class="hud-panel p-3 flex flex-col justify-between h-24 rounded">
             <div class="flex justify-between items-start">
-              <span class="font-label-caps text-[10px] text-on-surface-variant tracking-wider uppercase">Accuracy (Causal)</span>
-              <span class="material-symbols-outlined text-[14px] text-tertiary-fixed-dim">verified</span>
+              <span class="font-label-caps text-[10px] text-on-surface-variant tracking-wider uppercase">Dozier Convergence</span>
+              <span class="material-symbols-outlined text-[14px] text-emerald-400">functions</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="font-data-mono text-[28px] text-on-surface font-bold">0.868</span>
-              <span class="font-data-mono text-[11px] text-primary">OP.NOMINAL</span>
+              <span class="font-data-mono text-[28px] text-on-surface font-bold" id="kpi-dozier-converged">29 / 41</span>
+              <span class="font-data-mono text-[11px] text-emerald-400 font-bold">70.7% CONV</span>
             </div>
           </div>
 
@@ -868,85 +869,74 @@
             <div class="hud-header-bg px-3 py-2 flex justify-between items-center z-10 shrink-0">
               <span class="font-label-caps text-[11px] text-on-surface uppercase tracking-widest flex items-center gap-2">
                 <span class="w-1.5 h-1.5 bg-error rounded-sm"></span>
-                Thermal Intensity Map (India)
+                Gujarat Corridor Observation Footprint
               </span>
-              <span class="font-data-mono text-[10px] text-on-surface-variant">LIVE.GEO.SATELLITE</span>
+              <span class="font-data-mono text-[10px] text-on-surface-variant">SATELLITE BASEMAP // VIIRS NOAA-20 / NOAA-21</span>
             </div>
             <div class="flex-1 relative bg-[#05080c] min-h-[320px]">
               <div class="absolute inset-0 bg-cover bg-center opacity-65" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDShYo4frQwsmd06XCu3ZBnZlAxXfKBB_R00oY74mtbcWa14gaNUOYkZL-auKCJNbi1cZ1sDusY0q1X5zmM_knj7xzamG_142B5OYcPm2bj4ynMVdL5lZj9G7CWa5C8PSVyIIg6vV2BJmEGlGef6L3Vbxi6xZBW9VfWwNKXrurcmnOLrG4s1thPvk89ylcfdf8PxkOFvHHbAr_oPYnLFFNh4Gp1dpoxae12cNvbgM68J6Q0mFnRqU0')"></div>
               
               <div class="absolute bottom-3 left-3 bg-surface-dim/90 backdrop-blur-sm border border-outline-variant p-2 rounded">
-                <div class="font-label-caps text-[9px] text-on-surface-variant mb-1">INTENSITY SCALE</div>
-                <div class="w-32 h-2 bg-gradient-to-r from-primary via-tertiary-container to-error rounded-full"></div>
-                <div class="flex justify-between font-data-mono text-[9px] text-on-surface mt-1">
-                  <span>LOW</span>
-                  <span>CRIT</span>
-                </div>
+                <div class="font-label-caps text-[9px] text-on-surface-variant mb-1">CORRIDOR BOUNDS</div>
+                <div class="font-data-mono text-[10px] text-cyan-400">21.0°N - 23.5°N, 69.5°E - 73.5°E</div>
+                <div class="font-data-mono text-[9px] text-on-surface-variant mt-1">Hazira / Jamnagar Industrial Arc</div>
               </div>
             </div>
           </div>
 
-          <!-- Right Side Stack: Auto-Insights & Calibration (Cols 8-12) -->
+          <!-- Right Side Stack: Disclosures & Class Attribution (Cols 8-12) -->
           <div class="col-span-5 flex flex-col gap-base">
             
-            <!-- Auto-Insights Card -->
+            <!-- Provenance Disclosures Card -->
             <div class="hud-panel flex-1 flex flex-col rounded min-h-[200px]">
               <div class="hud-header-bg px-3 py-2 flex justify-between items-center shrink-0">
                 <span class="font-label-caps text-[11px] text-on-surface uppercase tracking-widest flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[14px] text-primary">auto_awesome</span>
-                  Auto-Insights Feed
+                  <span class="material-symbols-outlined text-[14px] text-cyan-400">verified</span>
+                  Scientific & Regulatory Disclosures
                 </span>
+                <span class="font-data-mono text-[9px] text-cyan-400 font-bold">P5 TRANSPARENCY</span>
               </div>
-              <div class="p-2 flex flex-col gap-2 overflow-y-auto">
-                <div class="bg-surface-container/50 border border-outline-variant p-2 hover:bg-surface-container-highest transition-colors cursor-pointer group rounded">
-                  <div class="flex items-start gap-2">
-                    <div class="w-1 h-full min-h-[30px] bg-error"></div>
-                    <div class="flex-1">
-                      <div class="font-data-mono text-[10px] text-error mb-0.5">ANOMALY.DETECTED</div>
-                      <div class="font-headline-sm text-[13px] text-on-surface font-semibold leading-tight mb-1">Increased Flare Activity in Jamnagar Cluster</div>
-                      <div class="h-6 w-full opacity-60 border-t border-b border-outline-variant mt-2 flex items-end">
-                        <div class="w-1/6 h-1/4 bg-primary/30 mx-px"></div>
-                        <div class="w-1/6 h-1/3 bg-primary/30 mx-px"></div>
-                        <div class="w-1/6 h-2/3 bg-tertiary-container/50 mx-px"></div>
-                        <div class="w-1/6 h-full bg-error/70 mx-px"></div>
-                        <div class="w-1/6 h-5/6 bg-error/50 mx-px"></div>
-                        <div class="w-1/6 h-1/2 bg-primary/30 mx-px"></div>
-                      </div>
-                    </div>
-                  </div>
+              <div class="p-3 flex flex-col gap-2 overflow-y-auto font-data-mono text-[11px]">
+                <div class="bg-surface-container/50 border border-outline-variant p-2 rounded">
+                  <span class="text-on-surface-variant text-[10px] block font-bold mb-1">CORRIDOR TEMPORAL WINDOW:</span>
+                  <span class="text-on-surface" id="analytics-disclosure-window">2026-08-28 to 2026-09-02 (5 days)</span>
                 </div>
-
-                <div class="bg-surface-container/50 border border-outline-variant p-2 hover:bg-surface-container-highest transition-colors cursor-pointer group rounded">
-                  <div class="flex items-start gap-2">
-                    <div class="w-1 h-full min-h-[30px] bg-tertiary"></div>
-                    <div class="flex-1">
-                      <div class="font-data-mono text-[10px] text-tertiary mb-0.5">TREND.SHIFT</div>
-                      <div class="font-headline-sm text-[13px] text-on-surface font-semibold leading-tight mb-1">Night-time false positive rate dropped by 4.2%</div>
-                      <div class="font-data-mono text-[10px] text-on-surface-variant flex items-center gap-1 mt-1">
-                        <span class="material-symbols-outlined text-[12px] text-primary">trending_down</span> Model v4.1 deployment successful
-                      </div>
-                    </div>
-                  </div>
+                <div class="bg-surface-container/50 border border-outline-variant p-2 rounded">
+                  <span class="text-amber-400 text-[10px] block font-bold mb-1">UNRESOLVED ACTIVITY DISCLOSURE:</span>
+                  <span class="text-on-surface-variant text-[10px]">36 non-industrial thermal activities in window — deliberately unattributed to prevent false regulatory compliance actions.</span>
+                </div>
+                <div class="bg-surface-container/50 border border-outline-variant p-2 rounded">
+                  <span class="text-cyan-400 text-[10px] block font-bold mb-1">PHYSICAL THRESHOLD CRITERION:</span>
+                  <span class="text-on-surface-variant text-[10px]">FLARE T_fire ≥ 450 K empirically derived from corridor sample (n=29); candidate leaks AV-07D8247D and AV-EF7A2C35 flagged for optical verification.</span>
                 </div>
               </div>
             </div>
 
-            <!-- Reliability Calibration Curve -->
+            <!-- Class Attribution Summary Card -->
             <div class="hud-panel h-48 flex flex-col rounded shrink-0">
               <div class="hud-header-bg px-3 py-2 flex justify-between items-center shrink-0">
                 <span class="font-label-caps text-[11px] text-on-surface uppercase tracking-widest flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[14px] text-on-surface-variant">straighten</span>
-                  Calibration (Reliability)
+                  <span class="material-symbols-outlined text-[14px] text-on-surface-variant">pie_chart</span>
+                  Attribution Breakdown
                 </span>
-                <span class="font-data-mono text-[10px] text-on-surface-variant border border-outline-variant px-1 rounded-sm">Brier: 0.112 (↓0.04)</span>
+                <span class="font-data-mono text-[10px] text-on-surface-variant">41 TOTAL DETECTIONS</span>
               </div>
-              <div class="flex-1 p-3 flex gap-4 min-h-0">
-                <div class="flex-1 relative border-l border-b border-outline-variant flex items-end p-1">
-                  <div class="w-[141%] h-[1px] bg-outline-variant/30 transform origin-bottom-left -rotate-45 absolute bottom-0 left-0"></div>
-                  <span class="absolute -bottom-4 left-0 font-data-mono text-[9px] text-on-surface-variant">0.0</span>
-                  <span class="absolute -bottom-4 right-0 font-data-mono text-[9px] text-on-surface-variant">1.0</span>
-                  <span class="absolute bottom-0 -left-6 font-data-mono text-[9px] text-on-surface-variant">0.0</span>
-                  <span class="absolute top-0 -left-6 font-data-mono text-[9px] text-on-surface-variant">1.0</span>
+              <div class="flex-1 p-3 flex flex-col justify-around font-data-mono text-[11px]">
+                <div class="flex justify-between items-center border-b border-outline-variant/30 pb-1">
+                  <span class="text-[#ffa94d]">Gas Flares (FLARE):</span>
+                  <span class="font-bold text-[#ffa94d]">2 (Hazira LNG/Steel)</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-outline-variant/30 pb-1">
+                  <span class="text-cyan-400">Candidate Leaks (LEAK):</span>
+                  <span class="font-bold text-cyan-400">2 (Hazira Proximate)</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-outline-variant/30 pb-1">
+                  <span class="text-emerald-400">Wildfire / Vegetation (WILD):</span>
+                  <span class="font-bold text-emerald-400">1</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-400">Unresolved Non-Industrial:</span>
+                  <span class="font-bold text-slate-400">36</span>
                 </div>
               </div>
             </div>
@@ -997,16 +987,16 @@
             <div class="flex justify-between items-start border-b border-outline-variant pb-md">
               <div>
                 <h1 class="text-headline-lg text-[26px] font-bold text-primary flex items-center gap-md" id="dossier-id">
-                  ID AGN-04832
+                  ID <span id="dossier-anomaly-id">AV-0B12A4B9</span>
                   <span id="dossier-type" class="bg-[#ffa94d]/15 border border-[#ffa94d] text-[#ffa94d] px-sm py-xs rounded-sm text-label-caps font-label-caps ml-sm">GAS FLARE</span>
                   <span id="dossier-severity" class="bg-error/15 border border-error text-error px-sm py-xs rounded-sm text-label-caps font-label-caps flex items-center gap-xs">
-                    <span class="material-symbols-outlined text-[12px]">warning</span> CRITICAL
+                    <span class="material-symbols-outlined text-[12px]">warning</span> HIGH
                   </span>
                 </h1>
               </div>
               <div class="text-right">
                 <div class="text-data-mono font-data-mono text-outline text-[11px]">FACILITY</div>
-                <div class="text-headline-sm text-[16px] font-bold" id="dossier-facility">JAMNAGAR REFINERY</div>
+                <div class="text-headline-sm text-[16px] font-bold" id="dossier-facility">HAZIRA LNG/STEEL</div>
               </div>
             </div>
           </header>
@@ -1133,7 +1123,7 @@
                   </svg>
                   
                   <div class="absolute top-4 right-4 bg-surface-container-high border border-outline-variant p-sm text-data-mono font-data-mono text-xs rounded">
-                    T = 1847K <span class="text-error">(RETRIEVED)</span>
+                    T = <span id="dossier-t-retrieved">486.1 K</span> <span class="text-error">(RETRIEVED)</span>
                   </div>
                 </div>
                 <div class="flex justify-between text-data-mono font-data-mono text-outline text-[10px] mt-xs">
@@ -1212,284 +1202,145 @@
       <!-- ==================== MODULE 5: FACILITY PROFILE ==================== -->
       <div id="view-facility" class="view-panel scrollable flex-1 flex flex-col h-full w-full overflow-y-auto p-margin gap-margin pb-16">
         
-        <!-- Context & Header Grid -->
+        <!-- Facility Selector & Profile Header Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-base items-stretch shrink-0">
           
-          <!-- Facility Summary Card -->
+          <!-- Facility Summary Card (Bound to Real Registry Fields) -->
           <div class="hud-panel lg:col-span-8 p-md rounded flex flex-col justify-between relative overflow-hidden">
-            <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAmOrMQXGu6xJ_t9aJrM1h9kdN1eC1qXJw8RFznpe3x6sqWBemhFjEgYddMNTsUe52VO6hgUAgnXE5P3Hcr0jDlCxf04LZ1fLq5nvLdKK07OaroTkcRS8zALjOWGyEChKuW49LI6OmPcSAspxDQuv7IohSFPqb_qN_YrdS_x95W-5M3qwfbimB8jkRtd-qvCZaoVjj8tLLIR9JHfLxKqsL_7xPdE6gjNiJT5ABJEo2kbCH5T1m9tpU')"></div>
-            
-            <div class="relative z-10 flex justify-between items-start">
+            <div class="flex justify-between items-start flex-wrap gap-sm">
               <div>
-                <div class="flex items-center gap-sm mb-sm">
-                  <span class="w-2 h-2 rounded-full bg-error pulse-critical"></span>
-                  <span class="text-label-caps font-label-caps text-error">CRITICAL MONITORING ACTIVE</span>
+                <div class="flex items-center gap-sm mb-xs">
+                  <span id="fac-status-indicator" class="w-2 h-2 rounded-full bg-error pulse-critical"></span>
+                  <span id="fac-status-text" class="text-label-caps font-label-caps text-error">ACTIVE THERMAL SOURCE DETECTED</span>
                 </div>
-                <h1 class="text-headline-lg text-[26px] font-bold text-on-surface mb-xs">JAMNAGAR REFINERY</h1>
-                <div class="flex items-center gap-md">
-                  <span class="text-data-mono font-data-mono text-on-surface-variant">ID: RIL-JAM-01</span>
+                <div class="flex items-center gap-md flex-wrap">
+                  <h1 id="fac-profile-name" class="text-headline-lg text-[24px] font-bold text-on-surface">Hazira LNG/Steel</h1>
+                  <select id="facility-selector" class="bg-surface-container border border-outline-variant text-on-surface text-data-mono text-[11px] rounded px-2 py-1 outline-none focus:border-primary">
+                    <option value="Hazira LNG/Steel" selected>Hazira LNG/Steel (4 matches)</option>
+                    <option value="Jamnagar Refinery">Jamnagar Refinery (0 matches)</option>
+                    <option value="Vadinar Refinery">Vadinar Refinery (0 matches)</option>
+                    <option value="Dahej LNG">Dahej LNG (0 matches)</option>
+                    <option value="Kandla Port">Kandla Port (0 matches)</option>
+                  </select>
+                </div>
+                <div class="flex items-center gap-md mt-xs flex-wrap">
+                  <span class="text-data-mono font-data-mono text-on-surface-variant text-xs" id="fac-profile-id">ID: FAC-004</span>
                   <span class="text-outline-variant">|</span>
-                  <span class="text-data-mono font-data-mono text-on-surface-variant flex items-center gap-xs">
-                    <span class="material-symbols-outlined text-[14px]">location_on</span> 22.339° N, 69.832° E
+                  <span class="text-data-mono font-data-mono text-on-surface-variant text-xs flex items-center gap-xs" id="fac-profile-coords">
+                    <span class="material-symbols-outlined text-[14px]">location_on</span> 21.106° N, 72.641° E
                   </span>
+                  <span class="text-outline-variant">|</span>
+                  <span class="text-data-mono font-data-mono text-on-surface-variant text-xs" id="fac-profile-state">Gujarat</span>
                 </div>
               </div>
               <div class="text-right">
-                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">PRIMARY OUTPUT</span>
-                <span class="text-data-mono font-data-mono text-primary bg-primary/10 border border-primary/30 px-sm py-xs rounded">PETROCHEMICAL</span>
+                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">SECTOR / SOURCE</span>
+                <span id="fac-profile-sector" class="text-data-mono font-data-mono text-primary bg-primary/10 border border-primary/30 px-sm py-xs rounded">REFI_GAS</span>
               </div>
             </div>
 
-            <div class="relative z-10 grid grid-cols-4 gap-base mt-xl border-t border-outline-variant pt-md">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-base mt-lg border-t border-outline-variant pt-md">
               <div>
-                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">TOTAL AREA</span>
-                <span class="text-data-mono font-data-mono text-on-surface">7,500 ACRES</span>
+                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">SOURCE OF TRUTH</span>
+                <span id="fac-profile-source" class="text-data-mono font-data-mono text-on-surface">MANUAL (GEM+OSM)</span>
               </div>
               <div>
-                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">CAPACITY</span>
-                <span class="text-data-mono font-data-mono text-on-surface">1.24M BPD</span>
+                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">MATCH RADIUS</span>
+                <span id="fac-profile-radius" class="text-data-mono font-data-mono text-on-surface">3,500 m</span>
               </div>
               <div>
-                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">LAST SCAN</span>
-                <span class="text-data-mono font-data-mono text-on-surface">T-00:04:12</span>
+                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">WINDOW MATCHES</span>
+                <span id="fac-profile-matches" class="text-data-mono font-data-mono text-primary font-bold">4 DETECTIONS</span>
               </div>
               <div>
-                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">ACTIVE FLARES</span>
-                <span class="text-data-mono font-data-mono text-tertiary">3 IDENTIFIED</span>
+                <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">ACTIVE CLUSTER PEAK</span>
+                <span id="fac-profile-peak" class="text-data-mono font-data-mono text-tertiary-container font-bold">10.4 MW (506.1 K)</span>
               </div>
             </div>
           </div>
 
-          <!-- Risk Score Gauge -->
-          <div class="hud-panel lg:col-span-4 p-md rounded flex flex-col items-center justify-center relative">
-            <span class="absolute top-md left-md text-label-caps font-label-caps text-on-surface-variant">THERMAL RISK INDEX</span>
-            <div class="relative w-32 h-32 mt-md">
-              <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" fill="none" r="40" stroke="#1b2735" stroke-width="8"></circle>
-                <circle class="gauge-circle" cx="50" cy="50" fill="none" r="40" stroke="#ffb13b" stroke-linecap="round" stroke-width="8" stroke-dashoffset="62.8"></circle>
-              </svg>
-              <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <span class="text-headline-lg font-headline-lg text-tertiary-container font-bold leading-none">75</span>
-                <span class="text-label-caps font-label-caps text-on-surface-variant text-[10px]">/100</span>
+          <!-- Facility Operational Status Panel -->
+          <div class="hud-panel lg:col-span-4 p-md rounded flex flex-col justify-between relative">
+            <div>
+              <div class="flex justify-between items-center mb-sm">
+                <span class="text-label-caps font-label-caps text-on-surface-variant">OPERATIONAL ATTRIBUTION</span>
+                <span class="text-data-mono font-data-mono text-[10px] text-primary">5-DAY NRT WINDOW</span>
+              </div>
+              <div class="p-sm bg-surface-container rounded border border-outline-variant space-y-xs font-data-mono text-[11px]" id="fac-attribution-summary">
+                <div class="flex justify-between">
+                  <span class="text-on-surface-variant">Corridor Temporal Span:</span>
+                  <span class="text-on-surface">2026-08-28 to 2026-09-02</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-on-surface-variant">Associated Flaring:</span>
+                  <span class="text-primary font-bold" id="fac-flares-count">2 Clusters</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-on-surface-variant">Candidate Fugitives:</span>
+                  <span class="text-cyan-400 font-bold" id="fac-leaks-count">2 Clusters</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-on-surface-variant">Dozier Convergence:</span>
+                  <span class="text-emerald-400 font-bold" id="fac-dozier-status">2/2 Flares Converged</span>
+                </div>
               </div>
             </div>
-            <div class="mt-md text-center">
-              <span class="text-data-mono font-data-mono text-tertiary-container bg-tertiary-container/10 px-md py-xs rounded border border-tertiary-container/30 text-xs font-bold">ELEVATED SEVERITY</span>
+            <div class="mt-sm p-xs bg-surface-container-lowest border border-outline-variant/60 rounded">
+              <span class="text-label-caps font-label-caps text-on-surface-variant text-[9px] block mb-0.5">DISCLOSURE</span>
+              <p class="font-data-mono text-[10px] text-on-surface-variant leading-tight" id="fac-disclosure-note">
+                Attribution determined strictly by 3,500m geodetic centroid radius. Zero synthetic baseline or estimated capacity values are used.
+              </p>
             </div>
           </div>
         </div>
 
-        <!-- 12-Month Baseline: Small Multiples -->
+        <!-- Matched Activity Table in Current Evaluation Window -->
         <div class="hud-panel rounded flex flex-col shrink-0">
           <div class="hud-header-bg px-md py-sm flex justify-between items-center rounded-t">
-            <span class="text-label-caps font-label-caps text-on-surface">12-MONTH THERMAL DECOMPOSITION BASELINE</span>
-            <span class="text-data-mono font-data-mono text-[10px] text-primary">VIIRS DAY/NIGHT CYCLES</span>
+            <span class="text-label-caps font-label-caps text-on-surface">ACTIVE WINDOW DETECTIONS MATCHED TO FACILITY</span>
+            <span class="text-data-mono font-data-mono text-[10px] text-primary" id="fac-matched-count-badge">4 MATCHED IN 5-DAY NRT</span>
           </div>
-          <div class="p-md grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-base">
-            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">JAN 2024</span>
-              <div class="h-12 w-full flex items-end gap-[1px]">
-                <div class="w-full h-[40%] bg-outline-variant/30"></div>
-                <div class="w-full h-[60%] bg-primary/40 border-t border-primary"></div>
-                <div class="w-full h-[80%] bg-primary/40 border-t border-primary"></div>
-                <div class="w-full h-[45%] bg-outline-variant/30"></div>
-              </div>
-            </div>
-            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">FEB 2024</span>
-              <div class="h-12 w-full flex items-end gap-[1px]">
-                <div class="w-full h-[30%] bg-outline-variant/30"></div>
-                <div class="w-full h-[55%] bg-outline-variant/30"></div>
-                <div class="w-full h-[90%] bg-tertiary-container/40 border-t border-tertiary-container"></div>
-                <div class="w-full h-[40%] bg-outline-variant/30"></div>
-              </div>
-            </div>
-            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">MAR 2024</span>
-              <div class="h-12 w-full flex items-end gap-[1px]">
-                <div class="w-full h-[35%] bg-outline-variant/30"></div>
-                <div class="w-full h-[40%] bg-outline-variant/30"></div>
-                <div class="w-full h-[35%] bg-outline-variant/30"></div>
-                <div class="w-full h-[40%] bg-outline-variant/30"></div>
-              </div>
-            </div>
-            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">APR 2024</span>
-              <div class="h-12 w-full flex items-end gap-[1px]">
-                <div class="w-full h-[40%] bg-outline-variant/30"></div>
-                <div class="w-full h-[75%] bg-primary/40 border-t border-primary"></div>
-                <div class="w-full h-[85%] bg-primary/40 border-t border-primary"></div>
-                <div class="w-full h-[35%] bg-outline-variant/30"></div>
-              </div>
-            </div>
-            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">MAY 2024</span>
-              <div class="h-12 w-full flex items-end gap-[1px]">
-                <div class="w-full h-[45%] bg-outline-variant/30"></div>
-                <div class="w-full h-[50%] bg-outline-variant/30"></div>
-                <div class="w-full h-[45%] bg-outline-variant/30"></div>
-                <div class="w-full h-[50%] bg-outline-variant/30"></div>
-              </div>
-            </div>
-            <div class="border border-outline-variant p-sm rounded bg-surface-container-lowest">
-              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant block mb-sm">JUN 2024</span>
-              <div class="h-12 w-full flex items-end gap-[1px]">
-                <div class="w-full h-[50%] bg-outline-variant/30"></div>
-                <div class="w-full h-[30%] bg-outline-variant/30"></div>
-                <div class="w-full h-[20%] bg-outline-variant/30"></div>
-                <div class="w-full h-[35%] bg-outline-variant/30"></div>
-              </div>
-            </div>
+          <div class="w-full overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-outline-variant text-label-caps font-label-caps text-on-surface-variant bg-surface-container-highest/50">
+                  <th class="px-md py-sm font-normal">DETECTION ID</th>
+                  <th class="px-md py-sm font-normal">VERDICT / CLASS</th>
+                  <th class="px-md py-sm font-normal">DISTANCE TO CENTROID</th>
+                  <th class="px-md py-sm font-normal">RETRIEVED TEMP (K)</th>
+                  <th class="px-md py-sm font-normal">FRP (MW)</th>
+                  <th class="px-md py-sm font-normal">CONFIDENCE</th>
+                  <th class="px-md py-sm font-normal">DIURNAL PATTERN</th>
+                </tr>
+              </thead>
+              <tbody id="fac-matched-table-body" class="text-data-mono font-data-mono text-[12px]">
+                <!-- Populated dynamically by updateFacilityProfile() -->
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <!-- Heatmap Grid & Temperature Distribution -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-base shrink-0">
-          
-          <!-- 365-Day Activity Heatmap Grid -->
-          <div class="hud-panel rounded flex flex-col">
-            <div class="hud-header-bg px-md py-sm flex justify-between items-center rounded-t">
-              <span class="text-label-caps font-label-caps text-on-surface">DETECTION ACTIVITY HEATMAP (T-365)</span>
-              <span class="font-data-mono text-[10px] text-on-surface-variant">DAILY FLARING INTENSITY</span>
-            </div>
-            <div class="p-md">
-              <div class="flex items-end gap-sm mb-sm text-data-mono font-data-mono text-[10px] text-on-surface-variant">
-                <span class="w-8">Mon</span>
-                <div class="flex-1 grid grid-cols-[repeat(52,minmax(0,1fr))] gap-[2px]">
-                  <div class="col-span-4">Jan</div><div class="col-span-4">Feb</div><div class="col-span-5">Mar</div><div class="col-span-4">Apr</div><div class="col-span-4">May</div><div class="col-span-5">Jun</div><div class="col-span-4">Jul</div><div class="col-span-4">Aug</div><div class="col-span-5">Sep</div><div class="col-span-4">Oct</div><div class="col-span-4">Nov</div><div class="col-span-5">Dec</div>
-                </div>
-              </div>
-              <div class="flex gap-sm">
-                <div class="flex flex-col gap-[2px] text-data-mono font-data-mono text-[10px] text-on-surface-variant w-8">
-                  <span class="h-[9px]"></span>
-                  <span class="h-[9px] leading-[9px]">Wed</span>
-                  <span class="h-[9px]"></span>
-                  <span class="h-[9px] leading-[9px]">Fri</span>
-                  <span class="h-[9px]"></span>
-                  <span class="h-[9px] leading-[9px]">Sun</span>
-                  <span class="h-[9px]"></span>
-                </div>
-                <div class="flex-1 grid grid-rows-7 grid-flow-col gap-[2px]" id="facility-heatmap-grid">
-                  <!-- Generated by app.js -->
-                </div>
-              </div>
-              <div class="flex justify-end items-center gap-xs mt-md text-data-mono font-data-mono text-[10px] text-on-surface-variant">
-                <span>Less</span>
-                <div class="w-[9px] h-[9px] rounded-sm bg-surface-container-highest"></div>
-                <div class="w-[9px] h-[9px] rounded-sm bg-primary/30"></div>
-                <div class="w-[9px] h-[9px] rounded-sm bg-primary/60"></div>
-                <div class="w-[9px] h-[9px] rounded-sm bg-primary"></div>
-                <div class="w-[9px] h-[9px] rounded-sm bg-[#ffa94d]"></div>
-                <div class="w-[9px] h-[9px] rounded-sm bg-error"></div>
-                <span>More</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bimodal Temperature Distribution Overlay -->
-          <div class="hud-panel rounded flex flex-col relative overflow-hidden">
-            <div class="hud-header-bg px-md py-sm flex justify-between items-center rounded-t relative z-10">
-              <span class="text-label-caps font-label-caps text-on-surface">TEMPERATURE DISTRIBUTION OVERLAY</span>
-              <span class="text-data-mono font-data-mono text-[10px] text-primary">KELVIN (K)</span>
-            </div>
-            <div class="flex-1 p-md relative flex items-end min-h-[220px]">
-              <div class="absolute inset-x-md bottom-md top-md border-b border-l border-outline-variant/50">
-                <svg class="w-full h-full absolute inset-0" preserveAspectRatio="none" viewBox="0 0 100 100">
-                  <path d="M0,100 C20,90 30,20 40,30 C50,40 60,80 70,10 C80,-10 90,80 100,100" fill="none" stroke="#3c494c" stroke-dasharray="2 2" stroke-width="1"></path>
-                  <line opacity="0.6" stroke="#ffb13b" stroke-dasharray="4 4" stroke-width="1" x1="60" x2="60" y1="0" y2="100"></line>
-                  <text fill="#ffb13b" font-family="JetBrains Mono" font-size="4" opacity="0.8" x="62" y="15">FLARE THRESHOLD (1500K)</text>
-                </svg>
-              </div>
-              <div class="relative w-full h-[80%] flex items-end gap-[2px] z-10 opacity-80">
-                <div class="flex-1 bg-primary/20 h-[5%]"></div>
-                <div class="flex-1 bg-primary/40 h-[25%] border-t border-primary/50"></div>
-                <div class="flex-1 bg-primary h-[85%] border-t border-primary"></div>
-                <div class="flex-1 bg-primary/50 h-[35%] border-t border-primary/50"></div>
-                <div class="flex-1 bg-outline-variant/30 h-[8%]"></div>
-                <div class="flex-1 bg-tertiary-container/50 h-[40%] border-t border-tertiary-container/50"></div>
-                <div class="flex-1 bg-tertiary-container/80 h-[95%] border-t border-tertiary-container"></div>
-                <div class="flex-1 bg-error/80 h-[60%] border-t border-error"></div>
-                <div class="flex-1 bg-outline-variant/30 h-[5%]"></div>
-              </div>
-              <div class="absolute bottom-sm left-md right-md flex justify-between text-data-mono font-data-mono text-[9px] text-on-surface-variant">
-                <span>300K</span>
-                <span>800K</span>
-                <span>1500K</span>
-                <span>2200K+</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Gujarat Sector Benchmarking Table -->
+        <!-- Industrial Facilities Seed Registry Directory -->
         <div class="hud-panel rounded flex flex-col mb-xl shrink-0">
           <div class="hud-header-bg px-md py-sm flex justify-between items-center rounded-t">
-            <span class="text-label-caps font-label-caps text-on-surface">GUJARAT SECTOR BENCHMARKING</span>
-            <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant">T-30 DAYS ROLLING</span>
+            <span class="text-label-caps font-label-caps text-on-surface">REGISTERED INDUSTRIAL FACILITIES (GROUND TRUTH REGISTRY)</span>
+            <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant">GEM & OSM VERIFIED CENTROIDS</span>
           </div>
           <div class="w-full overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="border-b border-outline-variant text-label-caps font-label-caps text-on-surface-variant bg-surface-container-highest/50">
                   <th class="px-md py-sm font-normal">FACILITY ID</th>
-                  <th class="px-md py-sm font-normal">AVG FRP (MW)</th>
-                  <th class="px-md py-sm font-normal">PEAK FRP (MW)</th>
-                  <th class="px-md py-sm font-normal">PERSISTENCE</th>
-                  <th class="px-md py-sm font-normal">TREND (30D)</th>
+                  <th class="px-md py-sm font-normal">NAME</th>
+                  <th class="px-md py-sm font-normal">SECTOR</th>
+                  <th class="px-md py-sm font-normal">COORDINATES</th>
+                  <th class="px-md py-sm font-normal">MATCH BUFFER</th>
+                  <th class="px-md py-sm font-normal">WINDOW DETECTIONS</th>
+                  <th class="px-md py-sm font-normal">ACTION</th>
                 </tr>
               </thead>
-              <tbody class="text-data-mono font-data-mono text-[12px]">
-                <tr class="border-b border-outline-variant bg-primary/5 hover:bg-primary/10 transition-colors">
-                  <td class="px-md py-sm text-primary flex items-center gap-sm">
-                    <span class="w-[6px] h-[6px] rounded-full bg-primary pulse-critical"></span>
-                    RIL-JAM-01 <span class="text-[9px] border border-primary/30 bg-primary/10 px-1 rounded text-primary">TARGET</span>
-                  </td>
-                  <td class="px-md py-sm">45.2</td>
-                  <td class="px-md py-sm text-tertiary-container font-bold">128.5</td>
-                  <td class="px-md py-sm">
-                    <div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
-                      <div class="h-full bg-primary" style="width: 85%"></div>
-                    </div>
-                    <span class="text-[9px] text-on-surface-variant mt-[2px] block">85% ACTIVE</span>
-                  </td>
-                  <td class="px-md py-sm w-32">
-                    <svg class="w-full h-4" preserveAspectRatio="none" viewBox="0 0 100 20">
-                      <path d="M0,15 L20,12 L40,18 L60,8 L80,10 L100,2" fill="none" stroke="#22d3ee" stroke-width="1.5"></path>
-                    </svg>
-                  </td>
-                </tr>
-                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
-                  <td class="px-md py-sm text-on-surface">IOCL-KOY-02</td>
-                  <td class="px-md py-sm text-on-surface-variant">32.8</td>
-                  <td class="px-md py-sm text-on-surface-variant">94.1</td>
-                  <td class="px-md py-sm">
-                    <div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
-                      <div class="h-full bg-outline-variant" style="width: 62%"></div>
-                    </div>
-                    <span class="text-[9px] text-on-surface-variant mt-[2px] block">62% ACTIVE</span>
-                  </td>
-                  <td class="px-md py-sm w-32">
-                    <svg class="w-full h-4" preserveAspectRatio="none" viewBox="0 0 100 20">
-                      <path d="M0,10 L20,12 L40,11 L60,14 L80,12 L100,15" fill="none" stroke="#859397" stroke-width="1.5"></path>
-                    </svg>
-                  </td>
-                </tr>
-                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
-                  <td class="px-md py-sm text-on-surface">RIL-DAH-03</td>
-                  <td class="px-md py-sm text-on-surface-variant">18.4</td>
-                  <td class="px-md py-sm text-on-surface-variant">45.0</td>
-                  <td class="px-md py-sm">
-                    <div class="w-24 h-2 bg-surface-container-highest rounded overflow-hidden">
-                      <div class="h-full bg-outline-variant" style="width: 30%"></div>
-                    </div>
-                    <span class="text-[9px] text-on-surface-variant mt-[2px] block">30% ACTIVE</span>
-                  </td>
-                  <td class="px-md py-sm w-32">
-                    <svg class="w-full h-4" preserveAspectRatio="none" viewBox="0 0 100 20">
-                      <path d="M0,18 L20,17 L40,19 L60,16 L80,18 L100,17" fill="none" stroke="#859397" stroke-width="1.5"></path>
-                    </svg>
-                  </td>
-                </tr>
+              <tbody id="facility-directory-table-body" class="text-data-mono font-data-mono text-[12px]">
+                <!-- Populated dynamically by updateFacilityProfile() -->
               </tbody>
             </table>
           </div>
@@ -1642,19 +1493,19 @@
         <div class="hud-border bg-surface-container p-sm rounded space-y-xs font-data-mono text-[11px]">
           <div class="flex justify-between">
             <span class="text-on-surface-variant">INCIDENT ID:</span>
-            <span class="text-primary font-bold">AGN-04832</span>
+            <span class="text-primary font-bold" id="dispatch-incident-id">AV-0B12A4B9</span>
           </div>
           <div class="flex justify-between">
             <span class="text-on-surface-variant">TARGET LOCATION:</span>
-            <span class="text-on-surface">Jamnagar Refinery (22.35° N, 70.02° E)</span>
+            <span class="text-on-surface" id="dispatch-target-loc">Hazira LNG/Steel (21.106° N, 72.641° E)</span>
           </div>
           <div class="flex justify-between">
             <span class="text-on-surface-variant">RETRIEVED TEMP / FRP:</span>
-            <span class="text-error font-bold">1847 K / 62.1 MW (GAS FLARE)</span>
+            <span class="text-error font-bold" id="dispatch-temp-frp">486.1 K / 9.23 MW (GAS FLARE)</span>
           </div>
           <div class="flex justify-between">
             <span class="text-on-surface-variant">PRIMARY RELAY:</span>
-            <span class="text-tertiary">DIST. COLLECTOR - SEC 7 (AUTH-7A)</span>
+            <span class="text-tertiary" id="dispatch-primary-relay">HAZIRA INDUSTRIAL SAFETY & CRISIS CELL</span>
           </div>
         </div>
       </div>

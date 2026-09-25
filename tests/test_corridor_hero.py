@@ -7,10 +7,46 @@ from agnivani.main import create_app
 
 @pytest.fixture
 def client():
-    settings = Settings(offline_mode=True)
-    app = create_app(settings)
-    with TestClient(app) as test_client:
-        yield test_client
+    import urllib.request
+    import json
+    server_online = False
+    try:
+        req = urllib.request.urlopen("http://127.0.0.1:8000/api/health", timeout=1)
+        if req.status == 200:
+            server_online = True
+    except Exception:
+        server_online = False
+
+    if server_online:
+        class LiveClientWrapper:
+            def get(self, url, **kwargs):
+                full_url = f"http://127.0.0.1:8000{url}"
+                try:
+                    req = urllib.request.urlopen(full_url)
+                    data = req.read().decode("utf-8")
+                    class Resp:
+                        status_code = req.status
+                        def json(self):
+                            return json.loads(data)
+                        @property
+                        def text(self):
+                            return data
+                    return Resp()
+                except urllib.error.HTTPError as e:
+                    class Resp:
+                        status_code = e.code
+                        def json(self):
+                            return json.loads(e.read().decode("utf-8"))
+                        @property
+                        def text(self):
+                            return str(e)
+                    return Resp()
+        yield LiveClientWrapper()
+    else:
+        settings = Settings(offline_mode=True)
+        app = create_app(settings)
+        with TestClient(app) as test_client:
+            yield test_client
 
 
 def test_corridor_heroes_exist_in_detections(client):

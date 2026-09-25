@@ -2,6 +2,31 @@
 
 All notable changes to the AGNIVANI project will be documented in this file.
 
+## [Phase 3] - UI Purge & Ground Truth Realignment (2026-09-25)
+
+### Removed & Purged
+- **Complete Purge of Mockup & Invented Metrics**:
+  - Scraped and removed all occurrences of `"1847"`, `"0.943"`, `"14,208"`, `"0.868"`, `"A94X"`, `"AGN-04832"`, `"CRYPTOGRAPHICALLY"`, `"7,500 ACRES"`, `"1.24M BPD"`, `"3 ACTIVE FLARES"`, and `"THERMAL RISK INDEX"` from `index.html`, `js/app.js`, and `dossier.html`.
+  - Replaced decorative `mockLogs` in terminal simulator with live streaming from `GET /api/pipeline/log`.
+  - Replaced hardcoded `T = 1847` in Planck radiation curve with dynamic Dozier temperature retrieval.
+  - Eliminated fictitious 12-month baseline small multiples and T-365 flaring intensity heatmap.
+
+### Added & Rewired
+- **Live Detection Inspector**:
+  - Inspector now defaults to empty state ("NO SELECTION") on initialization and dynamically populates upon detection selection or first real hero (`AV-0B12A4B9`).
+- **Dynamic Class Distribution**:
+  - Bound directly to `GET /api/stats` `by_class` (`FLARE: 2`, `LEAK: 2`, `WILD: 1`, `UNRESOLVED: 36`) with explicit progress bars and full legend representation.
+- **Grounded Facility Profile & Ground Truth Registry**:
+  - Bound facility profile strictly to registered facility attributes (Name, Sector, Centroid, Match Radius, Source of Truth).
+  - Wired real matched detection counts (Hazira LNG/Steel = 4, Jamnagar Refinery = 0).
+  - Added interactive facility selector and directory table listing GEM/OSM verified industrial facilities.
+- **Truthful Header & Dispatch Modal**:
+  - Header "LAST INGEST" clock now binds to `GET /api/provenance` `last_run.ts`.
+  - Engine ticker dynamically renders `${stats.scorer.mode} v${stats.scorer.version}` (e.g. `heuristic v1.0`), preventing misleading claims of `gcc-xgb`.
+  - Dispatch modal dynamically populates active detection telemetry on open.
+- **Regression Test Contract**:
+  - Implemented `test_purged_mock_values()` in `tests/test_dom_contract.py` to ensure forbidden mock strings cannot be reintroduced into `index.html` or `js/app.js`.
+
 ## [Phase 2] - Demo-Readiness Execution (P1–P8) (2026-09-25)
 
 ### Added

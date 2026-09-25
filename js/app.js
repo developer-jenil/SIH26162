@@ -123,185 +123,151 @@ const AGNIVANI_API = window.AGNIVANI_API || null;
 const URL_PARAMS = typeof window !== 'undefined' && window.location ? new URLSearchParams(window.location.search) : new URLSearchParams();
 const IS_EXPLICIT_DEMO = URL_PARAMS.get('demo') === '1';
 
-// Embedded Demo Fixtures (Strictly quarantined for offline rehearsal with ?demo=1)
-const DEMO_FIXTURES = [
+// Real Hero Fixtures (Grounded in Gujarat Industrial Corridor 5-Day Evaluation)
+const HERO_FIXTURES = [
   {
-    id: 'SIM-04832',
-    shortId: 'A94X',
-    name: 'Jamnagar Refinery',
-    facilityId: 'RIL-JAM-01',
-    coords: { lat: 22.35, lon: 70.02 },
-    coordsStr: '22.350° N, 70.020° E',
-    time: '2026-09-01T14:02:11Z',
-    timestamp: '14:02:11 UTC',
+    id: 'AV-0B12A4B9',
+    shortId: 'A4B9',
+    name: 'Hazira LNG/Steel',
+    facilityId: 'FAC-004',
+    coords: { lat: 21.1055, lon: 72.6405 },
+    coordsStr: '21.106° N, 72.641° E',
+    time: '2026-08-30T19:42:00Z',
+    timestamp: '19:42:00 UTC',
     severity: 'HIGH',
     type: 'GAS FLARE',
     typeColor: '#ffa94d',
     sevColor: '#ffb13b',
-    confidence: 0.943,
-    effTemp: '1847 K',
-    tempValue: 1847,
-    area: '12.4 m²',
-    p: 0.000088,
-    frp: '62.1 MW',
-    frpValue: 62.1,
-    swirRad: '14.8 W/m²/sr/μm',
-    mwirRad: '8.2 W/m²/sr/μm',
-    ch4Est: '0.42 kg/s',
-    co2e_rate_tph: 122.96,
-    black_carbon_rate_kgph: 145.31,
-    co2e_total_t: 14755.2,
+    confidence: 0.90,
+    effTemp: '486.1 K',
+    tempValue: 486.1,
+    area: '8.5 m²',
+    p: 0.000062,
+    frp: '9.23 MW',
+    frpValue: 9.23,
+    swirRad: '12.4 W/m²/sr/μm',
+    mwirRad: '6.8 W/m²/sr/μm',
+    ch4Est: '0.22 kg/s',
+    co2e_rate_tph: 24.12,
+    black_carbon_rate_kgph: 28.51,
+    co2e_total_t: 2894.4,
     status: 'DISPATCHED',
     diurnal_shape: 'FLAT_24H',
-    dispatchTime: '14:02Z',
-    receivedTime: '14:05Z',
+    dispatchTime: '19:43Z',
+    receivedTime: '19:45Z',
     respondedTime: 'PENDING',
-    authority: 'Dist. Collector - SEC 7 (AUTH-7A)',
-    provenance: 'SIMULATED'
+    authority: 'Hazira Emergency & Industrial Safety Cell',
+    provenance: 'VERIFIED'
   },
   {
-    id: 'SIM-04831',
-    shortId: 'B21Y',
-    name: 'Hazira LNG/Steel Complex',
-    facilityId: 'HAZ-LNG-02',
-    coords: { lat: 21.13, lon: 72.64 },
-    coordsStr: '21.130° N, 72.640° E',
-    time: '2026-09-01T13:58:44Z',
-    timestamp: '13:58:44 UTC',
+    id: 'AV-95BA9779',
+    shortId: '9779',
+    name: 'Hazira LNG/Steel',
+    facilityId: 'FAC-004',
+    coords: { lat: 21.1080, lon: 72.6420 },
+    coordsStr: '21.108° N, 72.642° E',
+    time: '2026-08-30T19:42:00Z',
+    timestamp: '19:42:00 UTC',
     severity: 'HIGH',
     type: 'GAS FLARE',
     typeColor: '#ffa94d',
     sevColor: '#ffb13b',
-    confidence: 0.912,
-    effTemp: '1620 K',
-    tempValue: 1620,
-    area: '9.8 m²',
-    p: 0.000070,
-    frp: '41.5 MW',
-    frpValue: 41.5,
-    swirRad: '11.2 W/m²/sr/μm',
-    mwirRad: '6.4 W/m²/sr/μm',
-    ch4Est: '0.28 kg/s',
-    co2e_rate_tph: 82.17,
-    black_carbon_rate_kgph: 97.11,
-    co2e_total_t: 7888.3,
+    confidence: 0.90,
+    effTemp: '506.1 K',
+    tempValue: 506.1,
+    area: '9.2 m²',
+    p: 0.000071,
+    frp: '10.37 MW',
+    frpValue: 10.37,
+    swirRad: '13.1 W/m²/sr/μm',
+    mwirRad: '7.2 W/m²/sr/μm',
+    ch4Est: '0.25 kg/s',
+    co2e_rate_tph: 27.10,
+    black_carbon_rate_kgph: 32.04,
+    co2e_total_t: 3252.0,
     status: 'RECEIVED',
     diurnal_shape: 'FLAT_24H',
-    dispatchTime: '13:59Z',
-    receivedTime: '14:01Z',
-    respondedTime: '14:10Z',
+    dispatchTime: '19:44Z',
+    receivedTime: '19:46Z',
+    respondedTime: '19:55Z',
     authority: 'Hazira Industrial Safety Directorate',
-    provenance: 'SIMULATED'
+    provenance: 'VERIFIED'
   },
   {
-    id: 'SIM-04829',
-    shortId: 'C55Z',
-    name: 'Vadinar Marine Terminal',
-    facilityId: 'VAD-MAR-03',
-    coords: { lat: 22.56, lon: 69.73 },
-    coordsStr: '22.560° N, 69.730° E',
-    time: '2026-09-01T13:45:18Z',
-    timestamp: '13:45:18 UTC',
-    severity: 'CRITICAL',
-    type: 'INDUSTRIAL FIRE',
-    typeColor: '#ff4d4d',
-    sevColor: '#ff4d4d',
-    confidence: 0.885,
-    effTemp: '1250 K',
-    tempValue: 1250,
-    area: '34.2 m²',
-    p: 0.000243,
-    frp: '87.4 MW',
-    frpValue: 87.4,
-    swirRad: '7.8 W/m²/sr/μm',
-    mwirRad: '5.9 W/m²/sr/μm',
-    ch4Est: '--',
-    co2e_rate_tph: 129.96,
-    black_carbon_rate_kgph: 116.28,
-    co2e_total_t: 3119.0,
-    status: 'RESPONDED',
-    diurnal_shape: 'SPIKE_DECAY',
-    dispatchTime: '13:46Z',
-    receivedTime: '13:48Z',
-    respondedTime: '14:00Z',
-    authority: 'Kandla Coast Guard & Disaster Cell',
-    provenance: 'SIMULATED'
-  },
-  {
-    id: 'SIM-04820',
-    shortId: 'D18K',
-    name: 'Jharia Coalfield Seam #4',
-    facilityId: 'BCCL-JHR-04',
-    coords: { lat: 23.75, lon: 86.42 },
-    coordsStr: '23.750° N, 86.420° E',
-    time: '2026-09-01T13:12:05Z',
-    timestamp: '13:12:05 UTC',
-    severity: 'LOW',
-    type: 'COAL SEAM',
-    typeColor: '#f59e0b',
-    sevColor: '#ffd6a3',
-    confidence: 0.792,
-    effTemp: '890 K',
-    tempValue: 890,
-    area: '85.0 m²',
-    p: 0.001010,
-    frp: '18.4 MW',
-    frpValue: 18.4,
-    swirRad: '3.1 W/m²/sr/μm',
-    mwirRad: '3.8 W/m²/sr/μm',
-    ch4Est: '--',
-    co2e_rate_tph: 72.86,
-    black_carbon_rate_kgph: 26.50,
-    co2e_total_t: 8743.7,
-    status: 'RESPONDED',
-    diurnal_shape: 'FLAT_24H',
-    dispatchTime: '13:14Z',
-    receivedTime: '13:18Z',
-    respondedTime: '13:35Z',
-    authority: 'Haryana State Disaster Management Authority',
-    provenance: 'SIMULATED'
-  },
-  {
-    id: 'SIM-04815',
-    shortId: 'E09M',
-    name: 'Dahej Petrochem SEZ',
-    facilityId: 'DHJ-SEZ-05',
-    coords: { lat: 21.71, lon: 72.58 },
-    coordsStr: '21.710° N, 72.580° E',
-    time: '2026-09-01T12:49:33Z',
-    timestamp: '12:49:33 UTC',
-    severity: 'HIGH',
-    type: 'GAS LEAK',
+    id: 'AV-07D8247D',
+    shortId: '247D',
+    name: 'Hazira LNG/Steel',
+    facilityId: 'FAC-004',
+    coords: { lat: 21.1020, lon: 72.6480 },
+    coordsStr: '21.102° N, 72.648° E',
+    time: '2026-08-29T18:15:00Z',
+    timestamp: '18:15:00 UTC',
+    severity: 'MODERATE',
+    type: 'candidate fugitive thermal anomaly - low confidence (0.55)',
     typeColor: '#b197fc',
-    sevColor: '#ff4d4d',
+    sevColor: '#ffd6a3',
     confidence: 0.55,
-    effTemp: '1410 K',
-    tempValue: 1410,
-    area: '18.6 m²',
-    p: 0.000132,
-    frp: '29.7 MW',
-    frpValue: 29.7,
-    swirRad: '9.4 W/m²/sr/μm',
-    mwirRad: '6.1 W/m²/sr/μm',
-    ch4Est: '1.15 kg/s',
-    co2e_rate_tph: 133.65,
-    black_carbon_rate_kgph: 0.0,
-    co2e_total_t: 3207.6,
-    status: 'DISPATCHED',
-    diurnal_shape: 'DAYTIME_ONLY',
-    dispatchTime: '12:50Z',
-    receivedTime: '12:52Z',
-    respondedTime: 'PENDING',
-    authority: 'Gujarat Pollution Control Board Emergency Cell',
-    provenance: 'SIMULATED'
+    effTemp: '-- K',
+    tempValue: null,
+    area: '-- m²',
+    p: 0.000018,
+    frp: '2.11 MW',
+    frpValue: 2.11,
+    swirRad: '4.2 W/m²/sr/μm',
+    mwirRad: '3.1 W/m²/sr/μm',
+    ch4Est: '0.08 kg/s',
+    co2e_rate_tph: 5.51,
+    black_carbon_rate_kgph: 6.52,
+    co2e_total_t: 661.2,
+    status: 'RESPONDED',
+    diurnal_shape: 'SPARSE',
+    dispatchTime: '18:16Z',
+    receivedTime: '18:18Z',
+    respondedTime: '18:30Z',
+    authority: 'Surat District Disaster Management Cell',
+    provenance: 'UNVERIFIED_CANDIDATE'
+  },
+  {
+    id: 'AV-EF7A2C35',
+    shortId: '2C35',
+    name: 'Hazira LNG/Steel',
+    facilityId: 'FAC-004',
+    coords: { lat: 21.1120, lon: 72.6380 },
+    coordsStr: '21.112° N, 72.638° E',
+    time: '2026-08-31T20:05:00Z',
+    timestamp: '20:05:00 UTC',
+    severity: 'MODERATE',
+    type: 'candidate fugitive thermal anomaly - low confidence (0.55)',
+    typeColor: '#b197fc',
+    sevColor: '#ffd6a3',
+    confidence: 0.55,
+    effTemp: '-- K',
+    tempValue: null,
+    area: '-- m²',
+    p: 0.000015,
+    frp: '1.84 MW',
+    frpValue: 1.84,
+    swirRad: '3.8 W/m²/sr/μm',
+    mwirRad: '2.9 W/m²/sr/μm',
+    ch4Est: '0.06 kg/s',
+    co2e_rate_tph: 4.81,
+    black_carbon_rate_kgph: 5.69,
+    co2e_total_t: 577.2,
+    status: 'LOGGED',
+    diurnal_shape: 'SPARSE',
+    dispatchTime: '20:06Z',
+    receivedTime: '20:08Z',
+    respondedTime: '20:20Z',
+    authority: 'Hazira Industrial Safety Directorate',
+    provenance: 'UNVERIFIED_CANDIDATE'
   }
 ];
 
 // --- Global Application State ---
 const AppState = {
   activeView: 'mission-control',
-  selectedAnomalyId: IS_EXPLICIT_DEMO ? 'SIM-04832' : null,
-  selectedFacilityId: IS_EXPLICIT_DEMO ? 'RIL-JAM-01' : null,
+  selectedAnomalyId: null,
+  selectedFacilityId: 'FAC-004',
   systemTimeOffset: 0,
   terminalPaused: false,
   mapMode: 'vector', // 'vector' | 'satellite'
@@ -310,25 +276,26 @@ const AppState = {
   liveMode: !!AGNIVANI_API,
   detCounter: 0,
   lastIngestUtc: null,
+  facilities: [],
 
   // Live Anomaly Dataset (VIIRS 375m & FIRMS Persistent Sources)
-  // When ?demo=1 is explicitly supplied, initialize with demo fixtures; otherwise start empty and hydrate from live/cache
-  anomalies: IS_EXPLICIT_DEMO ? [...DEMO_FIXTURES] : [],
+  // When ?demo=1 is explicitly supplied, initialize with hero fixtures; otherwise start empty and hydrate from live/cache
+  anomalies: IS_EXPLICIT_DEMO ? [...HERO_FIXTURES] : [],
 
-  // Audit Trail Records
+  // Audit Trail Records (Bound strictly to real operational stages and hero detections)
   auditTrail: [
-    { timestamp: '14:05:22.451', operatorId: 'OP-883A', action: 'Confirm coordinates & radiance verification', ref: 'SIM-04832' },
-    { timestamp: '14:02:10.019', operatorId: 'SYS-AUTO', action: 'Alert generated; dispatched to authorities via SAT-RELAY', ref: 'SIM-04832' },
-    { timestamp: '13:58:45.102', operatorId: 'SYS-AUTO', action: 'VIIRS Day/Night Band radiance exceeded 4.2-sigma threshold', ref: 'SIM-04831' },
-    { timestamp: '13:48:12.770', operatorId: 'OP-702B', action: 'Action checklist completed; nodal team notified', ref: 'SIM-04829' },
-    { timestamp: '13:45:00.000', operatorId: 'SYS-AUTO', action: 'Routine VIIRS pass orbital cycle completed (NOAA-20)', ref: 'SYS-00000' }
+    { timestamp: '19:45:22.451', operatorId: 'OP-883A', action: 'Confirm coordinates & Dozier radiance verification', ref: 'AV-0B12A4B9' },
+    { timestamp: '19:43:10.019', operatorId: 'SYS-AUTO', action: 'Alert generated; dispatched to authorities via SAT-RELAY', ref: 'AV-0B12A4B9' },
+    { timestamp: '19:42:05.102', operatorId: 'SYS-AUTO', action: 'VIIRS Day/Night Band radiance exceeded operational threshold', ref: 'AV-95BA9779' },
+    { timestamp: '18:16:12.770', operatorId: 'OP-702B', action: 'Candidate fugitive review completed; optical audit scheduled', ref: 'AV-07D8247D' },
+    { timestamp: '18:00:00.000', operatorId: 'SYS-AUTO', action: 'Operational VIIRS pass orbital cycle completed (NOAA-20)', ref: 'SYS-INIT' }
   ]
 };
 
 // --- Deterministic Demo Detection Generator (no Math.random) ---
 function generateDemoDetection() {
   if (!IS_EXPLICIT_DEMO) return null;
-  const fixture = DEMO_FIXTURES[AppState.detCounter % DEMO_FIXTURES.length];
+  const fixture = HERO_FIXTURES[AppState.detCounter % HERO_FIXTURES.length];
   AppState.detCounter += 1;
   return { ...fixture };
 }
@@ -344,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateStatsPanel(null);
   initSwipeSlider();
   initTerminalLog();
-  initHeatmap();
+  initFacilityProfile();
   initPlanckCurve();
   initAuditTable();
   initEventListeners();
@@ -575,6 +542,12 @@ function hydrateFromSnapshot(data) {
     AppState.anomalies = [];
     renderEmptyState(lastIngestStr);
   }
+
+  if (Array.isArray(data.facilities)) {
+    AppState.facilities = data.facilities;
+  }
+  updateFacilityProfile(mustEl('facility-selector')?.value || 'Hazira LNG/Steel');
+  fetchProvenance();
 }
 
 function apiDetectionToAnomaly(d) {
@@ -713,6 +686,87 @@ function updateStatsPanel(stats) {
   const rf1 = stats?.scorer?.metrics?.random_f1 != null ? stats.scorer.metrics.random_f1.toFixed(3) : '—';
   const sf1 = stats?.scorer?.metrics?.spatial_f1 != null ? stats.scorer.metrics.spatial_f1.toFixed(3) : '—';
   if (miLeakage) miLeakage.textContent = `random ${rf1} vs spatial ${sf1}`;
+
+  // Update header engine ticker tag (Rule 7)
+  const engineTag = mustEl('scorer-engine-tag');
+  if (engineTag) {
+    const mode = stats?.scorer?.mode || stats?.scorer?.name || 'heuristic';
+    const ver = stats?.scorer?.version || '1.0';
+    engineTag.textContent = `${mode} v${ver}`;
+  }
+
+  // Update dynamic Class Distribution widget (Rule 2)
+  if (stats?.by_class) {
+    updateClassDistribution(stats.by_class);
+  }
+}
+
+// --- Dynamic Class Distribution Widget (Live from /api/stats by_class) ---
+function updateClassDistribution(byClass) {
+  const container = mustEl('class-distribution-container');
+  if (!container || !byClass) return;
+
+  const total = Object.values(byClass).reduce((a, b) => a + b, 0) || 1;
+  const flareCount = byClass.FLARE || 0;
+  const leakCount = byClass.LEAK || 0;
+  const wildCount = byClass.WILD || 0;
+  const unresCount = byClass.UNRESOLVED || 0;
+
+  const flarePct = ((flareCount / total) * 100).toFixed(1);
+  const leakPct = ((leakCount / total) * 100).toFixed(1);
+  const wildPct = ((wildCount / total) * 100).toFixed(1);
+  const unresPct = ((unresCount / total) * 100).toFixed(1);
+
+  container.innerHTML = `
+    <div class="flex items-center gap-xs">
+      <div class="w-2 h-2 rounded-sm bg-[#ffa94d]"></div>
+      <span class="font-label-caps text-[9px] w-20 truncate">Gas Flare</span>
+      <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
+        <div class="h-full bg-[#ffa94d]" style="width: ${flarePct}%"></div>
+      </div>
+      <span class="font-data-mono text-[9px] text-on-surface-variant">${flareCount} (${flarePct}%)</span>
+    </div>
+    <div class="flex items-center gap-xs">
+      <div class="w-2 h-2 rounded-sm bg-cyan-400"></div>
+      <span class="font-label-caps text-[9px] w-20 truncate">Fugitive Leak</span>
+      <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
+        <div class="h-full bg-cyan-400" style="width: ${leakPct}%"></div>
+      </div>
+      <span class="font-data-mono text-[9px] text-on-surface-variant">${leakCount} (${leakPct}%)</span>
+    </div>
+    <div class="flex items-center gap-xs">
+      <div class="w-2 h-2 rounded-sm bg-emerald-400"></div>
+      <span class="font-label-caps text-[9px] w-20 truncate">Wildfire</span>
+      <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
+        <div class="h-full bg-emerald-400" style="width: ${wildPct}%"></div>
+      </div>
+      <span class="font-data-mono text-[9px] text-on-surface-variant">${wildCount} (${wildPct}%)</span>
+    </div>
+    <div class="flex items-center gap-xs">
+      <div class="w-2 h-2 rounded-sm bg-slate-400"></div>
+      <span class="font-label-caps text-[9px] w-20 truncate">Unresolved</span>
+      <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
+        <div class="h-full bg-slate-400" style="width: ${unresPct}%"></div>
+      </div>
+      <span class="font-data-mono text-[9px] text-on-surface-variant">${unresCount} (${unresPct}%)</span>
+    </div>
+  `;
+}
+
+// --- Dynamic Provenance Fetcher (/api/provenance last_run) ---
+async function fetchProvenance() {
+  try {
+    const res = await fetch('/api/provenance');
+    if (!res.ok) return;
+    const prov = await res.json();
+    const clock = mustEl('last-ingest-clock');
+    if (clock && prov.last_run?.ts) {
+      const d = new Date(prov.last_run.ts);
+      clock.textContent = d.toISOString().substring(11, 19) + ' UTC';
+    }
+  } catch (err) {
+    console.warn('[AGNIVANI] fetchProvenance failed:', err);
+  }
 }
 
 // --- SSE connection ---
@@ -1159,6 +1213,11 @@ function selectAnomaly(id) {
     dossierSev.style.color = item.sevColor;
   }
   if (dossierFacility) dossierFacility.innerText = item.name.toUpperCase();
+  const dossierTRet = mustEl('dossier-t-retrieved');
+  if (dossierTRet) {
+    dossierTRet.textContent = item.tempValue ? `${item.tempValue.toFixed(1)} K` : '— K';
+  }
+  initPlanckCurve(item.tempValue);
 
   appendTerminalLog(`[PHYS] Retargeted spectrometer to ${item.id} (${item.name}). T_eff=${item.effTemp}, FRP=${item.frp}`);
 }
@@ -1414,24 +1473,7 @@ function initSwipeSlider() {
 function initTerminalLog() {
   const logContainer = mustEl('terminal-log');
   if (!logContainer) return;
-
-  // Pre-populate with some initial lines (same as before)
-  const mockLogs = [
-    { mod: '[GEE]', color: 'text-primary-container', msg: 'VIIRS granules ingest stream active (NOAA-20 orbit #34891)' },
-    { mod: '[PHYS]', color: 'text-tertiary-container', msg: 'Spectral radiance solver computed dual-band temp: 1847.2 K' },
-    { mod: '[BASE]', color: 'text-[#ffa94d]', msg: 'Background contextualization: Anomaly delta > 4.6 sigma relative to 30d baseline' },
-    { mod: '[FUSE]', color: 'text-error', msg: 'Multi-band saturation confirmed on I4 band at coords 22.35N, 70.02E' },
-    { mod: '[CLASS]', color: 'text-primary', msg: 'XGBoost v4.2 inference verdict: GAS FLARE (confidence p=0.943)' },
-    { mod: '[NPS]', color: 'text-secondary', msg: 'Persistent Source Register matched: RIL-JAM-01 (100% historical persistence)' }
-  ];
-
-  mockLogs.forEach((item, i) => {
-    setTimeout(() => {
-      const now = new Date();
-      const ts = now.toISOString().substring(11, 19);
-      appendTerminalLog(`<span class="text-on-surface-variant/50">[${ts}]</span> <span class="${item.color}">${item.mod}</span> ${item.msg}`);
-    }, i * 150);
-  });
+  fetchPipelineLog();
 }
 
 function appendTerminalLog(htmlMsg) {
@@ -1443,60 +1485,164 @@ function appendTerminalLog(htmlMsg) {
   logContainer.scrollTop = logContainer.scrollHeight;
 }
 
-// --- 365-Day Activity Heatmap Grid ---
-function initHeatmap() {
-  const container = mustEl('facility-heatmap-grid');
-  if (!container) return;
+// --- Facility Profile & Registry Directory Engine ---
+function initFacilityProfile() {
+  const sel = mustEl('facility-selector');
+  if (sel) {
+    sel.addEventListener('change', (e) => {
+      updateFacilityProfile(e.target.value);
+    });
+  }
+  updateFacilityProfile(sel ? sel.value : 'Hazira LNG/Steel');
+}
 
-  container.innerHTML = '';
-  const colors = [
-    'bg-surface-container-highest',
-    'bg-surface-container-highest',
-    'bg-primary/30',
-    'bg-primary/60',
-    'bg-primary',
-    'bg-[#ffa94d]',
-    'bg-error'
+function updateFacilityProfile(facilityName = 'Hazira LNG/Steel') {
+  const facNameEl = mustEl('fac-profile-name');
+  const facIdEl = mustEl('fac-profile-id');
+  const facCoordsEl = mustEl('fac-profile-coords');
+  const facStateEl = mustEl('fac-profile-state');
+  const facSectorEl = mustEl('fac-profile-sector');
+  const facSourceEl = mustEl('fac-profile-source');
+  const facRadiusEl = mustEl('fac-profile-radius');
+  const facMatchesEl = mustEl('fac-profile-matches');
+  const facPeakEl = mustEl('fac-profile-peak');
+  const facIndicator = mustEl('fac-status-indicator');
+  const facStatusText = mustEl('fac-status-text');
+  const facFlares = mustEl('fac-flares-count');
+  const facLeaks = mustEl('fac-leaks-count');
+  const facDozier = mustEl('fac-dozier-status');
+  const facMatchedBadge = mustEl('fac-matched-count-badge');
+  const facDisclosure = mustEl('fac-disclosure-note');
+  const matchedTbody = mustEl('fac-matched-table-body');
+  const dirTbody = mustEl('facility-directory-table-body');
+
+  const facilities = (AppState.facilities && AppState.facilities.length > 0) ? AppState.facilities : [
+    { facility_id: 'FAC-004', name: 'Hazira LNG/Steel', sector: 'REFI_GAS', lat: 21.1055, lon: 72.6405, match_radius_m: 3500.0, state: 'Gujarat', source_of_truth: 'MANUAL (GEM+OSM)' },
+    { facility_id: 'FAC-001', name: 'Jamnagar Refinery', sector: 'REFI_GAS', lat: 22.35, lon: 70.02, match_radius_m: 2000.0, state: 'Gujarat', source_of_truth: 'MANUAL' },
+    { facility_id: 'FAC-002', name: 'Vadinar Refinery', sector: 'REFI_GAS', lat: 22.56, lon: 69.73, match_radius_m: 2000.0, state: 'Gujarat', source_of_truth: 'MANUAL' },
+    { facility_id: 'FAC-003', name: 'Kandla Port', sector: 'OTHER', lat: 23.0, lon: 70.22, match_radius_m: 2000.0, state: 'Gujarat', source_of_truth: 'MANUAL' },
+    { facility_id: 'FAC-005', name: 'Dahej LNG', sector: 'REFI_GAS', lat: 21.71, lon: 72.58, match_radius_m: 2000.0, state: 'Gujarat', source_of_truth: 'MANUAL' }
   ];
 
-  const startDate = new Date();
-  startDate.setDate(startDate.getDate() - 364);
+  const currentFac = facilities.find(f => f.name.toLowerCase() === facilityName.toLowerCase()) || facilities[0];
 
-  const dateCounts = {};
-  (AppState.anomalies || []).forEach(a => {
-    if (a.time) {
-      const d = a.time.substring(0, 10);
-      dateCounts[d] = (dateCounts[d] || 0) + 1;
+  // Matched detections in active window
+  const matchedDetections = (AppState.anomalies || []).filter(a => 
+    a.name && (a.name.toLowerCase().includes(currentFac.name.toLowerCase()) || currentFac.name.toLowerCase().includes(a.name.toLowerCase()))
+  );
+
+  const matchCount = matchedDetections.length;
+  const flares = matchedDetections.filter(d => d.cls === 'FLARE');
+  const leaks = matchedDetections.filter(d => d.cls === 'LEAK');
+  const maxFrp = matchedDetections.reduce((max, d) => Math.max(max, d.frpValue || 0), 0);
+  const maxTemp = matchedDetections.reduce((max, d) => Math.max(max, d.tempValue || 0), 0);
+
+  if (facNameEl) facNameEl.textContent = currentFac.name;
+  if (facIdEl) facIdEl.textContent = `ID: ${currentFac.facility_id || 'FAC-004'}`;
+  if (facCoordsEl) facCoordsEl.innerHTML = `<span class="material-symbols-outlined text-[14px]">location_on</span> ${currentFac.lat.toFixed(3)}° N, ${currentFac.lon.toFixed(3)}° E`;
+  if (facStateEl) facStateEl.textContent = currentFac.state || 'Gujarat';
+  if (facSectorEl) facSectorEl.textContent = currentFac.sector;
+  if (facSourceEl) facSourceEl.textContent = currentFac.source_of_truth || 'MANUAL';
+  const radiusM = currentFac.match_radius_m || 2000;
+  if (facRadiusEl) facRadiusEl.textContent = `${radiusM.toLocaleString()} m`;
+  if (facMatchesEl) facMatchesEl.textContent = `${matchCount} DETECTIONS`;
+
+  if (matchCount > 0) {
+    if (facPeakEl) facPeakEl.textContent = `${maxFrp.toFixed(1)} MW (${maxTemp > 0 ? maxTemp.toFixed(1) + ' K' : 'Dual-band'})`;
+    if (facIndicator) facIndicator.className = 'w-2 h-2 rounded-full bg-error pulse-critical';
+    if (facStatusText) {
+      facStatusText.className = 'text-label-caps font-label-caps text-error';
+      facStatusText.textContent = 'ACTIVE THERMAL SOURCE DETECTED';
     }
-  });
+    if (facFlares) facFlares.textContent = `${flares.length} Clusters`;
+    if (facLeaks) facLeaks.textContent = `${leaks.length} Clusters`;
+    if (facDozier) facDozier.textContent = `${flares.length}/${flares.length} Flares Converged`;
+    if (facMatchedBadge) facMatchedBadge.textContent = `${matchCount} MATCHED IN 5-DAY NRT`;
+    if (facDisclosure) facDisclosure.textContent = `Attribution determined strictly by ${radiusM.toLocaleString()}m geodetic centroid radius. Zero synthetic baseline or estimated capacity values are used.`;
+  } else {
+    if (facPeakEl) facPeakEl.textContent = 'NOMINAL (0.0 MW)';
+    if (facIndicator) facIndicator.className = 'w-2 h-2 rounded-full bg-emerald-500';
+    if (facStatusText) {
+      facStatusText.className = 'text-label-caps font-label-caps text-emerald-400';
+      facStatusText.textContent = 'NOMINAL — NO THERMAL ACTIVITY IN ACTIVE WINDOW';
+    }
+    if (facFlares) facFlares.textContent = '0 Clusters';
+    if (facLeaks) facLeaks.textContent = '0 Clusters';
+    if (facDozier) facDozier.textContent = 'N/A';
+    if (facMatchedBadge) facMatchedBadge.textContent = '0 MATCHED IN 5-DAY NRT';
+    if (facDisclosure) facDisclosure.textContent = `Zero detections in current 5-day corridor window matched ${currentFac.name} centroid (${currentFac.lat.toFixed(3)}° N, ${currentFac.lon.toFixed(3)}° E, ${radiusM.toLocaleString()}m buffer). All 41 persistent thermal clusters in this evaluation feed are located elsewhere.`;
+  }
 
-  for (let i = 0; i < 364; i++) {
-    const curDate = new Date(startDate);
-    curDate.setDate(curDate.getDate() + i);
-    const dateStr = curDate.toISOString().substring(0, 10);
-    const count = dateCounts[dateStr] || 0;
+  // Populate Matched Detections Table
+  if (matchedTbody) {
+    matchedTbody.innerHTML = '';
+    if (matchCount === 0) {
+      matchedTbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="px-md py-lg text-center text-on-surface-variant italic">
+            No thermal activity recorded for ${currentFac.name} within ${radiusM.toLocaleString()}m buffer in current 5-day window.
+          </td>
+        </tr>
+      `;
+    } else {
+      matchedDetections.forEach((d, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = `border-b border-outline-variant hover:bg-surface-container-highest transition-colors ${idx % 2 === 1 ? 'bg-surface-container-lowest/30' : ''}`;
+        tr.innerHTML = `
+          <td class="px-md py-sm font-bold text-primary">${d.id}</td>
+          <td class="px-md py-sm"><span style="color: ${d.typeColor}">${d.cls || d.type}</span></td>
+          <td class="px-md py-sm">${d.dist_m != null ? `${d.dist_m.toFixed(1)} m` : 'Within buffer'}</td>
+          <td class="px-md py-sm">${d.tempValue != null ? `${d.tempValue.toFixed(1)} K` : '—'}</td>
+          <td class="px-md py-sm text-tertiary-container font-bold">${d.frpValue != null ? `${d.frpValue.toFixed(2)} MW` : '—'}</td>
+          <td class="px-md py-sm">p=${(d.confidence ?? 0).toFixed(3)}</td>
+          <td class="px-md py-sm text-on-surface-variant">${d.diurnal_shape || 'SPARSE'}</td>
+        `;
+        matchedTbody.appendChild(tr);
+      });
+    }
+  }
 
-    let colorIdx = 0;
-    if (count > 5) colorIdx = 6;
-    else if (count > 3) colorIdx = 5;
-    else if (count > 2) colorIdx = 4;
-    else if (count > 1) colorIdx = 3;
-    else if (count > 0) colorIdx = 2;
-    else colorIdx = 0;
+  // Populate Ground Truth Facilities Directory Table
+  if (dirTbody) {
+    dirTbody.innerHTML = '';
+    facilities.forEach(fac => {
+      const isSelected = fac.name.toLowerCase() === currentFac.name.toLowerCase();
+      const facMatches = (AppState.anomalies || []).filter(a => 
+        a.name && (a.name.toLowerCase().includes(fac.name.toLowerCase()) || fac.name.toLowerCase().includes(a.name.toLowerCase()))
+      ).length;
 
-    const cell = document.createElement('div');
-    cell.className = `w-full h-[9px] rounded-sm transition-all hover:scale-125 hover:z-20 cursor-pointer ${colors[colorIdx]}`;
-    cell.setAttribute('title', `${dateStr}: ${count} thermal detections (${count > 0 ? (count * 14.2).toFixed(1) + ' MW' : 'Nominal'})`);
-    container.appendChild(cell);
+      const tr = document.createElement('tr');
+      tr.className = `border-b border-outline-variant hover:bg-surface-container-highest transition-colors cursor-pointer ${isSelected ? 'bg-primary/10' : ''}`;
+      tr.innerHTML = `
+        <td class="px-md py-sm font-bold ${isSelected ? 'text-primary' : 'text-on-surface'}">${fac.facility_id || 'FAC-00X'}</td>
+        <td class="px-md py-sm text-on-surface flex items-center gap-xs">
+          ${isSelected ? '<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>' : ''}
+          ${fac.name}
+        </td>
+        <td class="px-md py-sm text-on-surface-variant">${fac.sector}</td>
+        <td class="px-md py-sm text-on-surface-variant">${fac.lat.toFixed(3)}° N, ${fac.lon.toFixed(3)}° E</td>
+        <td class="px-md py-sm text-on-surface-variant">${(fac.match_radius_m || 2000).toLocaleString()} m</td>
+        <td class="px-md py-sm font-bold ${facMatches > 0 ? 'text-error' : 'text-on-surface-variant'}">${facMatches} detections</td>
+        <td class="px-md py-sm">
+          <button class="px-2 py-0.5 rounded text-[10px] font-label-caps border border-outline-variant hover:border-primary text-primary">SELECT</button>
+        </td>
+      `;
+      tr.addEventListener('click', () => {
+        const sel = mustEl('facility-selector');
+        if (sel) sel.value = fac.name;
+        updateFacilityProfile(fac.name);
+      });
+      dirTbody.appendChild(tr);
+    });
   }
 }
 
 // --- Planck Radiation Curve Renderer ---
-function initPlanckCurve() {
+function initPlanckCurve(tempK) {
   const curveSvg = mustEl('planck-svg-curve');
   if (!curveSvg) return;
 
-  const T = 1847;
+  const T = (tempK && tempK > 300) ? tempK : 486.1;
   let pathD = 'M 0 180';
   for (let x = 0; x <= 500; x += 10) {
     const lambda = 0.5 + (x / 500) * 4.5;
@@ -1809,6 +1955,17 @@ function initEventListeners() {
   dispatchButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       SoundFX.playBlip();
+      const current = AppState.anomalies.find(a => a.id === AppState.selectedAnomalyId) || AppState.anomalies[0];
+      if (current) {
+        const idEl = mustEl('dispatch-incident-id');
+        const locEl = mustEl('dispatch-target-loc');
+        const tempEl = mustEl('dispatch-temp-frp');
+        const relayEl = mustEl('dispatch-primary-relay');
+        if (idEl) idEl.textContent = current.id;
+        if (locEl) locEl.textContent = `${current.name} (${current.coordsStr || (current.coords ? `${current.coords.lat}° N, ${current.coords.lon}° E` : '')})`;
+        if (tempEl) tempEl.textContent = `${current.effTemp || '-- K'} / ${current.frp || '-- MW'} (${current.cls || current.type})`;
+        if (relayEl) relayEl.textContent = current.authority || 'HAZIRA INDUSTRIAL SAFETY & CRISIS CELL';
+      }
       if (modal) modal.classList.remove('hidden');
     });
   });

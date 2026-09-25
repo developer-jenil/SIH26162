@@ -58,14 +58,18 @@ def create_app(settings:Settings|None=None):
     api=FastAPI(title="AGNIVANI",version="0.1.0",lifespan=configured_lifespan,default_response_class=ORJSONResponse)
     api.add_middleware(CORSMiddleware,allow_origins=cors_origins,allow_credentials=False,allow_methods=["*"],allow_headers=["*"])
     for router in (detections.router,stream.router,dispatch.router,pipeline.router,snapshot.router):api.include_router(router,prefix="/api")
-    for route,path in (("/css",ROOT/"css"),("/js",ROOT/"js")):
-        if path.exists():api.mount(route,StaticFiles(directory=path),name=route.strip("/"))
+    for route,path in (("/css",ROOT/"css"),("/js",ROOT/"js"),("/stitch",ROOT/"stitch_agnivani_thermal_intelligence_grid")):
+        if path.exists():api.mount(route,StaticFiles(directory=path,html=True),name=route.strip("/"))
     @api.get("/",include_in_schema=False)
-    async def dashboard(request:Request):
+    @api.get("/{page}.html",include_in_schema=False)
+    async def dashboard(request:Request,page:str="index"):
         from fastapi.responses import HTMLResponse
-        html = (ROOT/"index.html").read_text(encoding="utf-8")
+        target = ROOT / f"{page}.html"
+        if not target.is_file():
+            target = ROOT / "index.html"
+        html = target.read_text(encoding="utf-8")
         shim = '<script>window.AGNIVANI_API = { base: "/api", live: true };</script>'
-        injected = html.replace("</body>", f"{shim}\n</body>", 1)
+        injected = html.replace("</body>", f"{shim}\n</body>", 1) if "</body>" in html else html
         return HTMLResponse(content=injected)
     @api.exception_handler(Exception)
     async def unhandled(request:Request,exc:Exception):

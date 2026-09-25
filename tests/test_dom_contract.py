@@ -52,3 +52,30 @@ def test_quarantined_fixtures():
         assert "p" in item and 0.0 < item["p"] <= 1.0, f"Fixture {item['id']} must have valid Dozier p in (0, 1]"
         assert item["severity"] in ["LOW", "HIGH", "CRITICAL"], f"Fixture {item['id']} has invalid severity"
 
+
+def test_purged_mock_values():
+    """Ensure all decorative/invented metrics and mock fixtures are purged from frontend (Rule 8)."""
+    root = Path(__file__).resolve().parent.parent
+    targets = [
+        root / "index.html",
+        root / "js" / "app.js",
+    ]
+    forbidden_literals = [
+        "1847",
+        "0.943",
+        "14,208",
+        "0.868",
+        "A94X",
+        "AGN-04832",
+        "CRYPTOGRAPHICALLY",
+    ]
+
+    violations = []
+    for target in targets:
+        text = target.read_text(encoding="utf-8")
+        for literal in forbidden_literals:
+            if literal in text:
+                violations.append(f"Forbidden mock literal '{literal}' found in {target.relative_to(root)}")
+
+    assert not violations, f"UI Purge contract violation! Found forbidden mock values: {violations}"
+
