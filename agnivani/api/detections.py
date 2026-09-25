@@ -22,7 +22,7 @@ def health(request:Request):
     return {"ok":True,"scorer":request.app.state.scorer.metadata(),"ingest_age_s":age}
 
 @router.get("/detections",response_model=list[DetectionOut])
-def detections(request:Request,bbox:str|None=None,hours:int=Query(24,ge=0),cls:list[str]|None=Query(None),min_conf:float=Query(0,ge=0,le=1),limit:int=Query(500,ge=1,le=5000)):
+def detections(request:Request,bbox:str|None=None,hours:int=Query(0,ge=0),cls:list[str]|None=Query(None),min_conf:float=Query(0,ge=0,le=1),limit:int=Query(500,ge=1,le=5000)):
     items=request.app.state.store.detections(); bounds=_parse_bbox(bbox); now=datetime.now(timezone.utc)
     filtered=[]
     for x in items:
@@ -58,3 +58,33 @@ def stats(request:Request):
 def facilities(request:Request,sector:str|None=None):
     rows=request.app.state.store.query("SELECT payload FROM facilities"+(" WHERE sector=?" if sector else ""),[sector] if sector else [])
     return [json.loads(x) for x in rows.payload.tolist()]
+
+@router.get("/facilities/{facility_id}/matches",response_model=list[DetectionOut])
+@router.get("/facilities/{facility_id}/detections",response_model=list[DetectionOut])
+def facility_matches(request:Request,facility_id:str):
+    """Return all detections matched to facility_id using registry.nearest_facility and match_radius_m."""
+    store=request.app.state.store
+    rows=store.query("SELECT payload FROM facilities")
+    all_facs=[json.loads(x) for x in rows.payload.tolist()]
+    target_fac=None
+    for f in all_facs:
+        if f.get("facility_id")==facility_id or f.get("name","").lower()==facility_id.lower():
+            target_fac=f
+            break
+    if target_fac is None:
+        raise HTTPException(404,f"Facility '{facility_id}' was not found")
+
+    from agnivani.geo.registry import load_facilities, nearest_facility
+    facilities_gdf=load_facilities(request.app.state.settings.data_dir)
+    target_row=facilities_gdf[facilities_gdf["facility_id"]==target_fac["facility_id"]]
+    match_radius_m=float(target_fac.get("match_radius_m") or (target_row.iloc[0].get("match_radius_m") if not target_row.empty else 2000.0) or 2000.0)
+
+    items=store.detections()
+    matched=[]
+    for d in items:
+        fac_obj,dist_m=nearest_facility(facilities_gdf,d["lat"],d["lon"],max_dist_m=match_radius_m)
+        if fac_obj and fac_obj.facility_id==target_fac["facility_id"]:
+            matched.append(d)
+        elif d.get("facility_name")==target_fac["name"] and (d.get("dist_facility_m") is None or d.get("dist_facility_m")<=match_radius_m):
+            matched.append(d)
+    return matched

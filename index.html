@@ -319,7 +319,7 @@
                   <button id="btn-map-vector" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-primary-container text-[#060910] font-bold transition-all">
                     VECTOR HUD
                   </button>
-                  <button id="btn-map-satellite" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-surface-container text-on-surface-variant hover:text-primary transition-all">
+                  <button id="btn-map-satellite" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-surface-container text-outline-variant/60 cursor-not-allowed transition-all opacity-50" title="Satellite tiles layer requires configured API key — Vector HUD / CartoDB Dark active" disabled>
                     SATELLITE TILES
                   </button>
                 </div>
@@ -568,20 +568,22 @@
           <div class="flex-1 p-md flex gap-lg min-h-0 overflow-hidden">
             <!-- Radiance Histogram Area -->
             <div class="flex-1 hud-border bg-surface-container/30 rounded-sm relative p-sm flex items-end min-h-0">
-              <span class="absolute top-sm left-sm font-label-caps text-[9px] text-on-surface-variant">RADIANCE HISTOGRAM (500-2200K)</span>
+              <span class="absolute top-sm left-sm font-label-caps text-[9px] text-on-surface-variant" id="radiance-histogram-label">RETRIEVED T_FIRE HISTOGRAM (357-711 K, n=29)</span>
               
-              <div class="w-full flex items-end gap-[2px] h-28 opacity-85">
-                <div class="flex-1 bg-[#1b2735] h-[10%]"></div>
-                <div class="flex-1 bg-[#1b2735] h-[15%]"></div>
-                <div class="flex-1 bg-outline-variant h-[30%]"></div>
-                <div class="flex-1 bg-outline-variant h-[45%]"></div>
-                <div class="flex-1 bg-tertiary-container/50 h-[60%]"></div>
-                <div class="flex-1 bg-[#ffa94d] h-[85%]"></div>
-                <div class="flex-1 bg-error h-[100%] pulse-critical"></div>
-                <div class="flex-1 bg-[#ffa94d] h-[65%]"></div>
-                <div class="flex-1 bg-tertiary-container/50 h-[30%]"></div>
-                <div class="flex-1 bg-outline-variant h-[10%]"></div>
+              <div class="w-full flex items-end gap-[3px] h-28 opacity-90 pt-6" id="radiance-histogram-container">
+                <div class="flex-1 bg-outline-variant/40 h-[17%]" title="350-387 K: 1 detection"></div>
+                <div class="flex-1 bg-primary/70 h-[100%]" title="387-424 K: 6 detections"></div>
+                <div class="flex-1 bg-primary/70 h-[83%]" title="424-461 K: 5 detections"></div>
+                <div class="flex-1 bg-primary/70 h-[100%]" title="461-498 K: 6 detections"></div>
+                <div class="flex-1 bg-tertiary-container/80 h-[83%]" title="498-535 K: 5 detections"></div>
+                <div class="flex-1 bg-outline-variant/40 h-[17%]" title="535-572 K: 1 detection"></div>
+                <div class="flex-1 bg-tertiary-container/80 h-[33%]" title="572-609 K: 2 detections"></div>
+                <div class="flex-1 bg-tertiary-container/80 h-[33%]" title="609-646 K: 2 detections"></div>
+                <div class="flex-1 bg-[#1b2735] h-[0%]" title="646-683 K: 0 detections"></div>
+                <div class="flex-1 bg-error/90 h-[17%]" title="683-720 K: 1 detection"></div>
               </div>
+              <div class="absolute bottom-1 left-2 text-[8px] font-data-mono text-on-surface-variant">350 K</div>
+              <div class="absolute bottom-1 right-2 text-[8px] font-data-mono text-on-surface-variant">720 K</div>
             </div>
 
             <!-- Derivation Notes -->
@@ -599,7 +601,7 @@
 
         <!-- Integrated Footer -->
         <footer class="h-[36px] bg-surface-container border-t border-outline-variant w-full flex justify-between items-center px-margin z-50 shrink-0">
-          <span class="font-label-caps text-[10px] text-tertiary">©2024 AGNIVANI AEROSPACE. MISSION CRITICAL DATA.</span>
+          <span class="font-label-caps text-[10px] text-tertiary">©2026 AGNIVANI. MISSION CRITICAL DATA.</span>
           <div class="flex gap-md">
             <a class="font-label-caps text-[10px] text-on-surface-variant hover:text-primary transition-colors" href="#dossier" data-nav-target="dossier">Physics Signature</a>
             <a class="font-label-caps text-[10px] text-on-surface-variant hover:text-primary transition-colors" href="#facility" data-nav-target="facility">Baseline</a>
@@ -873,13 +875,13 @@
               <span class="font-data-mono text-[10px] text-on-surface-variant">SATELLITE BASEMAP // VIIRS NOAA-20 / NOAA-21</span>
             </div>
             <div class="flex-1 relative bg-[#05080c] min-h-[320px]">
-              <div class="absolute inset-0 bg-cover bg-center opacity-65" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDShYo4frQwsmd06XCu3ZBnZlAxXfKBB_R00oY74mtbcWa14gaNUOYkZL-auKCJNbi1cZ1sDusY0q1X5zmM_knj7xzamG_142B5OYcPm2bj4ynMVdL5lZj9G7CWa5C8PSVyIIg6vV2BJmEGlGef6L3Vbxi6xZBW9VfWwNKXrurcmnOLrG4s1thPvk89ylcfdf8PxkOFvHHbAr_oPYnLFFNh4Gp1dpoxae12cNvbgM68J6Q0mFnRqU0')"></div>
+              <div id="analytics-map-container" class="absolute inset-0 w-full h-full bg-[#05080c]" data-initial-center="[22.2535, 71.4085]" data-bbox="[21.099, 69.696, 23.408, 73.121]"></div>
               <svg id="analytics-map-svg" class="absolute inset-0 w-full h-full pointer-events-none z-10"></svg>
               
               <div class="absolute bottom-3 left-3 bg-surface-dim/90 backdrop-blur-sm border border-outline-variant p-2 rounded z-20">
                 <div class="font-label-caps text-[9px] text-on-surface-variant mb-1">CORRIDOR BOUNDS</div>
-                <div class="font-data-mono text-[10px] text-cyan-400">21.0°N - 23.5°N, 69.5°E - 73.5°E</div>
-                <div class="font-data-mono text-[9px] text-on-surface-variant mt-1">Hazira / Jamnagar Industrial Arc</div>
+                <div class="font-data-mono text-[10px] text-cyan-400">21.099°N - 23.408°N, 69.696°E - 73.121°E</div>
+                <div class="font-data-mono text-[9px] text-on-surface-variant mt-1">Hazira / Jamnagar Industrial Arc (Center: 22.254°N, 71.409°E)</div>
               </div>
             </div>
           </div>
@@ -988,8 +990,8 @@
                 <h1 class="text-headline-lg text-[26px] font-bold text-primary flex items-center gap-md" id="dossier-id">
                   ID <span id="dossier-anomaly-id">AV-0B12A4B9</span>
                   <span id="dossier-type" class="bg-[#ffa94d]/15 border border-[#ffa94d] text-[#ffa94d] px-sm py-xs rounded-sm text-label-caps font-label-caps ml-sm">GAS FLARE</span>
-                  <span id="dossier-severity" class="bg-error/15 border border-error text-error px-sm py-xs rounded-sm text-label-caps font-label-caps flex items-center gap-xs">
-                    <span class="material-symbols-outlined text-[12px]">warning</span> HIGH
+                  <span id="dossier-severity" class="bg-cyan-950/40 border border-primary text-primary px-sm py-xs rounded-sm text-label-caps font-label-caps flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-[12px]">info</span> LOW
                   </span>
                 </h1>
               </div>
@@ -1313,7 +1315,42 @@
                 </tr>
               </thead>
               <tbody id="fac-matched-table-body" class="text-data-mono font-data-mono text-[12px]">
-                <!-- Populated dynamically by updateFacilityProfile() -->
+                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
+                  <td class="px-md py-sm font-bold text-primary">AV-0B12A4B9</td>
+                  <td class="px-md py-sm"><span style="color: #ffa94d">GAS FLARE</span></td>
+                  <td class="px-md py-sm">492.4 m</td>
+                  <td class="px-md py-sm">486.1 K</td>
+                  <td class="px-md py-sm text-tertiary-container font-bold">9.23 MW</td>
+                  <td class="px-md py-sm">p=0.900</td>
+                  <td class="px-md py-sm text-on-surface-variant">FLAT_24H</td>
+                </tr>
+                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors bg-surface-container-lowest/30">
+                  <td class="px-md py-sm font-bold text-primary">AV-95BA9779</td>
+                  <td class="px-md py-sm"><span style="color: #ffa94d">GAS FLARE</span></td>
+                  <td class="px-md py-sm">535.4 m</td>
+                  <td class="px-md py-sm">506.1 K</td>
+                  <td class="px-md py-sm text-tertiary-container font-bold">10.37 MW</td>
+                  <td class="px-md py-sm">p=0.900</td>
+                  <td class="px-md py-sm text-on-surface-variant">SPIKE_DECAY</td>
+                </tr>
+                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
+                  <td class="px-md py-sm font-bold text-primary">AV-07D8247D</td>
+                  <td class="px-md py-sm"><span style="color: #22d3ee">candidate fugitive thermal anomaly - low confidence (0.55)</span></td>
+                  <td class="px-md py-sm">825.6 m</td>
+                  <td class="px-md py-sm">—</td>
+                  <td class="px-md py-sm text-tertiary-container font-bold">2.11 MW</td>
+                  <td class="px-md py-sm">p=0.550</td>
+                  <td class="px-md py-sm text-on-surface-variant">SPARSE</td>
+                </tr>
+                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors bg-surface-container-lowest/30">
+                  <td class="px-md py-sm font-bold text-primary">AV-EF7A2C35</td>
+                  <td class="px-md py-sm"><span style="color: #22d3ee">candidate fugitive thermal anomaly - low confidence (0.55)</span></td>
+                  <td class="px-md py-sm">1372.0 m</td>
+                  <td class="px-md py-sm">—</td>
+                  <td class="px-md py-sm text-tertiary-container font-bold">1.84 MW</td>
+                  <td class="px-md py-sm">p=0.550</td>
+                  <td class="px-md py-sm text-on-surface-variant">SPARSE</td>
+                </tr>
               </tbody>
             </table>
           </div>

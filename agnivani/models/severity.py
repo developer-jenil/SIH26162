@@ -38,12 +38,20 @@ def compute_severity(
 
     # Radiative power adjustments
     frp = frp_mw if (frp_mw is not None and frp_mw >= 0) else 0.0
-    if frp >= 50.0:
-        score += 2
-        reasons.append(f"High thermal intensity (FRP {frp:.1f} MW >= 50 MW: +2)")
-    elif frp >= 20.0:
-        score += 1
-        reasons.append(f"Elevated thermal intensity (FRP {frp:.1f} MW >= 20 MW: +1)")
+    if cls == "FLARE":
+        if frp >= 150.0:
+            score += 2
+            reasons.append(f"High thermal intensity (FRP {frp:.1f} MW >= 150 MW: +2)")
+        elif frp >= 80.0:
+            score += 1
+            reasons.append(f"Elevated thermal intensity (FRP {frp:.1f} MW >= 80 MW: +1)")
+    else:
+        if frp >= 50.0:
+            score += 2
+            reasons.append(f"High thermal intensity (FRP {frp:.1f} MW >= 50 MW: +2)")
+        elif frp >= 20.0:
+            score += 1
+            reasons.append(f"Elevated thermal intensity (FRP {frp:.1f} MW >= 20 MW: +1)")
 
     # Baseline deviation adjustments
     if deviation_z is not None:
