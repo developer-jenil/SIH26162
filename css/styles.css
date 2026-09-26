@@ -279,6 +279,10 @@ html, body {
   justify-content: center;
 }
 
+.hud-modal-backdrop.hidden {
+  display: none !important;
+}
+
 /* ==========================================================================
    LEAFLET MAP INTEGRATION STYLING
    ========================================================================== */
