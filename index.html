@@ -319,7 +319,10 @@
                   <button id="btn-map-vector" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-primary-container text-[#060910] font-bold transition-all">
                     VECTOR HUD
                   </button>
-                  <button id="btn-map-satellite" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-surface-container text-outline-variant/60 cursor-not-allowed transition-all opacity-50" title="Satellite tiles layer requires configured API key — Vector HUD / CartoDB Dark active" disabled>
+                  <button id="btn-map-dark" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-surface-container text-on-surface-variant hover:text-primary transition-all" title="CartoDB Dark Matter telemetry layer">
+                    DARK TILES
+                  </button>
+                  <button id="btn-map-satellite" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-surface-container text-on-surface-variant hover:text-primary transition-all" title="Esri World Imagery satellite telemetry layer">
                     SATELLITE TILES
                   </button>
                 </div>
@@ -379,9 +382,7 @@
                 <span class="font-data-mono text-[9px] text-on-surface-variant">INDIA WEST COAST SUB-GRID</span>
               </div>
 
-              <div class="absolute top-base right-base bg-surface-dim/80 hud-border px-2 py-1 rounded-sm backdrop-blur-sm z-20">
-                <span class="font-data-mono text-[9px] text-tertiary">VIIRS N-BAND SATURATED: 3 SITES</span>
-              </div>
+
             </div>
 
             <!-- Terminal Pipeline Log -->
@@ -762,8 +763,8 @@
         <!-- BOTTOM: Operational Audit Trail Table -->
         <div class="h-40 shrink-0 hud-panel hud-border rounded-DEFAULT overflow-hidden flex flex-col">
           <div class="hud-header-bg p-sm border-b border-[#1b2735] flex justify-between items-center shrink-0">
-            <span class="text-label-caps font-label-caps text-on-surface-variant">OPERATIONAL AUDIT TRAIL</span>
-            <span class="font-data-mono text-[9px] text-primary">SYSTEM EVENT LOG</span>
+            <span class="text-label-caps font-label-caps text-on-surface-variant">OPERATIONAL AUDIT TRAIL (Illustrative Operator Workflow)</span>
+            <span class="font-data-mono text-[9px] text-primary">ILLUSTRATIVE OPERATOR WORKFLOW</span>
           </div>
           <div class="flex-1 overflow-y-auto min-h-0">
             <table class="w-full text-left border-collapse">
@@ -1321,7 +1322,7 @@
                   <td class="px-md py-sm">492.4 m</td>
                   <td class="px-md py-sm">486.1 K</td>
                   <td class="px-md py-sm text-tertiary-container font-bold">9.23 MW</td>
-                  <td class="px-md py-sm">p=0.900</td>
+                  <td class="px-md py-sm">conf=0.900</td>
                   <td class="px-md py-sm text-on-surface-variant">FLAT_24H</td>
                 </tr>
                 <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors bg-surface-container-lowest/30">
@@ -1330,7 +1331,7 @@
                   <td class="px-md py-sm">535.4 m</td>
                   <td class="px-md py-sm">506.1 K</td>
                   <td class="px-md py-sm text-tertiary-container font-bold">10.37 MW</td>
-                  <td class="px-md py-sm">p=0.900</td>
+                  <td class="px-md py-sm">conf=0.900</td>
                   <td class="px-md py-sm text-on-surface-variant">SPIKE_DECAY</td>
                 </tr>
                 <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
@@ -1339,7 +1340,7 @@
                   <td class="px-md py-sm">825.6 m</td>
                   <td class="px-md py-sm">—</td>
                   <td class="px-md py-sm text-tertiary-container font-bold">2.11 MW</td>
-                  <td class="px-md py-sm">p=0.550</td>
+                  <td class="px-md py-sm">conf=0.550</td>
                   <td class="px-md py-sm text-on-surface-variant">SPARSE</td>
                 </tr>
                 <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors bg-surface-container-lowest/30">
@@ -1348,7 +1349,7 @@
                   <td class="px-md py-sm">1372.0 m</td>
                   <td class="px-md py-sm">—</td>
                   <td class="px-md py-sm text-tertiary-container font-bold">1.84 MW</td>
-                  <td class="px-md py-sm">p=0.550</td>
+                  <td class="px-md py-sm">conf=0.550</td>
                   <td class="px-md py-sm text-on-surface-variant">SPARSE</td>
                 </tr>
               </tbody>
@@ -1559,6 +1560,7 @@
   </div>
 
   <!-- Main Application Script -->
+  <script>window.AGNIVANI_API = window.AGNIVANI_API || { base: "/api", live: true };</script>
   <script src="js/app.js"></script>
 </body>
 </html>

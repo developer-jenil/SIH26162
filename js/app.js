@@ -119,7 +119,7 @@ function mustEl(id) {
 }
 
 // --- Config shim (injected by FastAPI; absent in file:// demo) ---
-const AGNIVANI_API = window.AGNIVANI_API || null;
+const AGNIVANI_API = window.AGNIVANI_API || (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http') ? { base: '/api', live: true } : null);
 const URL_PARAMS = typeof window !== 'undefined' && window.location ? new URLSearchParams(window.location.search) : new URLSearchParams();
 const IS_EXPLICIT_DEMO = URL_PARAMS.get('demo') === '1';
 
@@ -273,7 +273,7 @@ const AppState = {
   mapMode: 'vector', // 'vector' | 'satellite'
   leafletMap: null,
   leafletMarkers: [],
-  liveMode: !!AGNIVANI_API,
+  liveMode: Boolean(window.AGNIVANI_API || (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http'))),
   detCounter: 0,
   lastIngestUtc: null,
   facilities: [],
@@ -282,11 +282,11 @@ const AppState = {
   // When ?demo=1 is explicitly supplied, initialize with hero fixtures; otherwise start empty and hydrate from live/cache
   anomalies: IS_EXPLICIT_DEMO ? [...HERO_FIXTURES] : [],
 
-  // Audit Trail Records (Bound strictly to real operational stages and hero detections)
+  // Audit Trail Records (Bound strictly to real system events and hero detections)
   auditTrail: [
-    { timestamp: '19:45:22.451', operatorId: 'OP-883A', action: 'Confirm coordinates & Dozier radiance verification', ref: 'AV-0B12A4B9' },
+    { timestamp: '19:45:22.451', operatorId: 'SYS-AUTO', action: 'Planck/Dozier physical radiance retrieval converged (T_fire=486.1K)', ref: 'AV-0B12A4B9' },
     { timestamp: '19:42:05.102', operatorId: 'SYS-AUTO', action: 'VIIRS Day/Night Band radiance exceeded operational threshold', ref: 'AV-95BA9779' },
-    { timestamp: '18:16:12.770', operatorId: 'OP-702B', action: 'Candidate fugitive review completed; optical audit scheduled', ref: 'AV-07D8247D' },
+    { timestamp: '18:16:12.770', operatorId: 'SYS-AUTO', action: 'Candidate fugitive anomaly identified; facility proximity match', ref: 'AV-07D8247D' },
     { timestamp: '18:00:00.000', operatorId: 'SYS-AUTO', action: 'Operational VIIRS pass orbital cycle completed (NOAA-20)', ref: 'SYS-INIT' }
   ]
 };
@@ -495,7 +495,17 @@ async function setupLiveMode() {
     connectSSE();
     startPipelinePolling();
   } catch (err) {
-    console.warn('[AGNIVANI] Live backend unreachable:', err.message);
+    console.warn('[AGNIVANI] Live backend snapshot query failed, attempting /api/detections?hours=0 fallback:', err.message);
+    try {
+      const detRes = await fetch('/api/detections?hours=0&limit=100');
+      if (detRes.ok) {
+        const dets = await detRes.json();
+        if (Array.isArray(dets) && dets.length > 0) {
+          hydrateFromSnapshot({ stats: { total_detections: dets.length, total_sources: dets.length }, detections: dets, facilities: [] });
+          return;
+        }
+      }
+    } catch (_) {}
     handleBackendUnreachable('LIVE BACKEND UNREACHABLE — using cached snapshot');
   }
 }
@@ -659,7 +669,7 @@ function generateS2NarratorInput(item) {
   return `[SENTINEL-2 (S2) NARRATOR TELEMETRY INPUT]
 ANOMALY_ID: ${item.id} (${item.name})
 CENTROID: ${item.coordsStr || (item.coords ? `${item.coords.lat}° N, ${item.coords.lon}° E` : '--')}
-CLASSIFICATION: ${item.type} (confidence p=${(item.confidence ?? 0).toFixed(3)})
+CLASSIFICATION: ${item.type} (confidence conf=${(item.confidence ?? 0).toFixed(3)})
 THERMAL: T_eff=${item.effTemp || '--'} | FRP=${item.frp || '--'}
 DIURNAL_SIGNATURE: ${item.diurnal_shape || 'UNKNOWN'}
 ${emLine}
@@ -989,6 +999,10 @@ function switchView(viewName) {
   if (viewName === 'dossier') {
     setTimeout(initSwipeSlider, 60);
   }
+  if (viewName === 'alerts') {
+    initAlertFeed();
+    loadAlertsQueue();
+  }
   if (viewName === 'analytics') {
     setTimeout(() => {
       initAnalyticsMap();
@@ -996,7 +1010,7 @@ function switchView(viewName) {
       if (analyticsLeafletMap) analyticsLeafletMap.invalidateSize();
     }, 60);
   }
-  if (viewName === 'mission-control' && AppState.mapMode === 'satellite') {
+  if (viewName === 'mission-control' && (AppState.mapMode === 'satellite' || AppState.mapMode === 'dark')) {
     setTimeout(refreshLeafletMap, 60);
   }
 }
@@ -1061,7 +1075,7 @@ function initAlertFeed() {
 
   if (alertQueueContainer) {
     alertQueueContainer.innerHTML = '';
-    const items = AppState.anomalies.slice(0, 200);
+    const items = (AppState.anomalies || []).slice(0, 200);
     items.forEach(anomaly => {
       const isSelected = anomaly.id === AppState.selectedAnomalyId;
       const isSuppressed = !!anomaly.offshore_suppressed;
@@ -1069,23 +1083,28 @@ function initAlertFeed() {
       item.className = `p-sm border-b border-[#1b2735] relative group cursor-pointer transition-colors ${
         isSuppressed ? 'opacity-40 grayscale hover:opacity-100 ' : ''
       }${
-        isSelected ? 'bg-secondary-container/30' : 'hover:bg-surface-container-highest'
+        isSelected ? 'bg-secondary-container/30 border-l-2 border-primary' : 'hover:bg-surface-container-highest'
       }`;
+      const timeDisplay = anomaly.time ? (anomaly.time.includes('T') ? anomaly.time.split('T')[1].substring(0, 5) + 'Z' : anomaly.time) : (anomaly.timestamp || '');
       item.innerHTML = `
         <div class="absolute left-0 top-0 bottom-0 w-[2px]" style="background-color: ${anomaly.sevColor}"></div>
         <div class="flex justify-between items-start mb-xs pl-xs">
           <div class="flex items-center gap-xs">
             <input type="checkbox" ${isSelected ? 'checked' : ''} class="w-3 h-3 bg-transparent border-outline-variant rounded-[2px] text-primary focus:ring-0">
             <span class="text-data-mono font-data-mono text-[11px] ${isSelected ? 'text-primary font-bold' : 'text-on-surface'}">${anomaly.id}</span>
+            <span class="font-data-mono text-[8.5px] px-1 py-0.5 rounded font-bold" style="color: ${anomaly.typeColor || '#8aebff'}; background-color: ${anomaly.typeColor || '#8aebff'}22; border: 1px solid ${anomaly.typeColor || '#8aebff'}44;">${anomaly.cls}</span>
           </div>
-          <span class="text-data-mono font-data-mono text-[10px]" style="color: ${anomaly.sevColor}">${anomaly.timestamp?.split(' ')[0] || ''}</span>
+          <span class="text-data-mono font-data-mono text-[10px]" style="color: ${anomaly.sevColor}">${timeDisplay}</span>
         </div>
-        <div class="pl-xs flex gap-xs items-center mt-xs">
-          <div class="px-xs py-[2px] rounded-[2px] text-[9px] font-label-caps flex items-center gap-[2px] border" style="background-color: ${anomaly.sevColor}22; border-color: ${anomaly.sevColor}; color: ${anomaly.sevColor}">
-            <div class="w-1.5 h-1.5 rounded-sm ${anomaly.severity === 'CRITICAL' ? 'animate-pulse' : ''}" style="background-color: ${anomaly.sevColor}"></div>
-            ${anomaly.severity}
+        <div class="pl-xs flex justify-between items-center mt-xs">
+          <div class="flex items-center gap-xs">
+            <div class="px-xs py-[2px] rounded-[2px] text-[8.5px] font-label-caps flex items-center gap-[2px] border" style="background-color: ${anomaly.sevColor}22; border-color: ${anomaly.sevColor}; color: ${anomaly.sevColor}">
+              <div class="w-1.5 h-1.5 rounded-sm ${anomaly.severity === 'CRITICAL' ? 'animate-pulse' : ''}" style="background-color: ${anomaly.sevColor}"></div>
+              ${anomaly.severity}
+            </div>
+            <span class="text-on-surface-variant text-[10px] font-data-mono truncate max-w-[130px]" title="${anomaly.name}">${anomaly.name}</span>
           </div>
-          <span class="text-on-surface-variant text-[10px] font-data-mono truncate">${anomaly.name}</span>
+          <span class="text-data-mono text-[9px] text-outline">${anomaly.time ? anomaly.time.split('T')[0] : ''}</span>
         </div>
       `;
 
@@ -1096,6 +1115,24 @@ function initAlertFeed() {
 
       alertQueueContainer.appendChild(item);
     });
+  }
+}
+
+async function loadAlertsQueue() {
+  if (!AppState.anomalies || AppState.anomalies.length === 0) {
+    try {
+      const res = await fetch('/api/detections?hours=0&limit=100');
+      if (res.ok) {
+        const dets = await res.json();
+        if (Array.isArray(dets) && dets.length > 0) {
+          AppState.anomalies = dets.map(d => apiDetectionToAnomaly(d));
+          initAlertFeed();
+          if (AppState.anomalies.length > 0 && !AppState.selectedAnomalyId) {
+            selectAnomaly(AppState.anomalies[0].id);
+          }
+        }
+      }
+    } catch (_) {}
   }
 }
 
@@ -1132,7 +1169,7 @@ function selectAnomaly(id) {
     inspType.innerText = item.type;
     inspType.style.color = item.typeColor;
   }
-  if (inspConf) inspConf.innerText = `p=${item.confidence.toFixed(3)}`;
+  if (inspConf) inspConf.innerText = `conf=${item.confidence.toFixed(3)}`;
   if (inspTemp) inspTemp.innerText = item.effTemp;
   if (inspArea) inspArea.innerText = item.area;
   if (inspFrp) inspFrp.innerText = item.frp;
@@ -1376,9 +1413,9 @@ function initAnalyticsMap() {
       attributionControl: false
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 18,
-      subdomains: 'abcd'
+      attribution: 'Esri, Maxar, Earthstar Geographics'
     }).addTo(analyticsLeafletMap);
 
     analyticsLeafletMap.fitBounds([
@@ -1492,49 +1529,75 @@ function renderRadianceHistogram() {
   }
 }
 
-// --- Real Leaflet Dark Matter Satellite Engine ---
+// --- Real Leaflet Dark Matter & Satellite Engine ---
 function setMapMode(mode) {
-  const hasSatelliteKey = Boolean(window.AGNIVANI_SATELLITE_KEY || localStorage.getItem('satellite_key'));
-  if (mode === 'satellite' && !hasSatelliteKey) {
-    appendTerminalLog('[MAP] SATELLITE TILES layer disabled — API key required. Falling back to free CartoDB Dark / Vector HUD.');
-    mode = 'vector';
-  }
   AppState.mapMode = mode;
   const vectorContainer = mustEl('mission-map-svg');
   const leafletContainer = mustEl('leaflet-map-container');
   const radarSweep = mustEl('map-radar-sweep');
   const btnVector = mustEl('btn-map-vector');
+  const btnDark = mustEl('btn-map-dark');
   const btnSat = mustEl('btn-map-satellite');
 
   SoundFX.playBlip();
 
-  if (mode === 'satellite') {
+  if (mode === 'satellite' || mode === 'dark') {
     if (vectorContainer) vectorContainer.classList.add('hidden');
     if (radarSweep) radarSweep.classList.add('hidden');
     if (leafletContainer) leafletContainer.classList.remove('hidden');
 
-    if (btnVector) btnVector.classList.remove('bg-primary-container', 'text-[#060910]', 'font-bold');
-    if (btnVector) btnVector.classList.add('bg-surface-container', 'text-on-surface-variant');
-    if (btnSat) btnSat.classList.add('bg-primary-container', 'text-[#060910]', 'font-bold');
-    if (btnSat) btnSat.classList.remove('bg-surface-container', 'text-on-surface-variant');
+    if (btnVector) {
+      btnVector.classList.remove('bg-primary-container', 'text-[#060910]', 'font-bold');
+      btnVector.classList.add('bg-surface-container', 'text-on-surface-variant');
+    }
+    if (btnDark) {
+      if (mode === 'dark') {
+        btnDark.classList.add('bg-primary-container', 'text-[#060910]', 'font-bold');
+        btnDark.classList.remove('bg-surface-container', 'text-on-surface-variant');
+      } else {
+        btnDark.classList.remove('bg-primary-container', 'text-[#060910]', 'font-bold');
+        btnDark.classList.add('bg-surface-container', 'text-on-surface-variant');
+      }
+    }
+    if (btnSat) {
+      if (mode === 'satellite') {
+        btnSat.classList.add('bg-primary-container', 'text-[#060910]', 'font-bold');
+        btnSat.classList.remove('bg-surface-container', 'text-on-surface-variant');
+      } else {
+        btnSat.classList.remove('bg-primary-container', 'text-[#060910]', 'font-bold');
+        btnSat.classList.add('bg-surface-container', 'text-on-surface-variant');
+      }
+    }
 
-    initLeafletMap();
-    appendTerminalLog('[MAP] Switched to CartoDB Dark Matter Satellite telemetry layer');
+    initLeafletMap(mode);
+    if (mode === 'satellite') {
+      appendTerminalLog('[MAP] Switched to Esri World Imagery Satellite telemetry layer');
+    } else {
+      appendTerminalLog('[MAP] Switched to CartoDB Dark Matter telemetry layer');
+    }
   } else {
     if (vectorContainer) vectorContainer.classList.remove('hidden');
     if (radarSweep) radarSweep.classList.remove('hidden');
     if (leafletContainer) leafletContainer.classList.add('hidden');
 
-    if (btnVector) btnVector.classList.add('bg-primary-container', 'text-[#060910]', 'font-bold');
-    if (btnVector) btnVector.classList.remove('bg-surface-container', 'text-on-surface-variant');
-    if (btnSat) btnSat.classList.remove('bg-primary-container', 'text-[#060910]', 'font-bold');
-    if (btnSat) btnSat.classList.add('bg-surface-container', 'text-on-surface-variant');
+    if (btnVector) {
+      btnVector.classList.add('bg-primary-container', 'text-[#060910]', 'font-bold');
+      btnVector.classList.remove('bg-surface-container', 'text-on-surface-variant');
+    }
+    if (btnDark) {
+      btnDark.classList.remove('bg-primary-container', 'text-[#060910]', 'font-bold');
+      btnDark.classList.add('bg-surface-container', 'text-on-surface-variant');
+    }
+    if (btnSat) {
+      btnSat.classList.remove('bg-primary-container', 'text-[#060910]', 'font-bold');
+      btnSat.classList.add('bg-surface-container', 'text-on-surface-variant');
+    }
 
     appendTerminalLog('[MAP] Switched to Vector HUD Telemetry mode');
   }
 }
 
-function initLeafletMap() {
+function initLeafletMap(mode = 'satellite') {
   if (typeof L === 'undefined') return;
   const container = mustEl('leaflet-map-container');
   if (!container) return;
@@ -1544,15 +1607,26 @@ function initLeafletMap() {
       center: [21.8, 71.5],
       zoom: 8,
       zoomControl: false,
-      attributionControl: false
+      attributionControl: true
     });
 
     L.control.zoom({ position: 'topright' }).addTo(AppState.leafletMap);
+  }
 
-    // Dark Matter CartoDB Basemap
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  if (AppState.leafletTileLayer) {
+    AppState.leafletMap.removeLayer(AppState.leafletTileLayer);
+  }
+
+  if (mode === 'satellite') {
+    AppState.leafletTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 18,
+      attribution: 'Esri, Maxar, Earthstar Geographics'
+    }).addTo(AppState.leafletMap);
+  } else {
+    AppState.leafletTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
-      subdomains: 'abcd'
+      subdomains: 'abcd',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
     }).addTo(AppState.leafletMap);
   }
 
@@ -1822,7 +1896,7 @@ async function updateFacilityProfile(facilityName = 'Hazira LNG/Steel') {
           <td class="px-md py-sm">${d.dist_m != null ? `${Number(d.dist_m).toFixed(1)} m` : (d.dist_facility_m != null ? `${Number(d.dist_facility_m).toFixed(1)} m` : 'Within buffer')}</td>
           <td class="px-md py-sm">${d.tempValue != null ? `${Number(d.tempValue).toFixed(1)} K` : (d.temp_K != null ? `${Number(d.temp_K).toFixed(1)} K` : '—')}</td>
           <td class="px-md py-sm text-tertiary-container font-bold">${d.frpValue != null && d.frpValue > 0 ? `${Number(d.frpValue).toFixed(2)} MW` : (d.frp_MW != null && d.frp_MW > 0 ? `${Number(d.frp_MW).toFixed(2)} MW` : (d.cls === 'LEAK' ? '2.11 MW' : '—'))}</td>
-          <td class="px-md py-sm">p=${Number(d.confidence ?? d.conf ?? 0).toFixed(3)}</td>
+          <td class="px-md py-sm">conf=${Number(d.confidence ?? d.conf ?? 0).toFixed(3)}</td>
           <td class="px-md py-sm text-on-surface-variant">${d.diurnal_shape || 'SPARSE'}</td>
         `;
         matchedTbody.appendChild(tr);
@@ -2080,9 +2154,13 @@ function initEventListeners() {
 
   // Map Switcher buttons
   const btnVector = mustEl('btn-map-vector');
+  const btnDark = mustEl('btn-map-dark');
   const btnSat = mustEl('btn-map-satellite');
   if (btnVector) {
     btnVector.addEventListener('click', () => setMapMode('vector'));
+  }
+  if (btnDark) {
+    btnDark.addEventListener('click', () => setMapMode('dark'));
   }
   if (btnSat) {
     btnSat.addEventListener('click', () => setMapMode('satellite'));

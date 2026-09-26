@@ -46,7 +46,7 @@ class StageTracer:
             f"{source.n_days} days / {source.n_hits} hits",
             f"T={feature.t_fire_K:.0f} K" if pd.notna(feature.t_fire_K) else "retrieval unresolved",
             feature.facility_name or "no facility within 10 km",
-            f"{score.cls} p={score.conf:.2f}",
+            f"{score.cls} conf={score.conf:.2f}",
         ]
         evidence = []
         for i, label in enumerate(LABELS, 1):

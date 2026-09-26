@@ -69,7 +69,12 @@ def create_app(settings:Settings|None=None):
             target = ROOT / "index.html"
         html = target.read_text(encoding="utf-8")
         shim = '<script>window.AGNIVANI_API = { base: "/api", live: true };</script>'
-        injected = html.replace("</body>", f"{shim}\n</body>", 1) if "</body>" in html else html
+        if '<script src="js/app.js"></script>' in html:
+            injected = html.replace('<script src="js/app.js"></script>', f'{shim}\n  <script src="js/app.js"></script>', 1)
+        elif "</body>" in html:
+            injected = html.replace("</body>", f"{shim}\n</body>", 1)
+        else:
+            injected = html
         return HTMLResponse(content=injected)
     @api.exception_handler(Exception)
     async def unhandled(request:Request,exc:Exception):
