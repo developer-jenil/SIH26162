@@ -28,7 +28,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PATH="/app/.local/bin:/install/pkgs/bin:${PATH}" \
     PYTHONPATH="/install/pkgs/lib/python3.11/site-packages:/app" \
     PORT=8000 \
-    AGNIVANI_READONLY_DB=1
+    OFFLINE_MODE=true \
+    AGNIVANI_READONLY_DB=1 \
+    SCORER_BACKEND=heuristic \
+    LOG_LEVEL=INFO
 
 # Install runtime shared libraries for GDAL/Rasterio/XGBoost
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -46,22 +49,33 @@ WORKDIR /app
 # Copy installed Python packages from builder
 COPY --from=builder /install/pkgs /install/pkgs
 
-# Copy application source, data models, static assets, and scripts
+# Copy application source, static assets, and scripts
 COPY --chown=agnivani:agnivani agnivani/ /app/agnivani/
 COPY --chown=agnivani:agnivani css/ /app/css/
 COPY --chown=agnivani:agnivani js/ /app/js/
 COPY --chown=agnivani:agnivani scripts/ /app/scripts/
-COPY --chown=agnivani:agnivani data/ /app/data/
 COPY --chown=agnivani:agnivani index.html /app/index.html
 COPY --chown=agnivani:agnivani preflight.html /app/preflight.html
+COPY --chown=agnivani:agnivani dossier.html /app/dossier.html
+COPY --chown=agnivani:agnivani facility.html /app/facility.html
 COPY --chown=agnivani:agnivani requirements.txt /app/requirements.txt
 COPY --chown=agnivani:agnivani Makefile /app/Makefile
+
+# Create data directories and explicitly copy data assets (no blanket COPY .)
+RUN mkdir -p /app/data/processed /app/data/raw/firms /app/data/raw/registry /app/data/models && \
+    chown -R agnivani:agnivani /app/data
+
+COPY --chown=agnivani:agnivani data/agnivani.duckdb /app/data/agnivani.duckdb
+COPY --chown=agnivani:agnivani data/processed/*.parquet /app/data/processed/
+COPY --chown=agnivani:agnivani data/raw/firms/*.csv /app/data/raw/firms/
+COPY --chown=agnivani:agnivani data/raw/registry/*.json /app/data/raw/registry/
+COPY --chown=agnivani:agnivani data/models/ /app/data/models/
 
 USER agnivani
 
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost:8000/api/preflight || exit 1
+    CMD curl -f http://localhost:${PORT:-8000}/api/health || exit 1
 
-CMD ["python", "-m", "uvicorn", "agnivani.api.server:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn agnivani.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

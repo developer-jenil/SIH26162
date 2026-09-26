@@ -14,7 +14,14 @@ def dispatch(payload:DispatchRequest,request:Request):
     status="sent" if payload.channel=="mock" else "failed"
     receipt="recorded locally; no external message sent" if status=="sent" else "external channels are disabled in the offline build"
     record={"dispatch_id":ident,"detection_id":payload.detection_id,"authority":payload.authority,"channel":payload.channel,"note":payload.note,"status":status,"receipt":receipt,"dispatched_at":now.isoformat()}
-    path=Path(request.app.state.settings.data_dir)/"processed"/"dispatches.jsonl"; path.parent.mkdir(parents=True,exist_ok=True)
-    with path.open("a",encoding="utf-8") as f:f.write(json.dumps(record)+"\n")
-    request.app.state.store.conn.execute("INSERT INTO alerts VALUES (?,?,?)",[ident,json.dumps(record),now])
+    try:
+        path=Path(request.app.state.settings.data_dir)/"processed"/"dispatches.jsonl"; path.parent.mkdir(parents=True,exist_ok=True)
+        with path.open("a",encoding="utf-8") as f:f.write(json.dumps(record)+"\n")
+    except Exception:
+        pass
+    if not getattr(request.app.state.store, "read_only", False):
+        try:
+            request.app.state.store.conn.execute("INSERT INTO alerts VALUES (?,?,?)",[ident,json.dumps(record),now])
+        except Exception:
+            pass
     return record

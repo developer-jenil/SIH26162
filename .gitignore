@@ -6,17 +6,5 @@ __pycache__/
 .pytest_cache/
 .coverage
 htmlcov/
-data/raw/*
-!data/raw/firms/
-data/raw/firms/*
-!data/raw/firms/firms_india.csv
-!data/raw/registry/
-!data/raw/truth/
-data/processed/*
-!data/processed/.gitkeep
-data/models/*
-!data/models/.gitkeep
-*.duckdb
 *.duckdb.wal
 *.wal
-*.db

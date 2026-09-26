@@ -1,0 +1,19 @@
+{
+  "spatial_block_cv_accuracy": 0.9869,
+  "macro_f1": 0.9861,
+  "per_class_f1": {
+    "COAL": 0.9744,
+    "FLARE": 1.0,
+    "IND_FIRE": 0.9877,
+    "LEAK": 0.9756,
+    "WILD": 0.9927
+  },
+  "conformal_coverage_pct": 100.0,
+  "n_samples": 229,
+  "n_blocks": 39,
+  "trained_at_utc": "2026-09-24T20:04:07.665707+00:00",
+  "label_provenance_counts": {
+    "synthetic": 200,
+    "real": 29
+  }
+}

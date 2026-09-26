@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "q": 0.0206,
+  "coverage_level": 0.9,
+  "classes": [
+    "COAL",
+    "FLARE",
+    "IND_FIRE",
+    "LEAK",
+    "WILD"
+  ]
+}
