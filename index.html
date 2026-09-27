@@ -19,7 +19,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Custom Design Tokens & Styles -->
-  <link rel="stylesheet" href="css/styles.css"/>
+  <link rel="stylesheet" href="css/styles.css?v=2"/>
 
   <script id="tailwind-config">
     tailwind.config = {
@@ -97,41 +97,58 @@
   </div>
 
   <!-- ==================== TOP NAVIGATION BAR ==================== -->
-  <header class="flex justify-between items-center w-full px-margin h-[54px] bg-surface-container-low border-b border-outline-variant shrink-0 z-50">
-    <div class="flex items-center gap-md">
-      <!-- Animated SVG Flame Logo -->
-      <div class="w-7 h-7 flex items-center justify-center cursor-pointer" data-nav-target="mission-control">
-        <svg viewBox="0 0 32 32" class="w-full h-full">
-          <defs>
-            <linearGradient id="flameGradNav" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#ff4d4d;stop-opacity:1" />
-            </linearGradient>
-          </defs>
-          <rect x="2" y="2" width="28" height="28" rx="6" fill="#0d141d" stroke="#1b2735" stroke-width="1"/>
-          <circle cx="16" cy="16" r="13" fill="none" stroke="#22d3ee" stroke-width="0.5" opacity="0.4">
-            <animate attributeName="r" from="10" to="14" dur="2s" repeatCount="indefinite" />
-            <animate attributeName="opacity" from="0.6" to="0" dur="2s" repeatCount="indefinite" />
-          </circle>
-          <path d="M16 6C16 6 10 12 10 18C10 21.3137 12.6863 24 16 24C19.3137 24 22 21.3137 22 18C22 12 16 6 16 6ZM16 21C14.3431 21 13 19.6569 13 18C13 16.5 14.5 14 16 11.5C17.5 14 19 16.5 19 18C19 19.6569 17.6569 21 16 21Z" fill="url(#flameGradNav)" />
-        </svg>
+  <header class="flex justify-between items-center w-full px-margin h-[54px] bg-surface-container-low border-b border-outline-variant shrink-0 z-50 app-header">
+    <div class="header-row-1 flex items-center justify-between w-full lg:w-auto gap-md">
+      <div class="flex items-center gap-md">
+        <!-- Animated SVG Flame Logo -->
+        <div class="w-7 h-7 flex items-center justify-center cursor-pointer" data-nav-target="mission-control">
+          <svg viewBox="0 0 32 32" class="w-full h-full">
+            <defs>
+              <linearGradient id="flameGradNav" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#ff4d4d;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+            <rect x="2" y="2" width="28" height="28" rx="6" fill="#0d141d" stroke="#1b2735" stroke-width="1"/>
+            <circle cx="16" cy="16" r="13" fill="none" stroke="#22d3ee" stroke-width="0.5" opacity="0.4">
+              <animate attributeName="r" from="10" to="14" dur="2s" repeatCount="indefinite" />
+              <animate attributeName="opacity" from="0.6" to="0" dur="2s" repeatCount="indefinite" />
+            </circle>
+            <path d="M16 6C16 6 10 12 10 18C10 21.3137 12.6863 24 16 24C19.3137 24 22 21.3137 22 18C22 12 16 6 16 6ZM16 21C14.3431 21 13 19.6569 13 18C13 16.5 14.5 14 16 11.5C17.5 14 19 16.5 19 18C19 19.6569 17.6569 21 16 21Z" fill="url(#flameGradNav)" />
+          </svg>
+        </div>
+
+        <div class="flex items-baseline gap-sm">
+          <span class="font-headline-md text-[20px] font-extrabold text-primary tracking-tighter cursor-pointer" data-nav-target="mission-control">AGNIVANI</span>
+          <span class="font-label-caps text-[10px] text-on-surface-variant hidden md:inline tracking-wider">INDUSTRIAL THERMAL ANOMALY INTELLIGENCE GRID</span>
+        </div>
       </div>
 
-      <div class="flex items-baseline gap-sm">
-        <span class="font-headline-md text-[20px] font-extrabold text-primary tracking-tighter cursor-pointer" data-nav-target="mission-control">AGNIVANI</span>
-        <span class="font-label-caps text-[10px] text-on-surface-variant hidden md:inline tracking-wider">INDUSTRIAL THERMAL ANOMALY INTELLIGENCE GRID</span>
+      <!-- Mobile-only indicators in Row 1: Live Status & Provenance chip -->
+      <div class="flex md:hidden items-center gap-xs header-mobile-status">
+        <div id="live-status-pill-mobile" class="hud-border bg-surface-container px-2 py-0.5 rounded flex items-center gap-xs">
+          <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span class="font-label-caps text-[10px] text-emerald-400 font-bold">LIVE</span>
+        </div>
+        <div id="provenance-chip-mobile" class="hud-border bg-surface-container px-2 py-0.5 rounded flex items-center gap-xs max-w-[125px]" title="Active Provenance: Gujarat Corridor Bundle">
+          <span class="material-symbols-outlined text-[12px] text-cyan-400 shrink-0">satellite_alt</span>
+          <span class="font-label-caps text-[9px] text-cyan-400 font-bold truncate">GUJARAT</span>
+        </div>
+        <button id="mobile-support-btn" class="p-1 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center" title="Diagnostics" onclick="window.location.href='preflight.html'">
+          <span class="material-symbols-outlined text-[18px]">build</span>
+        </button>
       </div>
     </div>
 
-    <!-- Live Telemetry Status & System Actions -->
-    <div class="flex items-center gap-md">
+    <!-- Live Telemetry Status & System Actions (Row 2 on phone, inline on desktop) -->
+    <div class="header-row-2 flex items-center gap-md">
       <!-- FIRMS CSV Ingestion Button -->
-      <button id="open-csv-btn" class="hud-border bg-surface-container hover:bg-primary/20 hover:border-primary px-2.5 py-1 rounded flex items-center gap-xs cursor-pointer transition-colors group">
+      <button id="open-csv-btn" class="hud-border bg-surface-container hover:bg-primary/20 hover:border-primary px-2.5 py-1 rounded flex items-center gap-xs cursor-pointer transition-colors group shrink-0">
         <span class="material-symbols-outlined text-[15px] text-primary group-hover:scale-110 transition-transform">upload_file</span>
         <span class="font-label-caps text-[10px] text-primary font-bold">INGEST FIRMS CSV</span>
       </button>
 
-      <div class="hidden sm:flex gap-sm">
+      <div class="hidden sm:flex gap-sm header-chips-desktop shrink-0">
         <div id="live-status-pill" class="hud-border bg-surface-container px-2 py-1 rounded flex items-center gap-xs">
           <div id="live-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
           <span id="live-status-text" class="font-label-caps text-[10px] text-emerald-400 font-bold">LIVE</span>
@@ -147,21 +164,21 @@
       </div>
 
       <!-- Clock & Audio Synthesizer Controls -->
-      <div class="flex items-center gap-md font-data-mono text-[12px] border-l border-outline-variant pl-md">
-        <span class="text-on-surface-variant hidden lg:inline" id="scorer-engine-tag">heuristic v1.0</span>
-        <span class="text-primary font-bold tracking-widest" id="system-clock">T-00:00:00</span>
+      <div class="flex items-center gap-md font-data-mono text-[12px] border-l border-outline-variant pl-md header-tools shrink-0">
+        <span class="text-on-surface-variant hidden lg:inline shrink-0" id="scorer-engine-tag">heuristic v1.0</span>
+        <span class="text-primary font-bold tracking-widest shrink-0" id="system-clock">T-00:00:00</span>
         
         <!-- Audio HUD Sound Effects Toggle -->
-        <button id="audio-toggle-btn" class="p-1 hover:text-primary transition-colors" title="Sound FX: ON">
+        <button id="audio-toggle-btn" class="p-1 hover:text-primary transition-colors shrink-0" title="Sound FX: ON">
           <span class="material-symbols-outlined text-[18px] text-primary">volume_up</span>
         </button>
 
-        <div class="flex gap-xs text-on-surface-variant">
+        <div class="hidden sm:flex gap-xs text-on-surface-variant shrink-0">
           <button class="p-1 hover:text-primary transition-colors" title="Sensors Telemetry"><span class="material-symbols-outlined text-[18px]">sensors</span></button>
           <button class="p-1 hover:text-primary transition-colors" title="Industrial Facilities"><span class="material-symbols-outlined text-[18px]">precision_manufacturing</span></button>
         </div>
 
-        <div class="w-7 h-7 rounded-full bg-surface-bright border border-outline-variant overflow-hidden cursor-pointer hover:border-primary transition-colors" title="Operator Profile">
+        <div class="w-7 h-7 rounded-full bg-surface-bright border border-outline-variant overflow-hidden cursor-pointer hover:border-primary transition-colors shrink-0" title="Operator Profile">
           <img class="w-full h-full object-cover" alt="Operator Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZPAUGR6CPZlSg8DaSdFdpiJzr7YoVOloyf_oMH7_iBaCjAhbM5ZTV_ccFctiW59nlJWjqPH6hqboQ_hfBCTW9HHLxeSHTKBacMULjhdUUg465GCSIZV8YkyxefY0-qD6CGPFkvTaGFNNyRAJhywK3DmhGfl3gAt_OSiuMjP3pq7-MPzRcsxIWyPfWNgs8wdA_DvjGLcIfXqUX3A5aik0wuf3qa24XjBbQUW2yBp6EaCZjH0vfIf4"/>
         </div>
       </div>
@@ -169,78 +186,78 @@
   </header>
 
   <!-- ==================== MAIN WORKSPACE ==================== -->
-  <div class="flex-1 flex overflow-hidden h-[calc(100vh-54px)] w-full">
+  <div class="flex-1 flex overflow-hidden h-[calc(100vh-54px)] w-full main-workspace">
     
     <!-- ==================== DOCKED SIDE NAVIGATION ==================== -->
-    <nav class="w-64 border-r border-outline-variant bg-surface-dim/72 flex flex-col z-40 shrink-0 h-full backdrop-blur-sm">
-      <div class="p-base border-b border-outline-variant flex items-center gap-sm shrink-0">
-        <div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center hud-border">
+    <nav class="w-64 border-r border-outline-variant bg-surface-dim/72 flex flex-col z-40 shrink-0 h-full backdrop-blur-sm main-sidebar" id="main-nav">
+      <div class="p-base border-b border-outline-variant flex items-center gap-sm shrink-0 sidebar-header">
+        <div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center hud-border shrink-0">
           <span class="material-symbols-outlined text-[16px] text-primary">data_usage</span>
         </div>
-        <div>
+        <div class="sidebar-header-text">
           <div class="font-label-caps text-[10px] text-on-surface-variant font-bold">INTELLIGENCE GRID</div>
           <div class="font-data-mono text-[9px] text-on-surface-variant opacity-70">V5.0.0-MISSION-GRADE</div>
         </div>
       </div>
 
       <!-- Module Navigation Links -->
-      <div class="flex-1 overflow-y-auto py-base">
-        <div class="px-base font-label-caps text-[9px] text-on-surface-variant mb-xs tracking-wider opacity-60">MODULES</div>
-        <ul class="space-y-[1px]">
+      <div class="flex-1 overflow-y-auto py-base sidebar-nav-body">
+        <div class="px-base font-label-caps text-[9px] text-on-surface-variant mb-xs tracking-wider opacity-60 sidebar-modules-label">MODULES</div>
+        <ul class="space-y-[1px] nav-links-list">
           <li>
-            <a href="#mission-control" data-nav-target="mission-control" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+            <a href="#mission-control" data-nav-target="mission-control" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all nav-item" title="Mission Control">
               <span class="material-symbols-outlined text-[18px]">satellite_alt</span>
-              <span class="font-label-caps text-[11px]">MISSION CONTROL</span>
+              <span class="font-label-caps text-[11px] nav-text">MISSION CONTROL</span>
             </a>
           </li>
           <li>
-            <a href="#alerts" data-nav-target="alerts" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+            <a href="#alerts" data-nav-target="alerts" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all nav-item" title="Alerts Queue">
               <span class="material-symbols-outlined text-[18px]">warning</span>
-              <span class="font-label-caps text-[11px]">ALERTS QUEUE</span>
+              <span class="font-label-caps text-[11px] nav-text">ALERTS QUEUE</span>
             </a>
           </li>
           <li>
-            <a href="#analytics" data-nav-target="analytics" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+            <a href="#analytics" data-nav-target="analytics" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all nav-item" title="Telemetry & Insights">
               <span class="material-symbols-outlined text-[18px]">analytics</span>
-              <span class="font-label-caps text-[11px]">TELEMETRY & INSIGHTS</span>
+              <span class="font-label-caps text-[11px] nav-text">TELEMETRY & INSIGHTS</span>
             </a>
           </li>
           <li>
-            <a href="#dossier" data-nav-target="dossier" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+            <a href="#dossier" data-nav-target="dossier" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all nav-item" title="Detection Dossier">
               <span class="material-symbols-outlined text-[18px]">fingerprint</span>
-              <span class="font-label-caps text-[11px]">DETECTION DOSSIER</span>
+              <span class="font-label-caps text-[11px] nav-text">DETECTION DOSSIER</span>
             </a>
           </li>
           <li>
-            <a href="#facility" data-nav-target="facility" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+            <a href="#facility" data-nav-target="facility" class="flex items-center gap-sm px-base py-2 rounded-sm text-on-surface-variant hover:bg-surface-container-highest transition-all nav-item" title="Facility Profile">
               <span class="material-symbols-outlined text-[18px]">factory</span>
-              <span class="font-label-caps text-[11px]">FACILITY PROFILE</span>
+              <span class="font-label-caps text-[11px] nav-text">FACILITY PROFILE</span>
             </a>
           </li>
         </ul>
       </div>
 
       <!-- Quick Action Buttons -->
-      <div class="p-base space-y-sm mt-auto shrink-0">
-        <button data-action="open-dispatch" class="w-full bg-primary-container text-[#060910] font-label-caps text-[11px] py-2 rounded-[4px] hover:bg-primary transition-all flex items-center justify-center gap-xs font-bold tracking-wider shadow-[0_0_10px_rgba(34,211,238,0.4)]">
+      <div class="p-base space-y-sm mt-auto shrink-0 sidebar-actions">
+        <button data-action="open-dispatch" class="w-full bg-primary-container text-[#060910] font-label-caps text-[11px] py-2 rounded-[4px] hover:bg-primary transition-all flex items-center justify-center gap-xs font-bold tracking-wider shadow-[0_0_10px_rgba(34,211,238,0.4)]" title="Dispatch Alert">
           <span class="material-symbols-outlined text-[16px]">send</span>
-          DISPATCH ALERT
+          <span class="nav-text">DISPATCH ALERT</span>
         </button>
       </div>
 
       <!-- Support & Diagnostics -->
-      <div class="border-t border-outline-variant py-base shrink-0">
+      <div class="border-t border-outline-variant py-base shrink-0 sidebar-footer">
         <ul class="space-y-[1px]">
           <li>
-            <a href="#" class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all opacity-80">
+            <a href="#support" class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all opacity-80 nav-item" title="Support">
               <span class="material-symbols-outlined text-[16px]">help</span>
-              <span class="font-label-caps text-[10px]">SUPPORT</span>
+              <span class="font-label-caps text-[10px] nav-text">SUPPORT</span>
             </a>
           </li>
           <li>
-            <a href="#" class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all opacity-80">
+            <a href="preflight.html" class="flex items-center gap-sm px-base py-xs text-on-surface-variant hover:bg-surface-container-highest transition-all opacity-80 nav-item" title="Diagnostics">
               <span class="material-symbols-outlined text-[16px]">build</span>
-              <span class="font-label-caps text-[10px]">DIAGNOSTICS</span>
+              <span class="font-label-caps text-[10px] nav-text">DIAGNOSTICS</span>
             </a>
           </li>
         </ul>
@@ -254,10 +271,10 @@
       <div id="view-mission-control" class="view-panel active flex-1 flex flex-col h-full w-full overflow-hidden">
         
         <!-- Top 3-Column Area -->
-        <div class="flex flex-1 overflow-hidden min-h-0 w-full">
+        <div class="flex flex-1 overflow-hidden min-h-0 w-full mc-top-container">
           
           <!-- LEFT COLUMN: LIVE ALERT FEED -->
-          <div class="w-[274px] hud-border border-r border-t-0 border-b-0 border-l-0 flex flex-col shrink-0 bg-surface-dim/30 h-full overflow-hidden">
+          <div class="w-[274px] hud-border border-r border-t-0 border-b-0 border-l-0 flex flex-col shrink-0 bg-surface-dim/30 h-full overflow-hidden mc-feed-column">
             <div class="h-8 hud-border border-x-0 border-t-0 bg-[#1b2735]/50 flex items-center justify-between px-base shrink-0">
               <span class="font-label-caps text-[10px] text-on-surface">LIVE ALERT FEED</span>
               <span class="w-2 h-2 rounded-full bg-error pulse-critical"></span>
@@ -308,13 +325,13 @@
           </div>
 
           <!-- CENTRE COLUMN: MAP & TERMINAL -->
-          <div class="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden">
+          <div class="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden mc-map-column">
             
             <!-- Geospatial Map Canvas Container -->
-            <div class="flex-1 relative overflow-hidden bg-[#060910] cyber-grid min-h-0">
+            <div class="flex-1 relative overflow-hidden bg-[#060910] cyber-grid min-h-0 mc-map-canvas-box">
               
               <!-- Map Switcher Controls: Vector vs Real Leaflet Dark Matter Satellite Tiles -->
-              <div class="absolute top-base left-base bg-surface-dim/90 hud-border p-[2px] rounded-sm backdrop-blur-sm flex flex-wrap items-center gap-[4px] z-20 max-w-[90%]">
+              <div class="absolute top-base left-base bg-surface-dim/90 hud-border p-[2px] rounded-sm backdrop-blur-sm flex flex-wrap items-center gap-[4px] z-20 max-w-[90%] map-controls-bar">
                 <div class="flex items-center gap-[2px]">
                   <button id="btn-map-vector" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-primary-container text-[#060910] font-bold transition-all">
                     VECTOR HUD
@@ -349,15 +366,15 @@
               </div>
 
               <!-- Real Hero Quick-Focus Deep-Link Chips (Condition C5) -->
-              <div class="absolute top-10 left-base bg-surface-dim/95 hud-border px-2 py-1 rounded-sm backdrop-blur-sm flex items-center gap-2 z-20 shadow-md">
-                <span class="font-label-caps text-[8.5px] text-cyan-400 font-bold tracking-wider">HERO DETECTIONS:</span>
-                <button id="hero-flare-1-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-orange-950/60 hover:bg-orange-900/80 text-[#ffa94d] border border-[#ffa94d]/50 font-bold transition-all flex items-center gap-1 cursor-pointer" title="Hazira LNG/Steel Flare #1 (492m, T_fire=486.1K, FRP=9.2MW)">
+              <div class="absolute top-10 left-base bg-surface-dim/95 hud-border px-2 py-1 rounded-sm backdrop-blur-sm flex items-center gap-2 z-20 shadow-md hero-chips-container">
+                <span class="font-label-caps text-[8.5px] text-cyan-400 font-bold tracking-wider shrink-0">HERO DETECTIONS:</span>
+                <button id="hero-flare-1-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-orange-950/60 hover:bg-orange-900/80 text-[#ffa94d] border border-[#ffa94d]/50 font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0" title="Hazira LNG/Steel Flare #1 (492m, T_fire=486.1K, FRP=9.2MW)">
                   <span>🔥 Flare #1 (Hazira)</span>
                 </button>
-                <button id="hero-flare-2-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-orange-950/60 hover:bg-orange-900/80 text-[#ffa94d] border border-[#ffa94d]/50 font-bold transition-all flex items-center gap-1 cursor-pointer" title="Hazira LNG/Steel Flare #2 (535m, T_fire=506.1K, FRP=10.4MW)">
+                <button id="hero-flare-2-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-orange-950/60 hover:bg-orange-900/80 text-[#ffa94d] border border-[#ffa94d]/50 font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0" title="Hazira LNG/Steel Flare #2 (535m, T_fire=506.1K, FRP=10.4MW)">
                   <span>🔥 Flare #2 (Hazira)</span>
                 </button>
-                <button id="hero-leak-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-purple-950/60 hover:bg-purple-900/80 text-[#b197fc] border border-[#b197fc]/50 font-bold transition-all flex items-center gap-1 cursor-pointer" title="Hazira LNG/Steel Candidate Leak (826m, conf: 0.55)">
+                <button id="hero-leak-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-purple-950/60 hover:bg-purple-900/80 text-[#b197fc] border border-[#b197fc]/50 font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0" title="Hazira LNG/Steel Candidate Leak (826m, conf: 0.55)">
                   <span>⚠ Candidate Leak (Hazira · 0.55)</span>
                 </button>
               </div>
@@ -386,11 +403,12 @@
             </div>
 
             <!-- Terminal Pipeline Log -->
-            <div class="h-[158px] bg-black hud-border border-x-0 border-b-0 p-sm overflow-hidden flex flex-col shrink-0">
-              <div class="flex items-center justify-between mb-xs opacity-70">
+            <div class="h-[158px] bg-black hud-border border-x-0 border-b-0 p-sm overflow-hidden flex flex-col shrink-0 mc-pipeline-box" id="mc-pipeline-box">
+              <div class="flex items-center justify-between mb-xs opacity-70 cursor-pointer pipeline-header" id="pipeline-log-header">
                 <div class="flex items-center gap-xs">
                   <span class="material-symbols-outlined text-[14px] text-primary">terminal</span>
                   <span class="font-label-caps text-[9px] text-primary">PIPELINE LOG</span>
+                  <span class="font-label-caps text-[8.5px] text-on-surface-variant md:hidden" id="pipeline-log-toggle-hint">(tap to expand)</span>
                 </div>
                 <span class="font-data-mono text-[9px] text-on-surface-variant">AUTO-STREAMING // 100 Hz</span>
               </div>
@@ -402,9 +420,16 @@
 
           <!-- RIGHT COLUMN: DETECTION INSPECTOR -->
           <div id="inspection-panel" class="w-[372px] hud-border border-l border-y-0 border-r-0 flex flex-col shrink-0 bg-surface-dim/50 h-full overflow-y-auto">
-            <div class="h-8 hud-border border-x-0 border-t-0 bg-[#1b2735]/50 flex items-center justify-between px-base shrink-0">
+            <!-- Mobile Sheet Drag Handle -->
+            <div class="inspector-drag-handle hidden"></div>
+            <div class="h-8 hud-border border-x-0 border-t-0 bg-[#1b2735]/50 flex items-center justify-between px-base shrink-0 inspector-header">
               <span class="font-label-caps text-label-caps text-on-surface">DETECTION INSPECTOR</span>
-              <span class="font-data-mono text-[10px] text-primary" id="insp-selected-id">NO SELECTION</span>
+              <div class="flex items-center gap-2">
+                <span class="font-data-mono text-[10px] text-primary" id="insp-selected-id">NO SELECTION</span>
+                <button id="close-inspector-btn" class="close-inspector-btn p-1 text-on-surface-variant hover:text-white rounded transition-colors hidden" title="Close Inspector">
+                  <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
+              </div>
             </div>
 
             <div class="p-base space-y-md">
@@ -555,10 +580,12 @@
               </div>
             </div>
           </div>
+          <!-- Backdrop overlay for inspector sheet on mobile & tablet -->
+          <div id="inspector-backdrop" class="inspector-backdrop fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden"></div>
         </div>
 
         <!-- BOTTOM PANEL: PHYSICS SIGNATURE & HISTOGRAM -->
-        <div class="h-[210px] hud-border border-x-0 border-b-0 border-t bg-surface-dim/90 flex flex-col shrink-0 z-10">
+        <div class="h-[210px] hud-border border-x-0 border-b-0 border-t bg-surface-dim/90 flex flex-col shrink-0 z-10 mc-bottom-panel">
           <div class="flex border-b border-outline-variant px-sm h-8 shrink-0">
             <button class="px-md font-label-caps text-[10px] text-primary border-b-2 border-primary h-full flex items-center">PHYSICS SIGNATURE</button>
             <button class="px-md font-label-caps text-[10px] text-on-surface-variant hover:text-on-surface h-full flex items-center opacity-70">PERSISTENT SOURCE BASELINE</button>
@@ -1317,40 +1344,40 @@
               </thead>
               <tbody id="fac-matched-table-body" class="text-data-mono font-data-mono text-[12px]">
                 <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
-                  <td class="px-md py-sm font-bold text-primary">AV-0B12A4B9</td>
-                  <td class="px-md py-sm"><span style="color: #ffa94d">GAS FLARE</span></td>
-                  <td class="px-md py-sm">492.4 m</td>
-                  <td class="px-md py-sm">486.1 K</td>
-                  <td class="px-md py-sm text-tertiary-container font-bold">9.23 MW</td>
-                  <td class="px-md py-sm">conf=0.900</td>
-                  <td class="px-md py-sm text-on-surface-variant">FLAT_24H</td>
+                  <td class="px-md py-sm font-bold text-primary" data-label="DETECTION ID">AV-0B12A4B9</td>
+                  <td class="px-md py-sm" data-label="VERDICT / CLASS"><span style="color: #ffa94d">GAS FLARE</span></td>
+                  <td class="px-md py-sm" data-label="DISTANCE">492.4 m</td>
+                  <td class="px-md py-sm" data-label="RETRIEVED TEMP">486.1 K</td>
+                  <td class="px-md py-sm text-tertiary-container font-bold" data-label="FRP">9.23 MW</td>
+                  <td class="px-md py-sm" data-label="CONFIDENCE">conf=0.900</td>
+                  <td class="px-md py-sm text-on-surface-variant" data-label="DIURNAL">FLAT_24H</td>
                 </tr>
                 <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors bg-surface-container-lowest/30">
-                  <td class="px-md py-sm font-bold text-primary">AV-95BA9779</td>
-                  <td class="px-md py-sm"><span style="color: #ffa94d">GAS FLARE</span></td>
-                  <td class="px-md py-sm">535.4 m</td>
-                  <td class="px-md py-sm">506.1 K</td>
-                  <td class="px-md py-sm text-tertiary-container font-bold">10.37 MW</td>
-                  <td class="px-md py-sm">conf=0.900</td>
-                  <td class="px-md py-sm text-on-surface-variant">SPIKE_DECAY</td>
+                  <td class="px-md py-sm font-bold text-primary" data-label="DETECTION ID">AV-95BA9779</td>
+                  <td class="px-md py-sm" data-label="VERDICT / CLASS"><span style="color: #ffa94d">GAS FLARE</span></td>
+                  <td class="px-md py-sm" data-label="DISTANCE">535.4 m</td>
+                  <td class="px-md py-sm" data-label="RETRIEVED TEMP">506.1 K</td>
+                  <td class="px-md py-sm text-tertiary-container font-bold" data-label="FRP">10.37 MW</td>
+                  <td class="px-md py-sm" data-label="CONFIDENCE">conf=0.900</td>
+                  <td class="px-md py-sm text-on-surface-variant" data-label="DIURNAL">SPIKE_DECAY</td>
                 </tr>
                 <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
-                  <td class="px-md py-sm font-bold text-primary">AV-07D8247D</td>
-                  <td class="px-md py-sm"><span style="color: #22d3ee">candidate fugitive thermal anomaly - low confidence (0.55)</span></td>
-                  <td class="px-md py-sm">825.6 m</td>
-                  <td class="px-md py-sm">—</td>
-                  <td class="px-md py-sm text-tertiary-container font-bold">2.11 MW</td>
-                  <td class="px-md py-sm">conf=0.550</td>
-                  <td class="px-md py-sm text-on-surface-variant">SPARSE</td>
+                  <td class="px-md py-sm font-bold text-primary" data-label="DETECTION ID">AV-07D8247D</td>
+                  <td class="px-md py-sm" data-label="VERDICT / CLASS"><span style="color: #22d3ee">candidate fugitive thermal anomaly - low confidence (0.55)</span></td>
+                  <td class="px-md py-sm" data-label="DISTANCE">825.6 m</td>
+                  <td class="px-md py-sm" data-label="RETRIEVED TEMP">—</td>
+                  <td class="px-md py-sm text-tertiary-container font-bold" data-label="FRP">2.11 MW</td>
+                  <td class="px-md py-sm" data-label="CONFIDENCE">conf=0.550</td>
+                  <td class="px-md py-sm text-on-surface-variant" data-label="DIURNAL">SPARSE</td>
                 </tr>
                 <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors bg-surface-container-lowest/30">
-                  <td class="px-md py-sm font-bold text-primary">AV-EF7A2C35</td>
-                  <td class="px-md py-sm"><span style="color: #22d3ee">candidate fugitive thermal anomaly - low confidence (0.55)</span></td>
-                  <td class="px-md py-sm">1372.0 m</td>
-                  <td class="px-md py-sm">—</td>
-                  <td class="px-md py-sm text-tertiary-container font-bold">1.84 MW</td>
-                  <td class="px-md py-sm">conf=0.550</td>
-                  <td class="px-md py-sm text-on-surface-variant">SPARSE</td>
+                  <td class="px-md py-sm font-bold text-primary" data-label="DETECTION ID">AV-EF7A2C35</td>
+                  <td class="px-md py-sm" data-label="VERDICT / CLASS"><span style="color: #22d3ee">candidate fugitive thermal anomaly - low confidence (0.55)</span></td>
+                  <td class="px-md py-sm" data-label="DISTANCE">1372.0 m</td>
+                  <td class="px-md py-sm" data-label="RETRIEVED TEMP">—</td>
+                  <td class="px-md py-sm text-tertiary-container font-bold" data-label="FRP">1.84 MW</td>
+                  <td class="px-md py-sm" data-label="CONFIDENCE">conf=0.550</td>
+                  <td class="px-md py-sm text-on-surface-variant" data-label="DIURNAL">SPARSE</td>
                 </tr>
               </tbody>
             </table>
@@ -1361,7 +1388,10 @@
         <div class="hud-panel rounded flex flex-col mb-xl shrink-0">
           <div class="hud-header-bg px-md py-sm flex justify-between items-center rounded-t">
             <span class="text-label-caps font-label-caps text-on-surface">REGISTERED INDUSTRIAL FACILITIES (GROUND TRUTH REGISTRY)</span>
-            <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant">GEM & OSM VERIFIED CENTROIDS</span>
+            <div class="flex items-center gap-2">
+              <span class="md:hidden font-mono text-[9px] text-cyan-400 font-bold px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-800">SWIPE TABLE →</span>
+              <span class="text-data-mono font-data-mono text-[10px] text-on-surface-variant">GEM & OSM VERIFIED CENTROIDS</span>
+            </div>
           </div>
           <div class="w-full overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -1561,6 +1591,6 @@
 
   <!-- Main Application Script -->
   <script>window.AGNIVANI_API = window.AGNIVANI_API || { base: "/api", live: true };</script>
-  <script src="js/app.js"></script>
+  <script src="js/app.js?v=2"></script>
 </body>
 </html>

@@ -1055,7 +1055,7 @@ function initAlertFeed() {
           <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.timestamp?.split(' ')[0] || ''}</span>
         </div>
         <div class="${isSelected ? 'pl-1' : ''}">
-          <div class="font-body-md text-[12px] font-semibold text-on-surface truncate">${anomaly.name}</div>
+          <div class="font-body-md text-[12px] font-semibold text-on-surface truncate" title="${anomaly.name}">${anomaly.name}</div>
           <div class="flex gap-sm mt-[2px]">
             <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.effTemp}</span>
             <span class="font-data-mono text-[10px] text-on-surface-variant">${anomaly.frp}</span>
@@ -1134,6 +1134,22 @@ async function loadAlertsQueue() {
       }
     } catch (_) {}
   }
+}
+
+function openInspector() {
+  const panel = mustEl('inspection-panel');
+  const backdrop = mustEl('inspector-backdrop');
+  const closeBtn = mustEl('close-inspector-btn');
+  if (panel) panel.classList.add('open');
+  if (backdrop) backdrop.classList.remove('hidden');
+  if (closeBtn) closeBtn.classList.remove('hidden');
+}
+
+function closeInspector() {
+  const panel = mustEl('inspection-panel');
+  const backdrop = mustEl('inspector-backdrop');
+  if (panel) panel.classList.remove('open');
+  if (backdrop) backdrop.classList.add('hidden');
 }
 
 function selectAnomaly(id) {
@@ -1297,6 +1313,11 @@ function selectAnomaly(id) {
   initPlanckCurve(item.tempValue);
 
   appendTerminalLog(`[PHYS] Retargeted spectrometer to ${item.id} (${item.name}). T_eff=${item.effTemp}, FRP=${item.frp}`);
+
+  // On mobile / tablet, open inspector slide-over or bottom sheet
+  if (window.innerWidth < 1280) {
+    openInspector();
+  }
 }
 
 // --- Interactive Map HUD Engine (Vector & Leaflet Satellite Mode) ---
@@ -1891,13 +1912,13 @@ async function updateFacilityProfile(facilityName = 'Hazira LNG/Steel') {
         const tr = document.createElement('tr');
         tr.className = `border-b border-outline-variant hover:bg-surface-container-highest transition-colors ${idx % 2 === 1 ? 'bg-surface-container-lowest/30' : ''}`;
         tr.innerHTML = `
-          <td class="px-md py-sm font-bold text-primary">${d.id}</td>
-          <td class="px-md py-sm"><span style="color: ${d.typeColor || '#8aebff'}">${d.type || d.cls}</span></td>
-          <td class="px-md py-sm">${d.dist_m != null ? `${Number(d.dist_m).toFixed(1)} m` : (d.dist_facility_m != null ? `${Number(d.dist_facility_m).toFixed(1)} m` : 'Within buffer')}</td>
-          <td class="px-md py-sm">${d.tempValue != null ? `${Number(d.tempValue).toFixed(1)} K` : (d.temp_K != null ? `${Number(d.temp_K).toFixed(1)} K` : '—')}</td>
-          <td class="px-md py-sm text-tertiary-container font-bold">${d.frpValue != null && d.frpValue > 0 ? `${Number(d.frpValue).toFixed(2)} MW` : (d.frp_MW != null && d.frp_MW > 0 ? `${Number(d.frp_MW).toFixed(2)} MW` : (d.cls === 'LEAK' ? '2.11 MW' : '—'))}</td>
-          <td class="px-md py-sm">conf=${Number(d.confidence ?? d.conf ?? 0).toFixed(3)}</td>
-          <td class="px-md py-sm text-on-surface-variant">${d.diurnal_shape || 'SPARSE'}</td>
+          <td class="px-md py-sm font-bold text-primary" data-label="DETECTION ID">${d.id}</td>
+          <td class="px-md py-sm" data-label="VERDICT / CLASS"><span style="color: ${d.typeColor || '#8aebff'}">${d.type || d.cls}</span></td>
+          <td class="px-md py-sm" data-label="DISTANCE">${d.dist_m != null ? `${Number(d.dist_m).toFixed(1)} m` : (d.dist_facility_m != null ? `${Number(d.dist_facility_m).toFixed(1)} m` : 'Within buffer')}</td>
+          <td class="px-md py-sm" data-label="RETRIEVED TEMP">${d.tempValue != null ? `${Number(d.tempValue).toFixed(1)} K` : (d.temp_K != null ? `${Number(d.temp_K).toFixed(1)} K` : '—')}</td>
+          <td class="px-md py-sm text-tertiary-container font-bold" data-label="FRP">${d.frpValue != null && d.frpValue > 0 ? `${Number(d.frpValue).toFixed(2)} MW` : (d.frp_MW != null && d.frp_MW > 0 ? `${Number(d.frp_MW).toFixed(2)} MW` : (d.cls === 'LEAK' ? '2.11 MW' : '—'))}</td>
+          <td class="px-md py-sm" data-label="CONFIDENCE">conf=${Number(d.confidence ?? d.conf ?? 0).toFixed(3)}</td>
+          <td class="px-md py-sm text-on-surface-variant" data-label="DIURNAL">${d.diurnal_shape || 'SPARSE'}</td>
         `;
         matchedTbody.appendChild(tr);
       });
@@ -1968,10 +1989,10 @@ function initAuditTable() {
     const tr = document.createElement('tr');
     tr.className = `border-b border-[#1b2735] ${index % 2 === 1 ? 'bg-white/[0.02]' : ''} hover:bg-[#1b2735]/50 transition-colors`;
     tr.innerHTML = `
-      <td class="p-xs text-on-surface-variant font-data-mono text-[11px]">${record.timestamp}</td>
-      <td class="p-xs text-primary font-data-mono text-[11px]">${record.operatorId}</td>
-      <td class="p-xs font-data-mono text-[11px]">${record.action}</td>
-      <td class="p-xs text-on-surface-variant font-data-mono text-[11px]">${record.ref}</td>
+      <td class="p-xs text-on-surface-variant font-data-mono text-[11px]" data-label="TIMESTAMP (Z)">${record.timestamp}</td>
+      <td class="p-xs text-primary font-data-mono text-[11px]" data-label="OPERATOR ID">${record.operatorId}</td>
+      <td class="p-xs font-data-mono text-[11px]" data-label="ACTION">${record.action}</td>
+      <td class="p-xs text-on-surface-variant font-data-mono text-[11px]" data-label="REF">${record.ref}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -2316,5 +2337,56 @@ function initEventListeners() {
         }
       }
     });
+  });
+
+  // Mobile / Tablet Inspector Sheet Close Affordances
+  const closeInspBtn = mustEl('close-inspector-btn');
+  const inspBackdrop = mustEl('inspector-backdrop');
+  if (closeInspBtn) {
+    closeInspBtn.addEventListener('click', closeInspector);
+  }
+  if (inspBackdrop) {
+    inspBackdrop.addEventListener('click', closeInspector);
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeInspector();
+    }
+  });
+
+  // Pipeline Log Mobile Collapse Toggle
+  const pipeBox = mustEl('mc-pipeline-box');
+  const pipeHeader = mustEl('pipeline-log-header');
+  const pipeHint = mustEl('pipeline-log-toggle-hint');
+  if (pipeBox && pipeHeader) {
+    if (window.innerWidth < 768) {
+      pipeBox.classList.add('collapsed');
+      if (pipeHint) pipeHint.textContent = '(tap to expand)';
+    }
+    pipeHeader.addEventListener('click', () => {
+      const isCollapsed = pipeBox.classList.toggle('collapsed');
+      if (pipeHint) pipeHint.textContent = isCollapsed ? '(tap to expand)' : '(tap to collapse)';
+    });
+  }
+
+  // Responsive Resize / Orientation Redraw Engine
+  let resizeTimer = null;
+  const triggerRedraw = () => {
+    if (AppState.leafletMap) {
+      AppState.leafletMap.invalidateSize();
+    }
+    initMapCanvas();
+    renderRadianceHistogram();
+    if (AppState.selectedAnomalyId) {
+      const item = AppState.anomalies.find(a => a.id === AppState.selectedAnomalyId);
+      if (item) initPlanckCurve(item.tempValue);
+    }
+  };
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(triggerRedraw, 150);
+  });
+  window.addEventListener('orientationchange', () => {
+    setTimeout(triggerRedraw, 250);
   });
 }
