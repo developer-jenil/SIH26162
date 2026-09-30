@@ -286,40 +286,8 @@
 
             <!-- Class Distribution Bar -->
             <div class="hud-border border-x-0 border-b-0 bg-surface-dim/50 p-base flex flex-col justify-end shrink-0">
-              <span class="font-label-caps text-[9px] text-on-surface-variant mb-xs">CLASS DISTRIBUTION (LIVE /API/STATS)</span>
-              <div class="space-y-1" id="class-distribution-container">
-                <div class="flex items-center gap-xs">
-                  <div class="w-2 h-2 rounded-sm bg-[#ffa94d]"></div>
-                  <span class="font-label-caps text-[9px] w-20 truncate">Gas Flare</span>
-                  <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
-                    <div class="h-full bg-[#ffa94d] w-[4.9%]"></div>
-                  </div>
-                  <span class="font-data-mono text-[9px] text-on-surface-variant">2 (4.9%)</span>
-                </div>
-                <div class="flex items-center gap-xs">
-                  <div class="w-2 h-2 rounded-sm bg-cyan-400"></div>
-                  <span class="font-label-caps text-[9px] w-20 truncate">Fugitive Leak</span>
-                  <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
-                    <div class="h-full bg-cyan-400 w-[4.9%]"></div>
-                  </div>
-                  <span class="font-data-mono text-[9px] text-on-surface-variant">2 (4.9%)</span>
-                </div>
-                <div class="flex items-center gap-xs">
-                  <div class="w-2 h-2 rounded-sm bg-emerald-400"></div>
-                  <span class="font-label-caps text-[9px] w-20 truncate">Wildfire</span>
-                  <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
-                    <div class="h-full bg-emerald-400 w-[2.4%]"></div>
-                  </div>
-                  <span class="font-data-mono text-[9px] text-on-surface-variant">1 (2.4%)</span>
-                </div>
-                <div class="flex items-center gap-xs">
-                  <div class="w-2 h-2 rounded-sm bg-slate-400"></div>
-                  <span class="font-label-caps text-[9px] w-20 truncate">Unresolved</span>
-                  <div class="flex-1 h-[3px] bg-surface-container rounded-full overflow-hidden">
-                    <div class="h-full bg-slate-400 w-[87.8%]"></div>
-                  </div>
-                  <span class="font-data-mono text-[9px] text-on-surface-variant">36 (87.8%)</span>
-                </div>
+              <span class="font-label-caps text-[9px] text-on-surface-variant mb-xs">CLASS DISTRIBUTION (LIVE /API/STATS)</s              <div class="space-y-1" id="class-distribution-container">
+                <div class="text-[10px] text-on-surface-variant italic py-1">Loading telemetry distribution...</div>
               </div>
             </div>
           </div>
@@ -353,7 +321,7 @@
                     DARK TILES
                   </button>
                   <button id="btn-map-satellite" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-surface-container text-on-surface-variant hover:text-primary transition-all" title="Esri World Imagery satellite telemetry layer">
-                    SATELLITE TILES
+                    SATELLITE
                   </button>
                 </div>
 
@@ -362,10 +330,10 @@
                 <!-- Corridor Facility Attribution Toggle (C4) -->
                 <div class="flex items-center gap-[2px]">
                   <button id="filter-corridor-btn" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-primary text-black font-bold transition-all" title="Default view: Industrial Corridor facilities">
-                    CORRIDOR SITES (4)
+                    CORRIDOR SITES
                   </button>
                   <button id="filter-all-btn" class="px-2 py-0.5 rounded-sm font-label-caps text-[9px] bg-surface-container text-on-surface-variant hover:text-primary transition-all" title="Show all raw window telemetry">
-                    ALL DETECTIONS (41)
+                    ALL DETECTIONS
                   </button>
                 </div>
 
@@ -374,23 +342,23 @@
                 <!-- Condition C4 Live Unattributed Count -->
                 <div id="unresolved-count-badge" class="px-2 py-0.5 rounded-sm font-data-mono text-[9px] bg-amber-950/70 text-amber-300 border border-amber-800/80 flex items-center gap-1 shadow-sm" title="Condition C4: Deliberately unattributed non-industrial thermal activity">
                   <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                  <span>36 non-industrial thermal activity in window — deliberately unattributed</span>
+                  <span>-- non-industrial thermal activity in window — deliberately unattributed</span>
                 </div>
               </div>
 
               <!-- Real Hero Quick-Focus Deep-Link Chips (Condition C5) -->
               <div class="absolute top-10 left-base bg-surface-dim/95 hud-border px-2 py-1 rounded-sm backdrop-blur-sm flex items-center gap-2 z-20 shadow-md hero-chips-container">
                 <span class="font-label-caps text-[8.5px] text-cyan-400 font-bold tracking-wider shrink-0">HERO DETECTIONS:</span>
-                <button id="hero-flare-1-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-orange-950/60 hover:bg-orange-900/80 text-[#ffa94d] border border-[#ffa94d]/50 font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0" title="Hazira LNG/Steel Flare #1 (492m, T_fire=486.1K, FRP=9.2MW)">
+                <button id="hero-flare-1-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-orange-950/60 hover:bg-orange-900/80 text-[#ffa94d] border border-[#ffa94d]/50 font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0" title="Hazira LNG/Steel Flare #1">
                   <span>🔥 Flare #1 (Hazira)</span>
                 </button>
-                <button id="hero-flare-2-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-orange-950/60 hover:bg-orange-900/80 text-[#ffa94d] border border-[#ffa94d]/50 font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0" title="Hazira LNG/Steel Flare #2 (535m, T_fire=506.1K, FRP=10.4MW)">
+                <button id="hero-flare-2-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-orange-950/60 hover:bg-orange-900/80 text-[#ffa94d] border border-[#ffa94d]/50 font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0" title="Hazira LNG/Steel Flare #2">
                   <span>🔥 Flare #2 (Hazira)</span>
                 </button>
-                <button id="hero-leak-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-purple-950/60 hover:bg-purple-900/80 text-[#b197fc] border border-[#b197fc]/50 font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0" title="Hazira LNG/Steel Candidate Leak (826m, conf: 0.55)">
-                  <span>⚠ Candidate Leak (Hazira · 0.55)</span>
+                <button id="hero-leak-btn" class="px-1.5 py-0.5 rounded-sm font-data-mono text-[9px] bg-purple-950/60 hover:bg-purple-900/80 text-[#b197fc] border border-[#b197fc]/50 font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0" title="Hazira LNG/Steel Candidate Leak">
+                  <span>⚠ Candidate Leak (Hazira)</span>
                 </button>
-              </div>
+              </div>           </div>
 
               <!-- Radar Sweep (Vector Mode) -->
               <div id="map-radar-sweep" class="absolute inset-0 overflow-hidden pointer-events-none">
@@ -501,7 +469,7 @@
                     <div class="font-data-mono text-[13px] text-tertiary-container font-bold" id="insp-frp">—</div>
                   </div>
                   <div class="hud-border bg-surface-container/50 p-xs rounded-sm">
-                    <div class="font-label-caps text-[9px] text-on-surface-variant">CH4 EST</div>
+                    <div class="font-label-caps text-[9px] text-on-surface-variant" id="insp-ch4-label">MIR EXCESS (I4)</div>
                     <div class="font-data-mono text-[13px] text-on-surface" id="insp-ch4">—</div>
                   </div>
                   <div class="hud-border bg-surface-container/50 p-xs rounded-sm">
@@ -566,16 +534,16 @@
                 <div class="space-y-1.5 font-body-sm text-[10px] leading-relaxed text-on-surface-variant">
                   <div>
                     <span class="font-bold text-on-surface">FLARE Inversion Threshold (C2):</span>
-                    <span class="italic text-primary block">"empirically derived from a 5-day corridor sample (n=29); to be re-derived as more data arrives."</span>
-                    <span class="text-[9px] text-on-surface-variant/80 block mt-0.5">(T_fire ≥ 450 K operational threshold for 375m mixed pixels, not a physical constant).</span>
+                    <span id="limits-c2-text" class="italic text-primary block">Loading threshold disclosure...</span>
+                    <span class="text-[9px] text-on-surface-variant/80 block mt-0.5">(T_fire threshold for 375m mixed pixels, not a physical constant).</span>
                   </div>
                   <div class="pt-1 border-t border-outline-variant/40">
                     <span class="font-bold text-on-surface">Candidate Leak Framing (C3):</span>
-                    <span class="block">Detections <code class="text-primary font-data-mono">AV-07D8247D</code> & <code class="text-primary font-data-mono">AV-EF7A2C35</code> classified as <em>"candidate fugitive thermal anomaly - low confidence"</em> (conf: 0.55, T_fire null); requires optical or forward ground verification.</span>
+                    <span id="limits-c3-text" class="block">Loading candidate leak disclosure...</span>
                   </div>
                   <div class="pt-1 border-t border-outline-variant/40">
                     <span class="font-bold text-on-surface">Unattributed Non-Industrial Activity (C4):</span>
-                    <span class="block"><span id="limits-unresolved-count" class="font-bold text-amber-400 font-data-mono">36</span> non-industrial thermal clusters in window — deliberately unattributed to prevent false facility attribution.</span>
+                    <span class="block"><span id="limits-unresolved-count" class="font-bold text-amber-400 font-data-mono">--</span> non-industrial thermal clusters in window — deliberately unattributed to prevent false facility attribution.</span>
                   </div>
                 </div>
               </div>
@@ -609,19 +577,10 @@
           <div class="flex-1 p-md flex gap-lg min-h-0 overflow-hidden">
             <!-- Radiance Histogram Area -->
             <div class="flex-1 hud-border bg-surface-container/30 rounded-sm relative p-sm flex items-end min-h-0">
-              <span class="absolute top-sm left-sm font-label-caps text-[9px] text-on-surface-variant" id="radiance-histogram-label">RETRIEVED T_FIRE HISTOGRAM (357-711 K, n=29)</span>
+              <span class="absolute top-sm left-sm font-label-caps text-[9px] text-on-surface-variant" id="radiance-histogram-label">RETRIEVED T_FIRE HISTOGRAM</span>
               
               <div class="w-full flex items-end gap-[3px] h-28 opacity-90 pt-6" id="radiance-histogram-container">
-                <div class="flex-1 bg-outline-variant/40 h-[17%]" title="350-387 K: 1 detection"></div>
-                <div class="flex-1 bg-primary/70 h-[100%]" title="387-424 K: 6 detections"></div>
-                <div class="flex-1 bg-primary/70 h-[83%]" title="424-461 K: 5 detections"></div>
-                <div class="flex-1 bg-primary/70 h-[100%]" title="461-498 K: 6 detections"></div>
-                <div class="flex-1 bg-tertiary-container/80 h-[83%]" title="498-535 K: 5 detections"></div>
-                <div class="flex-1 bg-outline-variant/40 h-[17%]" title="535-572 K: 1 detection"></div>
-                <div class="flex-1 bg-tertiary-container/80 h-[33%]" title="572-609 K: 2 detections"></div>
-                <div class="flex-1 bg-tertiary-container/80 h-[33%]" title="609-646 K: 2 detections"></div>
-                <div class="flex-1 bg-[#1b2735] h-[0%]" title="646-683 K: 0 detections"></div>
-                <div class="flex-1 bg-error/90 h-[17%]" title="683-720 K: 1 detection"></div>
+                <div class="text-[10px] text-on-surface-variant italic p-2">Loading histogram...</div>
               </div>
               <div class="absolute bottom-1 left-2 text-[8px] font-data-mono text-on-surface-variant">350 K</div>
               <div class="absolute bottom-1 right-2 text-[8px] font-data-mono text-on-surface-variant">720 K</div>
@@ -853,7 +812,7 @@
               <span class="material-symbols-outlined text-[14px] text-tertiary">scatter_plot</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="font-data-mono text-[28px] text-on-surface font-bold" id="kpi-total-detections">41</span>
+              <span class="font-data-mono text-[28px] text-on-surface font-bold" id="kpi-total-detections">--</span>
               <span class="font-data-mono text-[11px] text-primary">NRT CORRIDOR</span>
             </div>
           </div>
@@ -864,7 +823,7 @@
               <span class="material-symbols-outlined text-[14px] text-[#ffa94d]">local_fire_department</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="font-data-mono text-[28px] text-on-surface font-bold text-[#ffa94d]" id="kpi-flares-count">2</span>
+              <span class="font-data-mono text-[28px] text-on-surface font-bold text-[#ffa94d]" id="kpi-flares-count">--</span>
               <span class="font-data-mono text-[11px] text-on-surface-variant">T_fire ≥ 450 K</span>
             </div>
           </div>
@@ -875,7 +834,7 @@
               <span class="material-symbols-outlined text-[14px] text-cyan-400">warning</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="font-data-mono text-[28px] text-cyan-400 font-bold" id="kpi-leaks-count">2</span>
+              <span class="font-data-mono text-[28px] text-cyan-400 font-bold" id="kpi-leaks-count">--</span>
               <span class="font-data-mono text-[11px] text-cyan-400 font-bold">HAZIRA PROX.</span>
             </div>
           </div>
@@ -886,8 +845,8 @@
               <span class="material-symbols-outlined text-[14px] text-emerald-400">functions</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="font-data-mono text-[28px] text-on-surface font-bold" id="kpi-dozier-converged">29 / 41</span>
-              <span class="font-data-mono text-[11px] text-emerald-400 font-bold">70.7% CONV</span>
+              <span class="font-data-mono text-[28px] text-on-surface font-bold" id="kpi-dozier-converged">-- / --</span>
+              <span class="font-data-mono text-[11px] text-emerald-400 font-bold" id="kpi-dozier-pct">--% CONV</span>
             </div>
           </div>
 
@@ -946,11 +905,11 @@
                 </div>
                 <div class="bg-surface-container/50 border border-outline-variant p-2 rounded">
                   <span class="text-amber-400 text-[10px] block font-bold mb-1">UNRESOLVED ACTIVITY DISCLOSURE:</span>
-                  <span class="text-on-surface-variant text-[10px]">36 non-industrial thermal activities in window — deliberately unattributed to prevent false regulatory compliance actions.</span>
+                  <span class="text-on-surface-variant text-[10px]"><span id="analytics-unres-count">--</span> non-industrial thermal activities in window — deliberately unattributed to prevent false regulatory compliance actions.</span>
                 </div>
                 <div class="bg-surface-container/50 border border-outline-variant p-2 rounded">
                   <span class="text-cyan-400 text-[10px] block font-bold mb-1">PHYSICAL THRESHOLD CRITERION:</span>
-                  <span class="text-on-surface-variant text-[10px]">FLARE T_fire ≥ 450 K empirically derived from corridor sample (n=29); candidate leaks AV-07D8247D and AV-EF7A2C35 flagged for optical verification.</span>
+                  <span class="text-on-surface-variant text-[10px]" id="analytics-threshold-disclosure">Loading threshold disclosure...</span>
                 </div>
               </div>
             </div>
@@ -962,24 +921,24 @@
                   <span class="material-symbols-outlined text-[14px] text-on-surface-variant">pie_chart</span>
                   Attribution Breakdown
                 </span>
-                <span class="font-data-mono text-[10px] text-on-surface-variant">41 TOTAL DETECTIONS</span>
+                <span class="font-data-mono text-[10px] text-on-surface-variant" id="analytics-total-count">-- TOTAL DETECTIONS</span>
               </div>
               <div class="flex-1 p-3 flex flex-col justify-around font-data-mono text-[11px]">
                 <div class="flex justify-between items-center border-b border-outline-variant/30 pb-1">
                   <span class="text-[#ffa94d]">Gas Flares (FLARE):</span>
-                  <span class="font-bold text-[#ffa94d]">2 (Hazira LNG/Steel)</span>
+                  <span class="font-bold text-[#ffa94d]" id="analytics-breakdown-flares">-- (Hazira LNG/Steel)</span>
                 </div>
                 <div class="flex justify-between items-center border-b border-outline-variant/30 pb-1">
                   <span class="text-cyan-400">Candidate Leaks (LEAK):</span>
-                  <span class="font-bold text-cyan-400">2 (Hazira Proximate)</span>
+                  <span class="font-bold text-cyan-400" id="analytics-breakdown-leaks">-- (Hazira Proximate)</span>
                 </div>
                 <div class="flex justify-between items-center border-b border-outline-variant/30 pb-1">
                   <span class="text-emerald-400">Wildfire / Vegetation (WILD):</span>
-                  <span class="font-bold text-emerald-400">1</span>
+                  <span class="font-bold text-emerald-400" id="analytics-breakdown-wild">--</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-slate-400">Unresolved Non-Industrial:</span>
-                  <span class="font-bold text-slate-400">36</span>
+                  <span class="font-bold text-slate-400" id="analytics-breakdown-unres">--</span>
                 </div>
               </div>
             </div>
@@ -1171,7 +1130,7 @@
                   </svg>
                   
                   <div class="absolute top-4 right-4 bg-surface-container-high border border-outline-variant p-sm text-data-mono font-data-mono text-xs rounded">
-                    T = <span id="dossier-t-retrieved">486.1 K</span> <span class="text-error">(RETRIEVED)</span>
+                    T = <span id="dossier-t-retrieved">-- K</span> <span class="text-error">(RETRIEVED)</span>
                   </div>
                 </div>
                 <div class="flex justify-between text-data-mono font-data-mono text-outline text-[10px] mt-xs">
@@ -1298,11 +1257,11 @@
               </div>
               <div>
                 <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">WINDOW MATCHES</span>
-                <span id="fac-profile-matches" class="text-data-mono font-data-mono text-primary font-bold">4 DETECTIONS</span>
+                <span id="fac-profile-matches" class="text-data-mono font-data-mono text-primary font-bold">-- DETECTIONS</span>
               </div>
               <div>
                 <span class="text-label-caps font-label-caps text-on-surface-variant block mb-xs">ACTIVE CLUSTER PEAK</span>
-                <span id="fac-profile-peak" class="text-data-mono font-data-mono text-tertiary-container font-bold">10.4 MW (506.1 K)</span>
+                <span id="fac-profile-peak" class="text-data-mono font-data-mono text-tertiary-container font-bold">-- MW (-- K)</span>
               </div>
             </div>
           </div>
@@ -1321,15 +1280,15 @@
                 </div>
                 <div class="flex justify-between">
                   <span class="text-on-surface-variant">Associated Flaring:</span>
-                  <span class="text-primary font-bold" id="fac-flares-count">2 Clusters</span>
+                  <span class="text-primary font-bold" id="fac-flares-count">-- Clusters</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-on-surface-variant">Candidate Fugitives:</span>
-                  <span class="text-cyan-400 font-bold" id="fac-leaks-count">2 Clusters</span>
+                  <span class="text-cyan-400 font-bold" id="fac-leaks-count">-- Clusters</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-on-surface-variant">Dozier Convergence:</span>
-                  <span class="text-emerald-400 font-bold" id="fac-dozier-status">2/2 Flares Converged</span>
+                  <span class="text-emerald-400 font-bold" id="fac-dozier-status">-- Flares Converged</span>
                 </div>
               </div>
             </div>
@@ -1346,7 +1305,7 @@
         <div class="hud-panel rounded flex flex-col shrink-0">
           <div class="hud-header-bg px-md py-sm flex justify-between items-center rounded-t">
             <span class="text-label-caps font-label-caps text-on-surface">ACTIVE WINDOW DETECTIONS MATCHED TO FACILITY</span>
-            <span class="text-data-mono font-data-mono text-[10px] text-primary" id="fac-matched-count-badge">4 MATCHED IN 5-DAY NRT</span>
+            <span class="text-data-mono font-data-mono text-[10px] text-primary" id="fac-matched-count-badge">-- MATCHED IN 5-DAY NRT</span>
           </div>
           <div class="w-full overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -1362,41 +1321,8 @@
                 </tr>
               </thead>
               <tbody id="fac-matched-table-body" class="text-data-mono font-data-mono text-[12px]">
-                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
-                  <td class="px-md py-sm font-bold text-primary" data-label="DETECTION ID">AV-0B12A4B9</td>
-                  <td class="px-md py-sm" data-label="VERDICT / CLASS"><span style="color: #ffa94d">GAS FLARE</span></td>
-                  <td class="px-md py-sm" data-label="DISTANCE">492.4 m</td>
-                  <td class="px-md py-sm" data-label="RETRIEVED TEMP">486.1 K</td>
-                  <td class="px-md py-sm text-tertiary-container font-bold" data-label="FRP">9.23 MW</td>
-                  <td class="px-md py-sm" data-label="CONFIDENCE">conf=0.900</td>
-                  <td class="px-md py-sm text-on-surface-variant" data-label="DIURNAL">FLAT_24H</td>
-                </tr>
-                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors bg-surface-container-lowest/30">
-                  <td class="px-md py-sm font-bold text-primary" data-label="DETECTION ID">AV-95BA9779</td>
-                  <td class="px-md py-sm" data-label="VERDICT / CLASS"><span style="color: #ffa94d">GAS FLARE</span></td>
-                  <td class="px-md py-sm" data-label="DISTANCE">535.4 m</td>
-                  <td class="px-md py-sm" data-label="RETRIEVED TEMP">506.1 K</td>
-                  <td class="px-md py-sm text-tertiary-container font-bold" data-label="FRP">10.37 MW</td>
-                  <td class="px-md py-sm" data-label="CONFIDENCE">conf=0.900</td>
-                  <td class="px-md py-sm text-on-surface-variant" data-label="DIURNAL">SPIKE_DECAY</td>
-                </tr>
-                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
-                  <td class="px-md py-sm font-bold text-primary" data-label="DETECTION ID">AV-07D8247D</td>
-                  <td class="px-md py-sm" data-label="VERDICT / CLASS"><span style="color: #22d3ee">candidate fugitive thermal anomaly - low confidence (0.55)</span></td>
-                  <td class="px-md py-sm" data-label="DISTANCE">825.6 m</td>
-                  <td class="px-md py-sm" data-label="RETRIEVED TEMP">—</td>
-                  <td class="px-md py-sm text-tertiary-container font-bold" data-label="FRP">2.11 MW</td>
-                  <td class="px-md py-sm" data-label="CONFIDENCE">conf=0.550</td>
-                  <td class="px-md py-sm text-on-surface-variant" data-label="DIURNAL">SPARSE</td>
-                </tr>
-                <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors bg-surface-container-lowest/30">
-                  <td class="px-md py-sm font-bold text-primary" data-label="DETECTION ID">AV-EF7A2C35</td>
-                  <td class="px-md py-sm" data-label="VERDICT / CLASS"><span style="color: #22d3ee">candidate fugitive thermal anomaly - low confidence (0.55)</span></td>
-                  <td class="px-md py-sm" data-label="DISTANCE">1372.0 m</td>
-                  <td class="px-md py-sm" data-label="RETRIEVED TEMP">—</td>
-                  <td class="px-md py-sm text-tertiary-container font-bold" data-label="FRP">1.84 MW</td>
-                  <td class="px-md py-sm" data-label="CONFIDENCE">conf=0.550</td>
-                  <td class="px-md py-sm text-on-surface-variant" data-label="DIURNAL">SPARSE</td>
+                <tr>
+                  <td colspan="7" class="px-md py-sm text-center text-on-surface-variant italic">Loading matched facility detections from API...</td>
                 </tr>
               </tbody>
             </table>
@@ -1470,7 +1396,7 @@
         <div class="bg-surface-container/60 p-sm rounded border border-outline-variant flex items-center justify-between">
           <div>
             <div class="font-label-caps text-[10px] text-cyan-400 font-bold">GUJARAT INDUSTRIAL CORRIDOR BUNDLE</div>
-            <div class="font-data-mono text-[9px] text-on-surface-variant">170 raw FIRMS detections · 5 days · Hazira / Jamnagar</div>
+            <div class="font-data-mono text-[9px] text-on-surface-variant"><span id="corridor-raw-count">--</span> raw FIRMS detections · 5 days · Hazira / Jamnagar</div>
           </div>
           <button id="run-corridor-btn" class="bg-primary text-[#060910] hover:bg-cyan-300 font-label-caps text-[10px] font-bold px-3 py-1.5 rounded transition-all flex items-center gap-1 shadow-[0_0_8px_rgba(34,211,238,0.3)]">
             <span class="material-symbols-outlined text-[14px]">play_arrow</span> RUN PIPELINE
@@ -1579,15 +1505,15 @@
         <div class="hud-border bg-surface-container p-sm rounded space-y-xs font-data-mono text-[11px]">
           <div class="flex justify-between">
             <span class="text-on-surface-variant">INCIDENT ID:</span>
-            <span class="text-primary font-bold" id="dispatch-incident-id">AV-0B12A4B9</span>
+            <span class="text-primary font-bold" id="dispatch-incident-id">--</span>
           </div>
           <div class="flex justify-between">
             <span class="text-on-surface-variant">TARGET LOCATION:</span>
-            <span class="text-on-surface" id="dispatch-target-loc">Hazira LNG/Steel (21.106° N, 72.641° E)</span>
+            <span class="text-on-surface" id="dispatch-target-loc">--</span>
           </div>
           <div class="flex justify-between">
             <span class="text-on-surface-variant">RETRIEVED TEMP / FRP:</span>
-            <span class="text-error font-bold" id="dispatch-temp-frp">486.1 K / 9.23 MW (GAS FLARE)</span>
+            <span class="text-error font-bold" id="dispatch-temp-frp">-- K / -- MW</span>
           </div>
           <div class="flex justify-between">
             <span class="text-on-surface-variant">PRIMARY RELAY:</span>

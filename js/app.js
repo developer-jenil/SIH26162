@@ -620,7 +620,7 @@ function renderDiurnalSparkline(container, hist, shape) {
       for (let h = 16; h <= 20; h++) data[h] = 0.18;
     } else if (shape === 'SPIKE_DECAY') {
       data = Array(24).fill(0.01);
-      data[14] = 0.55; data[15] = 0.22;
+      data[14] = 0.5; data[15] = 0.2;
     } else {
       data = Array(24).fill(1 / 24);
     }
@@ -685,6 +685,15 @@ function updateStatsPanel(stats) {
   // Update KPI strip in analytics view
   const totalEl = mustEl('kpi-total-detections');
   if (totalEl && stats?.total_detections != null) totalEl.textContent = stats.total_detections.toLocaleString();
+
+  const flareEl = document.getElementById('kpi-flares-count');
+  if (flareEl && stats?.by_class?.FLARE != null) flareEl.textContent = stats.by_class.FLARE;
+
+  const leakEl = document.getElementById('kpi-leaks-count');
+  if (leakEl && stats?.by_class?.LEAK != null) leakEl.textContent = stats.by_class.LEAK;
+
+  const analyticsTotal = document.getElementById('analytics-total-count');
+  if (analyticsTotal && stats?.total_detections != null) analyticsTotal.textContent = stats.total_detections;
 
   // Update Estimated Emissions KPI tile
   const validAnomalies = (AppState.anomalies || []).filter(a => !a.offshore_suppressed && a.co2e_rate_tph != null);
@@ -913,6 +922,40 @@ async function fetchProvenance() {
     const facSpan = mustEl('fac-temporal-span');
     if (facSpan && prov.temporal_window) {
       facSpan.textContent = prov.temporal_window.split(' (')[0];
+    }
+
+    const rawCount = prov.last_run?.num_raw != null ? prov.last_run.num_raw : (prov.raw_count ?? '--');
+    const corridorRaw = document.getElementById('corridor-raw-count');
+    if (corridorRaw) corridorRaw.textContent = rawCount;
+
+    const limitsC2 = document.getElementById('limits-c2-text');
+    if (limitsC2 && prov.disclosure_c2) limitsC2.textContent = prov.disclosure_c2;
+
+    const limitsC3 = document.getElementById('limits-c3-text');
+    if (limitsC3 && prov.disclosure_c3) limitsC3.textContent = prov.disclosure_c3;
+
+    const unresCount = prov.unresolved_count != null ? prov.unresolved_count : (prov.last_run?.verdicts?.UNRESOLVED ?? '--');
+    const limitsUnres = document.getElementById('limits-unresolved-count');
+    if (limitsUnres) limitsUnres.textContent = unresCount;
+
+    const unresBadge = document.getElementById('unresolved-count-badge');
+    if (unresBadge) unresBadge.textContent = `${unresCount} UNRESOLVED`;
+
+    const analyticsDisclosure = document.getElementById('analytics-threshold-disclosure');
+    if (analyticsDisclosure && prov.disclosure_c2) analyticsDisclosure.textContent = prov.disclosure_c2;
+
+    const analyticsBreakdownUnres = document.getElementById('analytics-breakdown-unres');
+    if (analyticsBreakdownUnres) analyticsBreakdownUnres.textContent = unresCount;
+
+    const analyticsUnresCount = document.getElementById('analytics-unres-count');
+    if (analyticsUnresCount) analyticsUnresCount.textContent = unresCount;
+
+    if (prov.dozier_converged != null && prov.total_detections != null) {
+      const dozierEl = document.getElementById('kpi-dozier-converged');
+      if (dozierEl) dozierEl.textContent = `${prov.dozier_converged} / ${prov.total_detections}`;
+      const pct = ((prov.dozier_converged / prov.total_detections) * 100).toFixed(1);
+      const dozierPctEl = document.getElementById('kpi-dozier-pct');
+      if (dozierPctEl) dozierPctEl.textContent = `${pct}% CONV`;
     }
   } catch (err) {
     console.warn('[AGNIVANI] fetchProvenance failed:', err);
@@ -1682,9 +1725,10 @@ function renderRadianceHistogram() {
     .filter(t => t != null && t >= 300 && t <= 1200);
 
   if (temps.length === 0) {
-    temps = [357.8, 394.1, 403.4, 414.0, 414.7, 417.6, 421.7, 426.1, 435.1, 437.1, 439.8, 459.6, 462.4, 463.9, 476.7, 479.3, 486.1, 491.7, 499.4, 506.1, 508.8, 512.9, 523.1, 539.5, 579.6, 587.2, 644.3, 644.4, 711.1];
+    container.innerHTML = '<div class="text-[10px] text-on-surface-variant italic p-2">Awaiting thermal telemetry...</div>';
+    return;
   }
-  // 10 bins between 350 K and 720 K (357-711 K real retrieved T_fire range, n=29)
+  // 10 bins between 350 K and 720 K
   const minK = 350.0;
   const maxK = 720.0;
   const numBins = 10;
@@ -2011,14 +2055,13 @@ async function updateFacilityProfile(facilityName = 'Hazira LNG/Steel') {
     } catch (_) {}
   }
 
-  // Fallback for Hazira FAC-004 before snapshot hydrates
-  if (matchedDetections.length === 0 && (currentFac.facility_id === 'FAC-004' || currentFac.name.includes('Hazira'))) {
-    matchedDetections = [
-      { id: 'AV-0B12A4B9', cls: 'FLARE', type: 'GAS FLARE', typeColor: '#ffa94d', dist_m: 492.4, tempValue: 486.1, frpValue: 9.23, confidence: 0.90, diurnal_shape: 'FLAT_24H' },
-      { id: 'AV-95BA9779', cls: 'FLARE', type: 'GAS FLARE', typeColor: '#ffa94d', dist_m: 535.4, tempValue: 506.1, frpValue: 10.37, confidence: 0.90, diurnal_shape: 'SPIKE_DECAY' },
-      { id: 'AV-07D8247D', cls: 'LEAK', type: 'candidate fugitive thermal anomaly - low confidence (0.55)', typeColor: '#22d3ee', dist_m: 825.6, tempValue: null, frpValue: 2.11, confidence: 0.55, diurnal_shape: 'SPARSE' },
-      { id: 'AV-EF7A2C35', cls: 'LEAK', type: 'candidate fugitive thermal anomaly - low confidence (0.55)', typeColor: '#22d3ee', dist_m: 1372.0, tempValue: null, frpValue: 1.84, confidence: 0.55, diurnal_shape: 'SPARSE' }
-    ];
+  // Fallback for facility matching against loaded anomalies in AppState
+  if (matchedDetections.length === 0 && AppState.anomalies?.length > 0) {
+    matchedDetections = AppState.anomalies.filter(a =>
+      (a.facilityId && currentFac.facility_id && a.facilityId === currentFac.facility_id) ||
+      (a.facility_name && a.facility_name.toLowerCase() === currentFac.name.toLowerCase()) ||
+      (a.name && a.name.toLowerCase() === currentFac.name.toLowerCase())
+    );
   }
 
   const matchCount = matchedDetections.length;
@@ -2059,7 +2102,7 @@ async function updateFacilityProfile(facilityName = 'Hazira LNG/Steel') {
     if (facLeaks) facLeaks.textContent = '0 Clusters';
     if (facDozier) facDozier.textContent = 'N/A';
     if (facMatchedBadge) facMatchedBadge.textContent = '0 MATCHED IN 5-DAY NRT';
-    if (facDisclosure) facDisclosure.textContent = `Zero detections in current 5-day corridor window matched ${currentFac.name} centroid (${currentFac.lat.toFixed(3)}° N, ${currentFac.lon.toFixed(3)}° E, ${radiusM.toLocaleString()}m buffer). All 41 persistent thermal clusters in this evaluation feed are located elsewhere.`;
+    if (facDisclosure) facDisclosure.textContent = `Zero detections in current 5-day corridor window matched ${currentFac.name} centroid (${currentFac.lat.toFixed(3)}° N, ${currentFac.lon.toFixed(3)}° E, ${radiusM.toLocaleString()}m buffer). All persistent thermal clusters in this evaluation feed are located elsewhere.`;
   }
 
   // Populate Matched Detections Table
@@ -2131,7 +2174,7 @@ function initPlanckCurve(tempK) {
   const curveSvg = mustEl('planck-svg-curve');
   if (!curveSvg) return;
 
-  const T = (tempK && tempK > 300) ? tempK : 486.1;
+  const T = (tempK && tempK > 300) ? tempK : 500.0;
   let pathD = 'M 0 180';
   for (let x = 0; x <= 500; x += 10) {
     const lambda = 0.5 + (x / 500) * 4.5;

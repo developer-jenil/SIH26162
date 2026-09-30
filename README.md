@@ -251,9 +251,9 @@ flowchart TD
 
 | Module | Interface Preview | Description |
 | :--- | :--- | :--- |
-| **Mission Control** | `stitch_agnivani_thermal_intelligence_grid/agnivani_mission_control/screen.png` | Primary tactical console with live alert feed, radar/satellite maps, optical vs. infrared swipe slider, and physical inversion telemetry. |
+| **Mission Control** | `stitch_agnivani_thermal_intelligence_grid/agnivani_mission_control/screen.png` | Primary tactical console with live alert feed, radar/satellite maps, multi-source telemetry strip, and physical inversion telemetry. |
 | **Alert Console** | `stitch_agnivani_thermal_intelligence_grid/agnivani_alert_console/screen.png` | Operational alert triage desk with severity-based filtering, authority routing, and multi-channel dispatch execution. |
-| **Detection Dossier** | `stitch_agnivani_thermal_intelligence_grid/agnivani_detection_dossier/screen.png` | Forensic drilldown displaying the 6-stage evidence chain, Planck radiation curves, conformal prediction intervals, and SHAP-style feature contributions. |
+| **Detection Dossier** | `stitch_agnivani_thermal_intelligence_grid/agnivani_detection_dossier/screen.png` | Forensic drilldown displaying the 6-stage evidence chain, Planck radiation curves, conformal prediction intervals (when ML mode active), and SHAP-style feature contributions. |
 | **Analytics & Insights** | `stitch_agnivani_thermal_intelligence_grid/agnivani_analytics_insights/screen.png` | Macro-level statistical intelligence: sector distributions, temperature histograms, diurnal flaring patterns, and emission trends. |
 | **Facility Profile** | `stitch_agnivani_thermal_intelligence_grid/agnivani_facility_profile/screen.png` | Deep profile of registered industrial assets detailing historical flaring intensity, baseline deviations, and perimeter coordinates. |
 
