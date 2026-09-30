@@ -327,6 +327,19 @@
           <!-- CENTRE COLUMN: MAP & TERMINAL -->
           <div class="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden mc-map-column">
             
+            <!-- Funnel & Hero Telemetry Strip (T1) -->
+            <div id="mission-control-funnel-strip" class="hud-border border-b border-t-0 border-x-0 bg-[#0d141d]/95 px-3 py-1.5 flex flex-wrap items-center justify-between gap-sm shrink-0 z-30 font-data-mono text-[11px] backdrop-blur-sm mc-funnel-strip">
+              <!-- Honest Funnel Sentence -->
+              <div id="funnel-sentence-container" class="flex items-center gap-sm flex-wrap text-on-surface-variant overflow-hidden">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shrink-0"></span>
+                <span id="funnel-prose" class="text-on-surface font-medium leading-snug">data unavailable</span>
+              </div>
+              <!-- Hero Evidence Chips -->
+              <div id="funnel-hero-chips" class="flex items-center gap-1.5 flex-wrap shrink-0">
+                <span class="text-on-surface-variant/70 italic text-[10px]">data unavailable</span>
+              </div>
+            </div>
+
             <!-- Geospatial Map Canvas Container -->
             <div class="flex-1 relative overflow-hidden bg-[#060910] cyber-grid min-h-0 mc-map-canvas-box">
               
@@ -1029,6 +1042,12 @@
               </div>
             </div>
           </header>
+
+          <!-- Candidate Leak Framing Callout (T3) -->
+          <div id="dossier-leak-framing" class="hidden hud-panel hud-border p-sm rounded bg-amber-950/40 border-amber-600/70 text-amber-200 font-data-mono text-[11px] flex items-center gap-sm">
+            <span class="material-symbols-outlined text-amber-400 text-[18px]">warning</span>
+            <span id="dossier-leak-framing-text"></span>
+          </div>
 
           <!-- Dossier Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">

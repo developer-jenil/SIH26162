@@ -301,6 +301,7 @@ function generateDemoDetection() {
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
+  renderFunnelHeroStrip();
   SoundFX.init();
   initClock();
   initRouting();
@@ -561,12 +562,16 @@ function hydrateFromSnapshot(data) {
   }
   updateFacilityProfile(mustEl('facility-selector')?.value || 'Hazira LNG/Steel');
   fetchProvenance();
+  renderFunnelHeroStrip();
 }
 
 function apiDetectionToAnomaly(d) {
   const ts = typeof d.ts === 'string' ? d.ts : new Date(d.ts).toISOString();
   const isCandidateLeak = d.cls === 'LEAK';
   const sev = d.severity || (d.cls === 'FLARE' ? 'LOW' : (isCandidateLeak ? 'HIGH' : 'MODERATE'));
+  const confVal = d.conf != null ? d.conf : null;
+  const confFormatted = confVal != null ? Number(confVal).toFixed(2) : '';
+  const leakReason = `candidate fugitive thermal anomaly - low confidence (${confFormatted}); no MIR excess; optical / forward-station verification pending`;
   return {
     id: d.id, shortId: d.id.slice(-4).toUpperCase(),
     cls: d.cls,
@@ -579,18 +584,18 @@ function apiDetectionToAnomaly(d) {
     coordsStr: `${d.lat.toFixed(3)}° N, ${d.lon.toFixed(3)}° E`,
     time: ts, timestamp: ts.substring(11, 19) + ' UTC',
     severity: sev,
-    type: d.cls === 'FLARE' ? 'GAS FLARE' : d.cls === 'IND_FIRE' ? 'INDUSTRIAL FIRE' : d.cls === 'COAL' ? 'COAL SEAM' : isCandidateLeak ? 'candidate fugitive thermal anomaly - low confidence (0.55)' : (d.cls === 'WILD' ? 'WILDFIRE / AGRI' : (d.cls === 'UNRESOLVED' ? 'UNATTRIBUTED NON-INDUSTRIAL' : 'UNKNOWN')),
+    type: d.cls === 'FLARE' ? 'GAS FLARE' : d.cls === 'IND_FIRE' ? 'INDUSTRIAL FIRE' : d.cls === 'COAL' ? 'COAL SEAM' : isCandidateLeak ? `candidate fugitive thermal anomaly - low confidence (${confFormatted})` : (d.cls === 'WILD' ? 'WILDFIRE / AGRI' : (d.cls === 'UNRESOLVED' ? 'UNATTRIBUTED NON-INDUSTRIAL' : 'UNKNOWN')),
     typeColor: DETO_TYPE_COLORS[d.cls] || '#859397',
     sevColor: DETO_SEV_COLORS[sev] || (sev === 'LOW' ? '#8aebff' : '#ffd6a3'),
-    confidence: isCandidateLeak ? 0.55 : d.conf,
+    confidence: confVal != null ? confVal : 0,
     effTemp: d.temp_K != null ? `${Math.round(d.temp_K)} K` : '-- K',
     tempValue: d.temp_K,
     area: d.area_m2 != null ? `${Math.round(d.area_m2)} m²` : '-- m²',
-    frp: (d.frp_MW != null && d.frp_MW > 0) ? `${Number(d.frp_MW).toFixed(2)} MW` : (d.frp_max_MW != null && d.frp_max_MW > 0 ? `${Number(d.frp_max_MW).toFixed(2)} MW` : (d.cls === 'LEAK' ? '2.11 MW' : '-- MW')),
-    frpValue: (d.frp_MW != null && d.frp_MW > 0) ? Number(d.frp_MW) : (d.frp_max_MW != null && d.frp_max_MW > 0 ? Number(d.frp_max_MW) : (d.cls === 'LEAK' ? 2.11 : 0)),
+    frp: (d.frp_MW != null && d.frp_MW > 0) ? `${Number(d.frp_MW).toFixed(2)} MW` : (d.frp_max_MW != null && d.frp_max_MW > 0 ? `${Number(d.frp_max_MW).toFixed(2)} MW` : (d.cls === 'LEAK' ? (d.frp_MW != null ? `${Number(d.frp_MW).toFixed(2)} MW` : '-- MW') : '-- MW')),
+    frpValue: (d.frp_MW != null && d.frp_MW > 0) ? Number(d.frp_MW) : (d.frp_max_MW != null && d.frp_max_MW > 0 ? Number(d.frp_max_MW) : (d.frp_MW != null ? Number(d.frp_MW) : 0)),
     status: 'LIVE',
     offshore_suppressed: !!d.offshore_suppressed,
-    reason: isCandidateLeak ? (d.reason || 'candidate fugitive thermal anomaly - low confidence (0.55) driven by facility proximity; implicates Hazira LNG/Steel.') : (d.reason || ''),
+    reason: isCandidateLeak ? (d.reason || leakReason) : (d.reason || ''),
     reason_template: d.reason_template || '',
     cited_rule: d.cited_rule || '',
     top_features: Array.isArray(d.top_features) ? d.top_features : [],
@@ -766,6 +771,128 @@ function updateClassDistribution(byClass) {
       <span class="font-data-mono text-[9px] text-on-surface-variant">${unresCount} (${unresPct}%)</span>
     </div>
   `;
+}
+
+// --- Funnel & Hero Strip Telemetry Engine (T1) ---
+async function renderFunnelHeroStrip() {
+  const proseEl = document.getElementById('funnel-prose');
+  const chipsEl = document.getElementById('funnel-hero-chips');
+  if (!proseEl || !chipsEl) return;
+
+  try {
+    const [statsRes, provRes, facRes] = await Promise.all([
+      fetch('/api/stats').catch(() => null),
+      fetch('/api/provenance').catch(() => null),
+      fetch('/api/facilities/FAC-004/matches').catch(() => null)
+    ]);
+
+    if (!statsRes || !statsRes.ok || !provRes || !provRes.ok) {
+      proseEl.textContent = 'Telemetry unavailable';
+      chipsEl.innerHTML = '<span class="text-on-surface-variant/70 italic text-[10px]">data unavailable</span>';
+      return;
+    }
+
+    const stats = await statsRes.json();
+    const prov = await provRes.json();
+    let facMatches = [];
+    if (facRes && facRes.ok) {
+      try {
+        facMatches = await facRes.json();
+      } catch (_) {}
+    }
+
+    const rawCount = prov.last_run?.num_raw != null ? prov.last_run.num_raw : (stats.num_raw ?? '--');
+    const sourceCount = prov.total_detections != null ? prov.total_detections : (stats.total_sources || stats.total_detections || '--');
+    const dozierCount = prov.dozier_converged != null ? prov.dozier_converged : '--';
+    const dozierPct = (typeof dozierCount === 'number' && typeof sourceCount === 'number' && sourceCount > 0)
+      ? ((dozierCount / sourceCount) * 100).toFixed(1)
+      : null;
+    const matchedCount = prov.detections_matched != null ? prov.detections_matched : (stats.facilities_matched ?? '--');
+    const unresCount = prov.unresolved_count != null ? prov.unresolved_count : (stats.by_class?.UNRESOLVED ?? '--');
+
+    // Aggregate distances across facility matches and heroes
+    const allDists = [];
+    if (Array.isArray(prov.heroes)) {
+      prov.heroes.forEach(h => {
+        if (typeof h.dist_m === 'number' && !isNaN(h.dist_m)) allDists.push(h.dist_m);
+      });
+    }
+    if (Array.isArray(facMatches)) {
+      facMatches.forEach(m => {
+        const d = m.dist_facility_m != null ? m.dist_facility_m : m.dist_m;
+        if (typeof d === 'number' && !isNaN(d)) allDists.push(d);
+      });
+    }
+    if (Array.isArray(AppState.anomalies)) {
+      AppState.anomalies.forEach(a => {
+        if (a.facilityId || a.facility_name === 'Hazira LNG/Steel' || a.name === 'Hazira LNG/Steel') {
+          const d = a.dist_facility_m != null ? a.dist_facility_m : a.dist_m;
+          if (typeof d === 'number' && !isNaN(d)) allDists.push(d);
+        }
+      });
+    }
+
+    let distRangeStr = '';
+    if (allDists.length > 0) {
+      const minD = Math.round(Math.min(...allDists));
+      const maxD = Math.round(Math.max(...allDists));
+      distRangeStr = (minD !== maxD) ? ` (${minD}-${maxD} m)` : ` (@ ${minD} m)`;
+    }
+
+    const dozierStr = dozierPct != null
+      ? `${dozierCount} physics retrievals (${dozierPct}%)`
+      : `${dozierCount} physics retrievals`;
+
+    proseEl.innerHTML = `
+      <span class="text-primary font-bold">${rawCount}</span> real VIIRS rows
+      <span class="text-outline-variant font-sans">→</span>
+      <span class="text-primary font-bold">${sourceCount}</span> sources
+      <span class="text-outline-variant font-sans">→</span>
+      <span class="text-cyan-300 font-bold">${dozierStr}</span>
+      <span class="text-outline-variant font-sans">→</span>
+      <span class="text-emerald-400 font-bold">${matchedCount} attributed${distRangeStr}</span>
+      <span class="text-outline-variant font-sans">→</span>
+      <span class="text-amber-300 font-bold">${unresCount} deliberately UNRESOLVED</span>
+    `;
+
+    chipsEl.innerHTML = '';
+    if (Array.isArray(prov.heroes) && prov.heroes.length > 0) {
+      prov.heroes.forEach(h => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.dataset.heroId = h.id;
+
+        const distStr = h.dist_m != null ? `${Math.round(h.dist_m)} m` : '';
+        const facName = h.facility ? h.facility.split(' ')[0] : 'Hazira';
+        const confStr = h.conf != null ? Number(h.conf).toFixed(2) : '--';
+
+        if (h.cls === 'FLARE') {
+          const tempStr = h.t_fire_K != null ? `${Number(h.t_fire_K).toFixed(1)} K` : '-- K';
+          const frpStr = h.frp_MW != null ? `${Number(h.frp_MW).toFixed(2)} MW` : '-- MW';
+          chip.className = 'px-2 py-0.5 rounded font-data-mono text-[9px] bg-orange-950/70 hover:bg-orange-900 text-[#ffa94d] border border-[#ffa94d]/60 font-bold transition-all flex items-center gap-1 cursor-pointer';
+          chip.innerHTML = `<span>verified flare ${tempStr} / ${frpStr} @ ${facName} ${distStr}</span>`;
+        } else if (h.cls === 'LEAK') {
+          chip.className = 'px-2 py-0.5 rounded font-data-mono text-[9px] bg-purple-950/70 hover:bg-purple-900 text-[#b197fc] border border-[#b197fc]/60 font-bold transition-all flex items-center gap-1 cursor-pointer';
+          chip.innerHTML = `<span>candidate leak conf ${confStr} - optical verification pending</span>`;
+        } else {
+          chip.className = 'px-2 py-0.5 rounded font-data-mono text-[9px] bg-surface-container hover:bg-surface-bright text-on-surface border border-outline-variant transition-all flex items-center gap-1 cursor-pointer';
+          chip.innerHTML = `<span>${h.id} ${h.cls} (conf: ${confStr})</span>`;
+        }
+
+        chip.addEventListener('click', () => {
+          SoundFX.playBlip();
+          selectAnomaly(h.id);
+          switchView('mission-control');
+        });
+
+        chipsEl.appendChild(chip);
+      });
+    }
+  } catch (err) {
+    console.warn('[AGNIVANI] renderFunnelHeroStrip error:', err);
+    proseEl.textContent = 'Telemetry unavailable';
+    chipsEl.innerHTML = '<span class="text-on-surface-variant/70 italic text-[10px]">data unavailable</span>';
+  }
 }
 
 // --- Dynamic Provenance Fetcher (/api/provenance last_run) ---
@@ -1170,6 +1297,11 @@ function selectAnomaly(id) {
   }
 
   // Update Inspector in Mission Control
+  const isCandidateLeak = item.cls === 'LEAK' || item.id === 'AV-07D8247D' || item.id === 'AV-EF7A2C35';
+  const confNum = item.confidence != null ? Number(item.confidence) : null;
+  const confStr = confNum != null ? confNum.toFixed(2) : '';
+  const leakFramingText = `candidate fugitive thermal anomaly - low confidence (${confStr}); no MIR excess; optical / forward-station verification pending`;
+
   const inspSelectedId = mustEl('insp-selected-id');
   const inspName = mustEl('insp-name');
   const inspType = mustEl('insp-type');
@@ -1182,14 +1314,25 @@ function selectAnomaly(id) {
   if (inspSelectedId) inspSelectedId.innerText = `ID: ${item.shortId}`;
   if (inspName) inspName.innerText = item.name;
   if (inspType) {
-    inspType.innerText = item.type;
-    inspType.style.color = item.typeColor;
+    if (isCandidateLeak) {
+      inspType.innerText = `CANDIDATE LEAK (${confStr})`;
+      inspType.style.color = '#b197fc';
+    } else {
+      inspType.innerText = item.type;
+      inspType.style.color = item.typeColor;
+    }
   }
-  if (inspConf) inspConf.innerText = `conf=${item.confidence.toFixed(3)}`;
+  if (inspConf) inspConf.innerText = confNum != null ? `conf=${confNum.toFixed(3)}` : '--';
   if (inspTemp) inspTemp.innerText = item.effTemp;
   if (inspArea) inspArea.innerText = item.area;
   if (inspFrp) inspFrp.innerText = item.frp;
-  if (inspCh4) inspCh4.innerText = item.ch4Est ?? '--';
+  if (inspCh4) {
+    if (isCandidateLeak) {
+      inspCh4.innerText = '— (no MIR excess)';
+    } else {
+      inspCh4.innerText = item.ch4Est ?? '--';
+    }
+  }
   const inspCo2e = mustEl('insp-co2e');
   const inspBc = mustEl('insp-bc');
   if (inspCo2e) {
@@ -1232,7 +1375,11 @@ function selectAnomaly(id) {
   const inspCitedRule = mustEl('insp-cited-rule');
   const inspWhyChips = mustEl('insp-why-chips');
   if (inspReason) {
-    inspReason.innerText = item.reason || item.reason_template || 'Grounded narrative analysis pending orbital pass.';
+    if (isCandidateLeak) {
+      inspReason.innerText = leakFramingText;
+    } else {
+      inspReason.innerText = item.reason || item.reason_template || 'Grounded narrative analysis pending orbital pass.';
+    }
   }
   if (inspCitedRule) {
     inspCitedRule.innerText = item.cited_rule || (item.offshore_suppressed ? 'OFFSHORE-SUPPRESSED' : 'GENERAL-ENVIRONMENTAL');
@@ -1292,12 +1439,31 @@ function selectAnomaly(id) {
   const dossierType = mustEl('dossier-type');
   const dossierSev = mustEl('dossier-severity');
   const dossierFacility = mustEl('dossier-facility');
+  const dossierLeakFraming = document.getElementById('dossier-leak-framing');
+  const dossierLeakText = document.getElementById('dossier-leak-framing-text');
+
+  if (dossierLeakFraming) {
+    if (isCandidateLeak) {
+      dossierLeakFraming.classList.remove('hidden');
+      if (dossierLeakText) dossierLeakText.textContent = leakFramingText;
+    } else {
+      dossierLeakFraming.classList.add('hidden');
+    }
+  }
+
   if (dossierAnomalyId) dossierAnomalyId.innerText = item.id;
   if (dossierType) {
-    dossierType.innerText = item.type;
-    dossierType.style.color = item.typeColor;
-    dossierType.style.borderColor = item.typeColor;
-    dossierType.style.backgroundColor = `${item.typeColor}22`;
+    if (isCandidateLeak) {
+      dossierType.innerText = `CANDIDATE LEAK (${confStr})`;
+      dossierType.style.color = '#b197fc';
+      dossierType.style.borderColor = '#b197fc';
+      dossierType.style.backgroundColor = '#b197fc22';
+    } else {
+      dossierType.innerText = item.type;
+      dossierType.style.color = item.typeColor;
+      dossierType.style.borderColor = item.typeColor;
+      dossierType.style.backgroundColor = `${item.typeColor}22`;
+    }
   }
   if (dossierSev) {
     const sev = item.severity || 'LOW';

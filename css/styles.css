@@ -640,6 +640,26 @@ html, body {
     overflow-x: auto !important;
     white-space: nowrap !important;
   }
+  /* Funnel & Hero Telemetry Strip (T1) */
+  .mc-funnel-strip {
+    border-bottom: 1px solid rgba(34, 211, 238, 0.25);
+    background: #0d141d;
+    transition: all 0.15s ease-in-out;
+  }
+  .mc-funnel-strip #funnel-hero-chips button:hover {
+    filter: brightness(1.15);
+  }
+  @media (max-width: 767px) {
+    .mc-funnel-strip {
+      padding: 6px 10px !important;
+      gap: 6px !important;
+    }
+    .mc-funnel-strip #funnel-hero-chips {
+      overflow-x: auto !important;
+      max-width: 100% !important;
+      white-space: nowrap !important;
+    }
+  }
   /* 2. Hero Chips Row */
   .hero-chips-container {
     position: relative !important;

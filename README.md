@@ -4,16 +4,27 @@
 
 ---
 
-![AGNIVANI Banner](AGNIVANI_data_pipeline_for_PS_26162.png)
+### 🌐 Live Production Grid & Deep Links
+- **Live Deployment**: [https://agnivani.onrender.com](https://agnivani.onrender.com)
+- **Direct Focal Link (Hazira LNG Flare #1)**: [https://agnivani.onrender.com/?focus=AV-0B12A4B9](https://agnivani.onrender.com/?focus=AV-0B12A4B9)
+- **Live Operational Preflight Verification**: [https://agnivani.onrender.com/preflight.html](https://agnivani.onrender.com/preflight.html)
 
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![DuckDB](https://img.shields.io/badge/DuckDB-1.1.3-FFF000.svg?logo=duckdb&logoColor=black)](https://duckdb.org/)
-[![GeoPandas](https://img.shields.io/badge/GeoPandas-1.0.1-139C5A.svg)](https://geopandas.org/)
-[![XGBoost](https://img.shields.io/badge/XGBoost-2.1.3-EB780A.svg)](https://xgboost.readthedocs.io/)
-[![Leaflet](https://img.shields.io/badge/Leaflet-1.9.4-199900.svg?logo=leaflet&logoColor=white)](https://leafletjs.com/)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38B2AC.svg?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![SIH 2026](https://img.shields.io/badge/SIH-2026%20PS%2026162-FF9933.svg)](https://www.sih.gov.in/)
+### 📊 Operational Telemetry Funnel
+*Grounded evaluation across 5-day continuous Gujarat Industrial Corridor stream (source of truth: [`/api/provenance`](https://agnivani.onrender.com/api/provenance)):*
+> **170 real VIIRS rows → 41 sources → 29 physics retrievals (70.7%) → 4 attributed (492–1372 m) → 36 deliberately UNRESOLVED**
+> - **Verified Flare #1**: 486.1 K / 9.23 MW @ Hazira LNG/Steel 492.4 m (`AV-0B12A4B9`, conf: 0.90)
+> - **Verified Flare #2**: 506.1 K / 10.37 MW @ Hazira LNG/Steel 535.4 m (`AV-95BA9779`, conf: 0.90)
+> - **Candidate Leak**: conf 0.55 @ Hazira LNG/Steel 825.6 m (`AV-07D8247D`, candidate fugitive thermal anomaly; optical / forward-station verification pending)
+
+### 🛠️ Production Architecture & Ground Truth Stack
+- **Frontend**: Vanilla JavaScript (ES6+), Leaflet.js 1.9.4 (CartoDB Dark Matter & Satellite tiles), TailwindCSS 3.x (NOT React). Zero client-framework bloat; sub-100ms DOM hydration.
+- **Backend & Persistence**: FastAPI 0.115+, Uvicorn, Embedded DuckDB 1.1.3 (zero-copy Parquet analytical views).
+- **Physical Inversion**: NumPy & SciPy Levenberg-Marquardt Dozier dual-band Planck solver ($3.74\,\mu\text{m} / 11.45\,\mu\text{m}$).
+- **Geospatial Processing**: GeoPandas 1.0+, PyProj EPSG:7755 (India National Grid CRS), Vectorized Ray-Casting Mainland Filter.
+- **Classification & ML Head**: Dual Scorer architecture featuring auditable **Heuristic Prior Scorer** (ACTIVE DEFAULT) and **XGBoost + Conformal Inference + TreeSHAP** (SHIPPED in codebase, but DEFAULTS OFF in production because industrial training labels are synthetically generated).
+- **Multi-Source Geospatial Fusion**: NASA FIRMS VIIRS (NOAA-20 / NOAA-21 375m) + OpenStreetMap (OSM) + Global Energy Monitor (GEM) + ESA WorldCover 10m (NO TROPOMI).
+
+![AGNIVANI Mission Control](stitch_agnivani_thermal_intelligence_grid/agnivani_mission_control/screen.png)
 
 ---
 
@@ -183,7 +194,7 @@ flowchart TD
 - **Dual Scorer Architecture**:
   - **Heuristic Prior Scorer** (Default): Transparent, fully auditable rule-based expert prior model reporting hand-set prior distributions with zero cold-start dependencies.
   - **Calibrated XGBoost Scorer**: Multi-class gradient boosted trees evaluated using `GroupKFold` spatial-block cross-validation (`GroupKFold` on $2^\circ \times 2^\circ$ spatial grid cells) to ensure generalization to unseen regions.
-- **Conformal Prediction**: Outputs valid confidence intervals $[lo, hi]$ around predicted probabilities, providing operators with statistical bounds on uncertainty.
+- **Conformal Prediction & Calibrated Uncertainty**: Shipped in `agnivani/models/`, providing $[lo, hi]$ intervals; in production deployment, the pipeline defaults to the auditable Heuristic Prior Scorer because industrial labels in the training set are synthetically augmented (as explicitly disclosed in `/api/health` and `/api/stats`).
 - **Explainable Decision Narrative & Anti-Hallucination Guard (`agnivani/narrative/reason.py`)**:
   - Synthesizes a grounded, single-sentence decision narrative explaining classification, confidence, the two strongest physical evidences, and statutory rule implications.
   - Supports local/remote LLM execution (`auto`, `ollama`, `openai`, `anthropic`) with an instant deterministic template fallback for offline operation.
@@ -205,7 +216,7 @@ flowchart TD
   - Dual Map Visualization:
     - **Vector Radar Mode**: Custom HTML5 Canvas rendering a simulated orbital sweep, range rings, coordinate grids, and pulsing thermal hotspots.
     - **Satellite Mode**: Interactive Leaflet.js map with CartoDB Dark Matter tiles, custom SVG markers, dynamic clustering, and facility pins.
-  - **Optical vs. Infrared Swipe Comparison**: Interactive before/after split slider comparing high-resolution optical imagery with SWIR/MWIR thermal false-color layers for the selected anomaly.
+  - **Optical / IR Multispectral Fusion (Phase 2 Roadmap)**: Architecture and telemetry brief for co-registering VIIRS 375m thermal retrievals with Copernicus Sentinel-2 MSI L2A 10m/20m SWIR imagery for post-incident ground context.
   - **Live Terminal & Telemetry Bar**: Shows satellite orbit status, NOAA-20 overpass counter, coordinates, and real-time execution logs.
   - **Decision Narrative & Why Chips**: Displays the generated single-sentence regulatory narrative, statutory badge (`cited_rule`), and dynamic ranking chips for top contributing physical features.
   - **Diurnal Signature Sparkline**: 24-bin micro-histogram rendered in the inspection panel showing solar hour distribution.
@@ -226,7 +237,7 @@ flowchart TD
   - Forensic audit of any selected anomaly.
   - **6-Stage Verification Breadcrumb Trail**: Visual status cards for VIIRS Ingest, India Filter, Source Cluster, Planck Retrieval, Registry Join, and Classify with real millisecond deltas.
   - **Planck Spectral Radiance Curve**: Interactive visual comparison of spectral radiance $L_\lambda$ across wavelengths ($\lambda_{\text{MIR}}$ vs $\lambda_{\text{TIR}}$) comparing background ambient emission against anomalous fire Planck curves.
-  - **Conformal Uncertainty Display**: Visual confidence bar with lower and upper confidence bounds.
+  - **Conformal Uncertainty Display**: Visual confidence bar with lower and upper confidence bounds $[lo, hi]$ (calibrated when ML Scorer mode is enabled).
   - **Feature Attribution Ranking**: Visual contribution breakdown of top contributing features (temperature, night fraction, facility distance).
 - **Facility Profile Module (`index.html#facility`)**:
   - Dedicated facility view (e.g., Jamnagar Refinery, Hazira, Vadinar, Panipat, Bokaro).
