@@ -271,6 +271,19 @@
       <!-- ==================== MODULE 1: MISSION CONTROL ==================== -->
       <div id="view-mission-control" class="view-panel active flex-1 flex flex-col h-full w-full overflow-hidden">
         
+        <!-- Funnel & Hero Telemetry Strip (T1) -->
+        <div id="mission-control-funnel-strip" class="hud-border border-b border-t-0 border-x-0 bg-[#0d141d]/95 px-3 py-1.5 flex flex-wrap items-center justify-between gap-sm shrink-0 z-30 font-data-mono text-[11px] backdrop-blur-sm mc-funnel-strip">
+          <!-- Honest Funnel Sentence -->
+          <div id="funnel-sentence-container" class="flex items-center gap-sm flex-wrap text-on-surface-variant overflow-hidden">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shrink-0"></span>
+            <span id="funnel-prose" class="text-on-surface font-medium leading-snug">data unavailable</span>
+          </div>
+          <!-- Hero Evidence Chips -->
+          <div id="funnel-hero-chips" class="flex items-center gap-1.5 flex-wrap shrink-0">
+            <span class="text-on-surface-variant/70 italic text-[10px]">data unavailable</span>
+          </div>
+        </div>
+
         <!-- Top 3-Column Area -->
         <div class="flex flex-1 overflow-hidden min-h-0 w-full mc-top-container">
           
@@ -297,19 +310,6 @@
           <!-- CENTRE COLUMN: MAP & TERMINAL -->
           <div class="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden mc-map-column">
             
-            <!-- Funnel & Hero Telemetry Strip (T1) -->
-            <div id="mission-control-funnel-strip" class="hud-border border-b border-t-0 border-x-0 bg-[#0d141d]/95 px-3 py-1.5 flex flex-wrap items-center justify-between gap-sm shrink-0 z-30 font-data-mono text-[11px] backdrop-blur-sm mc-funnel-strip">
-              <!-- Honest Funnel Sentence -->
-              <div id="funnel-sentence-container" class="flex items-center gap-sm flex-wrap text-on-surface-variant overflow-hidden">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shrink-0"></span>
-                <span id="funnel-prose" class="text-on-surface font-medium leading-snug">data unavailable</span>
-              </div>
-              <!-- Hero Evidence Chips -->
-              <div id="funnel-hero-chips" class="flex items-center gap-1.5 flex-wrap shrink-0">
-                <span class="text-on-surface-variant/70 italic text-[10px]">data unavailable</span>
-              </div>
-            </div>
-
             <!-- Geospatial Map Canvas Container -->
             <div class="flex-1 relative overflow-hidden bg-[#060910] cyber-grid min-h-0 mc-map-canvas-box">
               
@@ -386,7 +386,7 @@
             </div>
 
             <!-- Terminal Pipeline Log -->
-            <div class="h-[158px] bg-black hud-border border-x-0 border-b-0 p-sm overflow-hidden flex flex-col shrink-0 mc-pipeline-box" id="mc-pipeline-box">
+            <div class="h-[190px] bg-black hud-border border-x-0 border-b-0 p-sm overflow-hidden flex flex-col shrink-0 mc-pipeline-box" id="mc-pipeline-box">
               <div class="flex items-center justify-between mb-xs opacity-70 cursor-pointer pipeline-header" id="pipeline-log-header">
                 <div class="flex items-center gap-xs">
                   <span class="material-symbols-outlined text-[14px] text-primary">terminal</span>

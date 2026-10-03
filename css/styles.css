@@ -284,12 +284,91 @@ html, body {
 }
 
 /* ==========================================================================
-   LEAFLET MAP INTEGRATION STYLING
+   LEAFLET MAP & MISSION CONTROL INTEGRATION STYLING
    ========================================================================== */
+.mc-map-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+.mc-map-canvas-box {
+  flex: 1 1 auto;
+  min-height: 360px !important;
+  position: relative;
+  overflow: hidden;
+}
+
 #leaflet-map-container {
   width: 100%;
   height: 100%;
+  min-height: 360px !important;
   background: #060910;
+}
+
+.mc-pipeline-box {
+  height: 190px !important;
+  min-height: 190px;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#terminal-log {
+  flex: 1 1 auto !important;
+  height: 155px;
+  min-height: 120px;
+  overflow-y: auto !important;
+}
+
+#terminal-log div {
+  opacity: 1 !important;
+}
+
+/* Funnel & Hero Telemetry Strip (T1) - Full-Width Desktop Band */
+.mc-funnel-strip {
+  width: 100% !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 4px 12px !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  border-bottom: 1px solid rgba(34, 211, 238, 0.25);
+  background: #0d141d;
+  transition: all 0.15s ease-in-out;
+}
+
+.mc-funnel-strip::-webkit-scrollbar {
+  height: 2px;
+}
+
+.mc-funnel-strip #funnel-sentence-container {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.mc-funnel-strip #funnel-hero-chips {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+.mc-funnel-strip #funnel-hero-chips button:hover {
+  filter: brightness(1.15);
 }
 
 .leaflet-container {
@@ -406,6 +485,7 @@ html, body {
   }
   .mc-map-canvas-box {
     height: 55vh !important;
+    min-height: 360px !important;
   }
 
   /* Detection Inspector: Slide-Over Panel on Tablet */
@@ -632,33 +712,54 @@ html, body {
   }
   .mc-map-canvas-box {
     height: 45vh !important;
-    min-height: 280px !important;
+    min-height: 45vh !important;
     width: 100% !important;
+  }
+  #leaflet-map-container {
+    min-height: 45vh !important;
   }
   .map-controls-bar {
     max-width: 95% !important;
     overflow-x: auto !important;
     white-space: nowrap !important;
   }
-  /* Funnel & Hero Telemetry Strip (T1) */
+  /* Funnel & Hero Telemetry Strip (T1) - Single Scrollable Line on Mobile */
   .mc-funnel-strip {
-    border-bottom: 1px solid rgba(34, 211, 238, 0.25);
-    background: #0d141d;
-    transition: all 0.15s ease-in-out;
+    width: 100% !important;
+    white-space: nowrap !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 6px 12px !important;
+    gap: 12px !important;
+    border-bottom: 1px solid rgba(34, 211, 238, 0.25) !important;
+    background: #0d141d !important;
+    -webkit-overflow-scrolling: touch !important;
+    flex-shrink: 0 !important;
+  }
+  .mc-funnel-strip::-webkit-scrollbar {
+    display: none !important;
+  }
+  .mc-funnel-strip #funnel-sentence-container {
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  .mc-funnel-strip #funnel-hero-chips {
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    overflow-x: visible !important;
   }
   .mc-funnel-strip #funnel-hero-chips button:hover {
     filter: brightness(1.15);
-  }
-  @media (max-width: 767px) {
-    .mc-funnel-strip {
-      padding: 6px 10px !important;
-      gap: 6px !important;
-    }
-    .mc-funnel-strip #funnel-hero-chips {
-      overflow-x: auto !important;
-      max-width: 100% !important;
-      white-space: nowrap !important;
-    }
   }
   /* 2. Hero Chips Row */
   .hero-chips-container {
@@ -710,6 +811,7 @@ html, body {
   .mc-pipeline-box {
     order: 4 !important;
     width: 100% !important;
+    height: 190px !important;
     transition: height 0.25s ease !important;
     flex: none !important;
   }
@@ -718,6 +820,10 @@ html, body {
   }
   .mc-pipeline-box.collapsed #terminal-log {
     display: none !important;
+  }
+  .mc-pipeline-box:not(.collapsed) #terminal-log {
+    height: 150px !important;
+    overflow-y: auto !important;
   }
 
   /* Detection Inspector: Bottom Sheet on Phone */
